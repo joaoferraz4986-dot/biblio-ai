@@ -1,11 +1,30 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$SCRIPT_DIR/src-tauri/tauri.conf.json" && -d "$SCRIPT_DIR/content/packages" ]]; then
+  PROJECT_DIR="$SCRIPT_DIR"
+elif [[ -f "$SCRIPT_DIR/../src-tauri/tauri.conf.json" && -d "$SCRIPT_DIR/../content/packages" ]]; then
+  PROJECT_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+else
+  printf 'Não encontrei a raiz do Biblio AI ao lado do script. Extraia o projeto completo e execute tools/publish-initial.sh.\n' >&2
+  exit 1
+fi
+
 if ! git -C "$PROJECT_DIR" rev-parse --show-toplevel >/dev/null 2>&1; then
   git -C "$PROJECT_DIR" init -b main
 fi
 ROOT="$(git -C "$PROJECT_DIR" rev-parse --show-toplevel)"
+if [[ "$ROOT" != "$PROJECT_DIR" ]]; then
+  printf 'A raiz Git encontrada está fora do Biblio AI (%s). Pare e corrija a pasta antes de continuar.\n' "$ROOT" >&2
+  exit 1
+fi
+
+NESTED_GIT="$(find "$PROJECT_DIR" -mindepth 2 \( -type d -o -type f \) -name .git -print -quit)"
+if [[ -n "$NESTED_GIT" ]]; then
+  printf 'Foi encontrado outro repositório dentro do app (%s). Revise antes de publicar.\n' "$NESTED_GIT" >&2
+  exit 1
+fi
 REMOTE_URL="https://github.com/joaoferraz4986-dot/biblio-ai.git"
 BRANCH="${PUBLISH_BRANCH:-main}"
 MODE="${1:-publish}"
