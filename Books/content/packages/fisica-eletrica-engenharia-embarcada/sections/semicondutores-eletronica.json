@@ -1,0 +1,109 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "semicondutores-eletronica",
+  "number": "4",
+  "title": "Semicondutores, diodos, transistores e conversão de dados",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Eletrônica usa materiais cuja condutividade pode ser controlada por dopagem, campo elétrico, luz e temperatura. Os modelos desta seção são aproximações de engenharia; o datasheet e o ponto de operação prevalecem sobre uma fórmula isolada.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Portadores e deriva-difusão"
+    },
+    {
+      "type": "paragraph",
+      "text": "Em semicondutor, elétrons e lacunas transportam carga. Em equilíbrio, np=n_i². A condutividade é σ=q(nμ_n+pμ_p). A corrente combina deriva pelo campo e difusão por gradiente de concentração."
+    },
+    {
+      "type": "math",
+      "tex": "J_n=q\\mu_n nE+qD_n\\frac{dn}{dx},\\quad J_p=q\\mu_p pE-qD_p\\frac{dp}{dx}",
+      "caption": "Modelo de deriva-difusão"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Junção PN e diodo"
+    },
+    {
+      "type": "paragraph",
+      "text": "A junção forma uma região de depleção e uma barreira de potencial. No modelo de Shockley, I_D=I_S[exp(V_D/(nV_T))−1], com V_T=kT/q. Ruptura reversa, capacitância, temperatura e recombinação limitam o modelo."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "MOSFET e BJT"
+    },
+    {
+      "type": "paragraph",
+      "text": "No NMOS de canal longo, na região de saturação, I_D≈½μ_nC_ox(W/L)(V_GS−V_T)². O BJT em ativo direto pode ser descrito por I_C≈I_Sexp(V_BE/V_T). Em torno do ponto de operação, pequenos sinais usam g_m e resistências incrementais."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Amplificadores e realimentação"
+    },
+    {
+      "type": "paragraph",
+      "text": "Métricas de amplificadores incluem ganho, impedâncias, largura de banda, ruído, distorção, excursão e estabilidade. O amplificador operacional ideal em realimentação negativa assume correntes de entrada nulas e tensões de entrada aproximadamente iguais, mas dispositivos reais têm offset, slew rate e saturação."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "ADC, DAC e ruído"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para ADC ideal de N bits com faixa V_FS, Δ=V_FS/2^N e ruído de quantização RMS Δ/√12. Para senoide em escala total, SQNR≈6,02N+1,76 dB. Amostragem exige filtro anti-alias e, para banda B, f_s>2B no modelo ideal."
+    },
+    {
+      "type": "paragraph",
+      "text": "Ruídos independentes somam-se em potência: v_total=√(v₁²+v₂²+...). Resistor apresenta ruído térmico v_n²=4kTRB; fluxo discreto produz ruído shot i_n²=2qIB."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Problema guiado: escolher resistor para LED"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para fonte V_S, LED com queda V_F e corrente desejada I_F, o resistor ideal é R=(V_S−V_F)/I_F. A potência no resistor é P_R=I_F²R e a potência no LED é P_LED=V_FI_F. Verifique margem de fonte, tolerâncias, temperatura, corrente máxima e se o GPIO pode fornecer a corrente."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "// Dimensiona o resistor e verifica a potência dissipada.\ndouble calculateLedResistor(double supplyVoltage, double ledForwardVoltage, double ledCurrent) {\n    return (supplyVoltage - ledForwardVoltage) / ledCurrent;\n}\n\ndouble calculateResistorPower(double resistorValue, double ledCurrent) {\n    return resistorValue * ledCurrent * ledCurrent;\n}",
+      "lineNumbers": true,
+      "title": "Cálculo modular de um limitador de corrente"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Calcule a corrente aproximada de um diodo em um ponto dado.",
+        "Determine as regiões de operação de um MOSFET a partir de V_GS, V_DS e V_T.",
+        "Calcule o passo e o SQNR ideal de um ADC.",
+        "Faça um orçamento de três fontes de ruído independentes."
+      ]
+    },
+    {
+      "type": "history",
+      "name": "Bardeen, Brattain e Shockley",
+      "shortBio": "John Bardeen, Walter Brattain e William Shockley participaram da invenção do transistor nos Bell Labs, em 1947.",
+      "insight": "O transistor substituiu válvulas volumosas em muitas aplicações ao controlar corrente em um dispositivo sólido. O resultado foi uma mudança de escala na eletrônica, não apenas uma troca de componente.",
+      "image": {
+        "src": "images/history-transistor.jpg",
+        "alt": "Fotografia histórica dos inventores do transistor"
+      }
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+/*
+ * Camada de plano de fundo (padrão/textura), atrás de todo o conteúdo. `#bgLayer` é um
+ * elemento fixo de tela cheia, com z-index negativo; o body continua pintando `--bg` (a cor
+ * sólida do tema) por baixo dele — negativo aqui fica atrás do conteúdo, não do canvas.
+ * Cada padrão usa só `--pattern-a/b/c` (definidas em themes.css a partir de --text/--accent/
+ * --text-faint), então se adapta ao tema ativo sem precisar de uma versão por tema.
+ * IDs e rótulos ficam em assets/js/core/personalization.js — mantenha em sincronia.
+ */
+#bgLayer { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat; transition: opacity var(--dur) var(--ease); }
+
+body[data-bg='none'] #bgLayer { background-image: none; }
+
+body[data-bg='dots'] #bgLayer {
+  background-image: radial-gradient(var(--pattern-c) 1.4px, transparent 1.4px);
+  background-size: 24px 24px;
+}
+
+body[data-bg='grid'] #bgLayer {
+  background-image: linear-gradient(var(--pattern-a) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-a) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+body[data-bg='graph'] #bgLayer {
+  background-image:
+    linear-gradient(var(--pattern-a) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-a) 1px, transparent 1px),
+    linear-gradient(var(--pattern-c) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-c) 1px, transparent 1px);
+  background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+}
+
+body[data-bg='diagonal'] #bgLayer {
+  background-image: repeating-linear-gradient(45deg, var(--pattern-a) 0 1px, transparent 1px 16px);
+}
+
+body[data-bg='checker'] #bgLayer {
+  background-image: conic-gradient(var(--pattern-a) 90deg, transparent 90deg 180deg, var(--pattern-a) 180deg 270deg, transparent 270deg);
+  background-size: 30px 30px;
+}
+
+body[data-bg='honeycomb'] #bgLayer {
+  background-image: radial-gradient(var(--pattern-c) 1.6px, transparent 1.6px), radial-gradient(var(--pattern-c) 1.6px, transparent 1.6px);
+  background-size: 30px 26px, 30px 26px;
+  background-position: 0 0, 15px 13px;
+}
+
+body[data-bg='waves'] #bgLayer {
+  background-image: repeating-radial-gradient(circle at 50% -10%, var(--pattern-a) 0 2px, transparent 2px 44px);
+}
+
+body[data-bg='stars'] #bgLayer {
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, var(--pattern-c), transparent), radial-gradient(1.4px 1.4px at 78% 58%, var(--pattern-c), transparent),
+    radial-gradient(1.8px 1.8px at 42% 82%, var(--pattern-c), transparent), radial-gradient(1.4px 1.4px at 63% 12%, var(--pattern-c), transparent),
+    radial-gradient(1.4px 1.4px at 91% 38%, var(--pattern-c), transparent), radial-gradient(1.8px 1.8px at 27% 52%, var(--pattern-c), transparent),
+    radial-gradient(1.4px 1.4px at 5% 68%, var(--pattern-c), transparent);
+  background-size: 240px 240px;
+}
+
+body[data-bg='aurora'] #bgLayer {
+  background-image:
+    radial-gradient(760px 520px at 12% -8%, var(--pattern-b), transparent 60%),
+    radial-gradient(640px 520px at 92% 18%, color-mix(in srgb, var(--accent-teal) 16%, transparent), transparent 60%),
+    radial-gradient(760px 620px at 50% 108%, color-mix(in srgb, var(--accent-violet) 14%, transparent), transparent 60%);
+}
+
+body[data-bg='image'] #bgLayer { background-color: var(--bg); background-repeat: no-repeat; }
+
+/*
+ * 'noise' (textura granulada): a versão antiga desenhava o ruído como `background-image` colorido
+ * e tentava disfarçar com `opacity: .05` + `mix-blend-mode` — na prática a imagem já nascia com
+ * ~50% de alfa por pixel, então .05 de opacidade deixava o resultado essencialmente invisível (por
+ * isso "não tinha nada de granulado", parecia liso). Aqui o SVG de turbulência vira `mask-image`
+ * (máscara de luminância) sobre uma cor sólida derivada de `--text` — mesma ideia de `--pattern-a/b/c`
+ * (tom do tema, canal alfa nosso) — então cada grão varia de opacidade de verdade (máscara), em vez
+ * de somar uma única camada quase transparente por cima de tudo. `--noise-tint` fica um pouco mais
+ * forte que `--pattern-a` (7%) porque aqui cobre a tela inteira, não só linhas finas de 1px — no
+ * mesmo alfa das linhas o grão ficava imperceptível de novo.
+ */
+body[data-bg='noise'] #bgLayer {
+  background-color: transparent;
+  background-image: radial-gradient(var(--pattern-c) .85px, transparent 1px), radial-gradient(var(--pattern-b) .65px, transparent .9px);
+  background-size: 4px 4px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+  opacity: 1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 42%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 42%, transparent 100%);
+}
+
+/*
+ * Prévias em miniatura no painel de configurações (.bg-card__preview, ver
+ * components/settings.css e ui/settings-panel.js) — os mesmos padrões acima, em escala
+ * menor para caber num cartão de ~56px. Independentes de #bgLayer para poderem mostrar
+ * TODAS as opções ao mesmo tempo, não só a ativa.
+ */
+.bg-card__preview[data-bg='none'] { background-image: none; }
+
+.bg-card__preview[data-bg='dots'] { background-image: radial-gradient(var(--pattern-c) 1.2px, transparent 1.2px); background-size: 10px 10px; }
+
+.bg-card__preview[data-bg='grid'] { background-image: linear-gradient(var(--pattern-a) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-a) 1px, transparent 1px); background-size: 14px 14px; }
+
+.bg-card__preview[data-bg='graph'] {
+  background-image:
+    linear-gradient(var(--pattern-a) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-a) 1px, transparent 1px),
+    linear-gradient(var(--pattern-c) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-c) 1px, transparent 1px);
+  background-size: 5px 5px, 5px 5px, 20px 20px, 20px 20px;
+}
+
+.bg-card__preview[data-bg='diagonal'] { background-image: repeating-linear-gradient(45deg, var(--pattern-a) 0 1px, transparent 1px 8px); }
+
+.bg-card__preview[data-bg='checker'] { background-image: conic-gradient(var(--pattern-a) 90deg, transparent 90deg 180deg, var(--pattern-a) 180deg 270deg, transparent 270deg); background-size: 14px 14px; }
+
+.bg-card__preview[data-bg='honeycomb'] {
+  background-image: radial-gradient(var(--pattern-c) 1.2px, transparent 1.2px), radial-gradient(var(--pattern-c) 1.2px, transparent 1.2px);
+  background-size: 14px 12px, 14px 12px; background-position: 0 0, 7px 6px;
+}
+
+.bg-card__preview[data-bg='waves'] { background-image: repeating-radial-gradient(circle at 50% -10%, var(--pattern-a) 0 2px, transparent 2px 20px); }
+
+.bg-card__preview[data-bg='stars'] {
+  background-image:
+    radial-gradient(1.2px 1.2px at 20% 30%, var(--pattern-c), transparent), radial-gradient(1.2px 1.2px at 70% 60%, var(--pattern-c), transparent),
+    radial-gradient(1.4px 1.4px at 40% 85%, var(--pattern-c), transparent), radial-gradient(1.2px 1.2px at 88% 22%, var(--pattern-c), transparent),
+    radial-gradient(1.2px 1.2px at 8% 70%, var(--pattern-c), transparent);
+  background-size: 56px 56px;
+}
+
+.bg-card__preview[data-bg='aurora'] {
+  background-image:
+    radial-gradient(60px 42px at 12% -10%, var(--pattern-b), transparent 62%),
+    radial-gradient(52px 42px at 92% 18%, color-mix(in srgb, var(--accent-teal) 18%, transparent), transparent 62%),
+    radial-gradient(60px 50px at 50% 112%, color-mix(in srgb, var(--accent-violet) 16%, transparent), transparent 62%);
+}
+
+.bg-card__preview[data-bg='noise'] {
+  background-color: transparent;
+  background-image: radial-gradient(var(--pattern-c) .85px, transparent 1px), radial-gradient(var(--pattern-b) .65px, transparent .9px);
+  background-size: 4px 4px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 42%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 42%, transparent 100%);
+}
+
+.bg-card__image-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .9; }

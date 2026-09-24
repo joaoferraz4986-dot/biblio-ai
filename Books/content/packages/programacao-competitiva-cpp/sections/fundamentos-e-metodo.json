@@ -1,0 +1,163 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "fundamentos-e-metodo",
+  "number": "1",
+  "title": "Como pensar, estudar e medir soluções",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Programação competitiva é a prática de transformar uma especificação em um algoritmo correto, eficiente e implementável sob limites rígidos de tempo e memória. Este livro começa pelo raciocínio e termina em técnicas que aparecem em finais nacionais e competições internacionais.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "O ciclo de uma solução"
+    },
+    {
+      "type": "paragraph",
+      "text": "Leia o enunciado como um contrato: identifique a entrada, a saída, as restrições, a definição exata de cada termo e os casos extremos. Depois modele o problema, estime a complexidade, prove a ideia em poucas frases, implemente e teste adversarialmente."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "**Modelo:** reduza a história a objetos matemáticos — sequência, grafo, intervalo, estado ou fluxo.",
+        "**Limites:** transforme `n ≤ 2·10^5` em uma meta de aproximadamente `O(n log n)`; `O(n²)` costuma ser inviável.",
+        "**Invariante:** escreva o que permanece verdadeiro depois de cada iteração ou transição.",
+        "**Validação:** teste mínimo, máximo, repetição, ordenação inversa, valores iguais e estruturas degeneradas."
+      ]
+    },
+    {
+      "type": "table",
+      "header": [
+        "Complexidade",
+        "Quando costuma caber"
+      ],
+      "rows": [
+        [
+          "`O(1)`, `O(log n)`",
+          "praticamente sempre"
+        ],
+        [
+          "`O(n)`, `O(n log n)`",
+          "até milhões, conforme constante"
+        ],
+        [
+          "`O(n√n)`",
+          "depende dos limites e da linguagem"
+        ],
+        [
+          "`O(n²)`",
+          "tipicamente até alguns milhares"
+        ],
+        [
+          "`O(2^n)`",
+          "somente `n` pequeno, cerca de 20–25"
+        ],
+        [
+          "`O(n!)`",
+          "somente enumerações muito pequenas"
+        ]
+      ],
+      "caption": "Orçamento assintótico aproximado"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto& x : a) cin >> x;\n    sort(a.begin(), a.end());\n    cout << a.front() << \"\\n\";\n}",
+      "lineNumbers": true,
+      "title": "Template C++17/20 mínimo"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "A complexidade assintótica é uma ferramenta de projeto, não uma garantia automática. Duas soluções `O(n log n)` podem diferir muito por constantes, alocações, cache e custo de I/O.",
+      "title": "Não confunda ordem com desempenho"
+    },
+    {
+      "type": "subsection",
+      "id": "prova-por-invariante",
+      "number": "1.1",
+      "title": "Prova curta antes do código",
+      "tag": "PROVA",
+      "accent": "violet",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma prova competitiva não precisa ser formal como um artigo, mas deve responder: qual é a estrutura mantida? por que cada passo é seguro? por que o algoritmo termina? por que a resposta produzida é ótima ou exata?"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "for (int i = 0; i < n; ++i) {\n    // Invariante: ans é a melhor resposta usando a[0..i-1].\n    ans = max(ans, a[i]);\n}",
+          "lineNumbers": true,
+          "title": "Exemplo de invariante"
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "pratica-e-debug",
+      "number": "1.2",
+      "title": "Treino deliberado",
+      "tag": "TREINO",
+      "accent": "amber",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Resolva primeiro problemas introdutórios do [CSES Problem Set](https://cses.fi/problemset/) e use o [USACO Guide](https://usaco.guide/) para uma trilha graduada. Ao errar, classifique o erro: interpretação, prova, complexidade, implementação, overflow ou caso de borda."
+        },
+        {
+          "type": "list",
+          "style": "check",
+          "items": [
+            "Leia editoriais somente depois de uma tentativa honesta.",
+            "Reimplemente a ideia sem copiar o código.",
+            "Mantenha um caderno de padrões e contraexemplos.",
+            "Treine sob pressão com sessões cronometradas e depois faça pós-análise."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Leia `n` inteiros e informe mínimo, máximo e soma usando um tipo seguro.",
+        "Dado `n`, compare três algoritmos para calcular a soma de `1..n` e explique a complexidade de cada um.",
+        "Conte quantos valores de uma lista são pares, ímpares e múltiplos de 3.",
+        "Faça um programa que leia vários casos até EOF e imprima uma resposta por linha."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    },
+    {
+      "type": "history",
+      "name": "Edsger W. Dijkstra",
+      "shortBio": "Edsger W. Dijkstra (1930–2002) foi um cientista da computação neerlandês conhecido por contribuições a algoritmos, linguagens e métodos de programação.",
+      "insight": "A contribuição histórica relevante aqui é tratar correção, invariantes e simplicidade como parte do algoritmo, não como uma etapa posterior ao código.",
+      "image": {
+        "src": "images/history-dijkstra.jpg",
+        "alt": "Retrato de Edsger W. Dijkstra"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+/* Diagramas (mermaid, svg, ai-diagram) e imagens. */
+.b-diagram { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--panel); padding: var(--space-5); overflow: hidden; }
+.b-diagram__cap { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: .78rem; color: var(--text-faint); margin-bottom: var(--space-3); }
+.b-diagram__cap--below { margin: var(--space-3) 0 0; }
+.b-diagram__badge { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: .66rem; color: var(--accent-violet); border: 1px solid currentColor; border-radius: var(--radius-pill); padding: 2px 8px; }
+.b-diagram__canvas { width: 100%; max-width: 100%; overflow-x: auto; display: flex; justify-content: center; }
+.b-diagram__canvas svg { max-width: 100%; height: auto; }
+.b-diagram__pending { color: var(--text-faint); font-size: .82rem; font-family: var(--font-mono); padding: var(--space-6) 0; }
+.b-diagram__error { width: 100%; color: var(--tone-bad); font-size: .84rem; }
+.b-diagram__error pre { white-space: pre-wrap; font-family: var(--font-mono); font-size: .76rem; background: var(--bg-elevated); padding: var(--space-2); border-radius: var(--radius-sm); margin-top: 6px; }
+.b-diagram__prompt { margin-top: var(--space-3); font-size: .8rem; color: var(--text-faint); }
+.b-diagram__prompt summary { cursor: pointer; }
+.b-diagram--mermaid { --accent-line: var(--accent, var(--accent-blue)); border-top: 3px solid var(--accent-line); }
+.b-diagram--ai { border-top: 3px solid var(--accent, var(--accent-violet)); }
+.svg-frame { width: 100%; }
+.svg-frame svg { width: 100%; height: auto; }
+
+.b-image { width: 100%; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); background: var(--panel); }
+.b-image img { width: 100%; height: auto; display: block; }
+.b-image__empty { padding: var(--space-8); text-align: center; color: var(--text-faint); font-size: .84rem; }
+.b-image figcaption { padding: var(--space-3) var(--space-4); color: var(--text-faint); font-size: .82rem; border-top: 1px solid var(--border-soft); }

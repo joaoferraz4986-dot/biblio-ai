@@ -1,0 +1,125 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "cpp-e-analise-assintotica",
+  "number": "0",
+  "title": "C++ essencial e eficiência assintótica",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Antes de estudar algoritmos, domine o vocabulário da linguagem e aprenda a estimar custo. Uma solução correta que excede tempo ou memória também falha; eficiência é parte da especificação.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Tipos, escopo e funções"
+    },
+    {
+      "type": "paragraph",
+      "text": "Use `int` para índices e valores pequenos, `long long` para contagens e somas grandes, `size_t` com cuidado ao comparar com inteiros e `const` para declarar o que não deve ser alterado. Uma função deve ter uma responsabilidade clara e nomes que revelem a intenção."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Retorna a soma dos elementos no intervalo [firstIndex, lastIndex).\nlong long sumRange(const vector<long long>& values, int firstIndex, int lastIndex) {\n    long long rangeSum = 0;\n    for (int currentIndex = firstIndex; currentIndex < lastIndex; ++currentIndex) {\n        rangeSum += values[currentIndex];\n    }\n    return rangeSum;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int valueCount;\n    cin >> valueCount;\n    vector<long long> values(valueCount);\n    for (long long& value : values) cin >> value;\n    cout << sumRange(values, 0, valueCount) << \"\\n\";\n}",
+      "lineNumbers": true,
+      "title": "Função pura com nomes descritivos"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Referências, ponteiros e classes"
+    },
+    {
+      "type": "paragraph",
+      "text": "Uma referência é um apelido que deve referir-se a um objeto válido; uma referência constante evita cópia sem permitir alteração. Um ponteiro pode ser nulo e representa explicitamente a possibilidade de ausência. Classes agrupam estado e invariantes; em competições, structs simples costumam ser suficientes."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "class Counter {\nprivate:\n    int currentValue;\n\npublic:\n    explicit Counter(int initialValue) : currentValue(initialValue) {}\n\n    void increment() { ++currentValue; }\n    int value() const { return currentValue; }\n};\n\nvoid addOne(int& mutableValue) { ++mutableValue; }\nvoid printIfPresent(const int* optionalValue) {\n    if (optionalValue != nullptr) cout << *optionalValue << \"\\n\";\n}",
+      "lineNumbers": true,
+      "title": "Encapsulamento e passagem por referência"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Como medir tempo e memória"
+    },
+    {
+      "type": "paragraph",
+      "text": "Conte operações dominantes em função do tamanho da entrada. Um laço simples é `O(n)`; dois laços aninhados, `O(n²)`; reduzir o intervalo pela metade, `O(log n)`; ordenar, geralmente `O(n log n)`. Para memória, conte arrays, tabelas, filas e a pilha de chamadas — não conte variáveis escalares como se fossem vetores."
+    },
+    {
+      "type": "table",
+      "header": [
+        "Código ou estrutura",
+        "Tempo",
+        "Memória adicional"
+      ],
+      "rows": [
+        [
+          "Uma passagem por vetor",
+          "O(n)",
+          "O(1)"
+        ],
+        [
+          "Duas passagens independentes",
+          "O(n)",
+          "O(1)"
+        ],
+        [
+          "Dois laços aninhados sobre n",
+          "O(n²)",
+          "O(1)"
+        ],
+        [
+          "Ordenar e depois percorrer",
+          "O(n log n)",
+          "depende do sort"
+        ],
+        [
+          "DP em tabela n×m",
+          "O(nm)",
+          "O(nm)"
+        ],
+        [
+          "BFS em grafo",
+          "O(V+E)",
+          "O(V)"
+        ]
+      ],
+      "caption": "Como ler a ordem de crescimento"
+    },
+    {
+      "type": "math",
+      "tex": "T(n)=2T(n/2)+O(n)=O(n\\log n)",
+      "caption": "Exemplo de recorrência"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "Não use benchmarking de um único caso para “provar” complexidade. O computador, o compilador e a entrada mudam; a análise deve explicar o pior caso e o espaço ocupado.",
+      "title": "Assintótico vem antes do cronômetro"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Recursão e pilha"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "// A profundidade é logarítmica porque o intervalo é dividido ao meio.\nint binarySearch(const vector<int>& sortedValues, int targetValue) {\n    int leftIndex = 0, rightIndex = (int)sortedValues.size() - 1;\n    while (leftIndex <= rightIndex) {\n        int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;\n        if (sortedValues[middleIndex] == targetValue) return middleIndex;\n        if (sortedValues[middleIndex] < targetValue) leftIndex = middleIndex + 1;\n        else rightIndex = middleIndex - 1;\n    }\n    return -1;\n}",
+      "lineNumbers": true,
+      "title": "Busca binária iterativa e segura"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Antes de otimizar, escreva uma tabela com: limite de entrada, complexidade de tempo, memória e justificativa. Essa disciplina evita escolher `O(n²)` quando o limite exige `O(n log n)`.",
+      "title": "Ficha de complexidade"
+    }
+  ]
+}

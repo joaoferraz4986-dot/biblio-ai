@@ -1,0 +1,7 @@
+/* Aviso rápido (ex.: "última seção"), no rodapé central. */
+.toast { position: fixed; left: 50%; bottom: var(--space-6); transform: translate(-50%, 12px); z-index: var(--z-toast);
+  background: var(--panel-3); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-pill);
+  padding: 10px 18px; font-size: .82rem; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.toast--error { border-color: var(--tone-bad); color: var(--tone-bad); }
+.toast--ok { border-color: var(--tone-ok); color: var(--tone-ok); }

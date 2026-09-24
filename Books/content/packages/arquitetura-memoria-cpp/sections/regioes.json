@@ -1,0 +1,496 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "regioes",
+  "number": "5",
+  "title": "As regiões da memória virtual, uma a uma",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Cada subseção abaixo segue o mesmo roteiro: o que a região guarda → um fluxo simplificado → um trecho de C++ → a tradução ilustrativa em `.text` (x86-64, sintaxe AT&T, sem otimizações — o que um compilador real gera varia por versão e nível de otimização, mas o padrão é este) → e a explicação instrução a instrução, tanto do lado C++ quanto do lado assembly."
+    },
+    {
+      "type": "subsection",
+      "id": "sec-mapa-ram",
+      "number": "5.0",
+      "title": "O mapa real: regiões virtuais e frames físicos",
+      "tag": "RAM / MMU",
+      "accent": "slate",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "O processo não é copiado inteiro para uma faixa contínua da RAM. O kernel mantém um espaço de endereços virtual, dividido em páginas, e associa cada página virtual a um frame físico quando necessário. Assim, uma página de `.text` pode ser compartilhada entre processos; uma página anônima do heap pode nascer apenas na primeira escrita; e uma página da stack pode ser privada, copiada sob demanda ou recuperada sob pressão de memória."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Região observada",
+            "O que normalmente significa",
+            "O que não significa"
+          ],
+          "rows": [
+            [
+              "`[stack]`",
+              "VMA usada pela thread principal no Linux, com frames de chamadas e dados automáticos quando o compilador não os mantém em registradores.",
+              "Não é uma faixa física contínua nem todo o limite já residente na RAM."
+            ],
+            [
+              "`[heap]`",
+              "VMA tradicional associada ao program break da arena principal da libc.",
+              "Não engloba necessariamente toda memória de `malloc`; alocações grandes podem vir de `mmap`."
+            ],
+            [
+              "`r-xp` de um ELF",
+              "Mapping privado de páginas de código, normalmente file-backed, com leitura e execução.",
+              "Não garante que cada byte já esteja na RAM; páginas podem ser carregadas sob demanda."
+            ],
+            [
+              "VMA anônima",
+              "Espaço sem arquivo associado, usado por BSS, heap, stack, TLS e `mmap(MAP_ANONYMOUS)`.",
+              "Não é sinônimo de memória física imediatamente alocada."
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Use `cat /proc/$PID/maps` para observar intervalos virtuais e permissões e `cat /proc/$PID/smaps` para comparar `Size`, `Rss`, `Pss` e `Swap`. `VmSize` mede espaço virtual; `VmRSS` mede páginas residentes. Nenhum dos dois é “o tamanho do programa na RAM” sem qualificação."
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Confusão comum",
+          "text": "Uma page fault não significa necessariamente que houve leitura de disco. Ela pode apenas materializar uma página anônima zerada, estabelecer copy-on-write ou corrigir uma tradução ausente. Em uma página file-backed, o kernel pode usar o page cache; em outra situação, pode precisar buscar o arquivo ou o swap."
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-text",
+      "number": "5.1",
+      "title": "Seção de texto (`.text`)",
+      "tag": ".TEXT",
+      "accent": "blue",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Contém as instruções binárias que o processador busca (*fetch*), decodifica e executa. É marcada como somente leitura e executável (`r-x`) justamente para impedir que código malicioso reescreva instruções em tempo de execução."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n    PC(\"Program Counter (%rip)\") -->|\"busca instrução\"| TXT(\"Seção .text\")\n    TXT -->|\"decodifica e executa\"| CPU(\"Unidade de execução da CPU\")\n    CPU -->|\"avança\"| PC",
+          "caption": "fluxo simplificado",
+          "accent": "blue"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "int quadrado(int x) {\n    return x * x;\n}"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa em .text",
+          "code": "quadrado:\n    push   %rbp             # prólogo\n    mov    %rsp, %rbp\n    mov    %edi, -4(%rbp)   # x chega em %edi (ABI System V), guardado na pilha\n    mov    -4(%rbp), %eax\n    imul   -4(%rbp), %eax   # %eax = x * x\n    pop    %rbp             # epílogo\n    ret"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`int quadrado(int x)`",
+              "o compilador cria o rótulo `quadrado:` dentro de `.text`; pela convenção de chamada (System V AMD64 ABI), o primeiro argumento inteiro chega no registrador `%edi`."
+            ],
+            [
+              "2",
+              "`push %rbp`",
+              "empilha o *frame pointer* do chamador, preservando-o para quando esta função retornar."
+            ],
+            [
+              "3",
+              "`mov %rsp, %rbp`",
+              "estabelece `%rbp` como referência fixa para este novo quadro de pilha."
+            ],
+            [
+              "4",
+              "`mov %edi, -4(%rbp)`",
+              "copia `x` do registrador para uma posição na pilha (variável local com duração automática)."
+            ],
+            [
+              "5",
+              "`return x * x;`",
+              "recarrega `x` em `%eax` e usa `imul` para multiplicar; o resultado de uma função inteira sempre volta em `%eax`/`%rax`, por convenção da ABI."
+            ],
+            [
+              "6",
+              "`pop %rbp` / `ret`",
+              "epílogo: restaura o `%rbp` do chamador e usa `ret` para saltar de volta ao endereço que a instrução `call` empilhou."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-rodata",
+      "number": "5.2",
+      "title": "Dados somente de leitura (`.rodata`)",
+      "tag": ".RODATA",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Guarda constantes imutáveis: literais de string, *jump tables* geradas por um `switch`, e — adiante na Seção 6.3 — as **vtables** do C++."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n    T(\".text: instrução usa o literal\") -->|\"endereçamento relativo a %rip\"| R(\"Seção .rodata\")\n    R --> S(\"bytes do literal, ex: string terminada em zero\")",
+          "caption": "fluxo simplificado",
+          "accent": "teal"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "const char* mensagem = \"memoria\";"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa",
+          "code": "    .section .rodata\n.LC0:\n    .string \"memoria\"       # bytes ascii + terminador nulo\n\n    .section .data\nmensagem:\n    .quad .LC0              # o PONTEIRO fica em .data — ele mesmo não é zero\n\n    .section .text\n    lea    .LC0(%rip), %rax # carrega o endereço do literal (relativo ao PC)\n    mov    %rax, mensagem(%rip)"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`\"memoria\"`",
+              "o literal de string vira o símbolo `.LC0`, alocado em `.rodata`."
+            ],
+            [
+              "2",
+              "`.string`",
+              "diretiva do montador que grava os bytes ASCII seguidos do terminador nulo."
+            ],
+            [
+              "3",
+              "`lea .LC0(%rip), %rax`",
+              "`lea` (\"load effective address\") calcula o endereço de `.LC0` relativo ao *Program Counter* — endereçamento `%rip`-relativo, essencial para código independente de posição (PIE, ver Seção 3)."
+            ],
+            [
+              "4",
+              "`char* mensagem = ...`",
+              "o próprio ponteiro `mensagem` é uma variável global inicializada com valor não-zero (um endereço), por isso ele fica em `.data`, não em `.rodata`."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-data",
+      "number": "5.3",
+      "title": "Dados inicializados (`.data`)",
+      "tag": ".DATA",
+      "accent": "amber",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Guarda variáveis globais e `static` que foram explicitamente inicializadas com um valor diferente de zero no código-fonte."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n    F(\"Arquivo ELF em disco: valor já gravado nos bytes\") --> L(\"Carregador do SO (execve)\")\n    L --> M(\"Seção .data em memória, já com o valor\")",
+          "caption": "fluxo simplificado",
+          "accent": "amber"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "int contador_global = 42;"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa",
+          "code": "    .data\n    .globl contador_global\ncontador_global:\n    .long 42                        # 4 bytes, valor 42 já gravado no arquivo ELF\n\n    .text\n    mov    contador_global(%rip), %eax   # leitura em qualquer função"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`int contador_global = 42;`",
+              "o compilador emite um símbolo global direcionado a `.data`."
+            ],
+            [
+              "2",
+              "`.long 42`",
+              "reserva 4 bytes e grava o valor `42` diretamente nos bytes do executável no disco."
+            ],
+            [
+              "3",
+              "carregamento via `execve`",
+              "o kernel mapeia essa página do arquivo direto para a memória — o valor já chega pronto, sem nenhum código de inicialização em tempo de execução."
+            ],
+            [
+              "4",
+              "`mov contador_global(%rip), %eax`",
+              "qualquer leitura da variável usa endereçamento relativo ao `%rip`, o mesmo mecanismo do item 3 da seção anterior."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-bss",
+      "number": "5.4",
+      "title": "Dados não inicializados (`.bss`)",
+      "tag": ".BSS",
+      "accent": "gray",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "*Block Started by Symbol* — nome herdado de uma diretiva de montador da IBM. Reserva espaço para globais/estáticas sem inicializador (ou inicializadas com zero) sem ocupar espaço de dados dentro do arquivo executável em disco."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n    F2(\"Arquivo ELF: apenas o TAMANHO é registrado, nenhum byte de dado\") --> L2(\"Carregador do SO\")\n    L2 -->|\"preenche com zero (páginas anônimas)\"| M2(\"Seção .bss em memória\")",
+          "caption": "fluxo simplificado",
+          "accent": "gray"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "int acumulador_zero;"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa",
+          "code": ".bss\n.globl acumulador_zero\n.zero 4                 # só o tamanho é reservado, nada é escrito no arquivo"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`int acumulador_zero;`",
+              "sem inicializador explícito → destino é `.bss`."
+            ],
+            [
+              "2",
+              "`.zero 4`",
+              "reserva 4 bytes de *tamanho* no cabeçalho ELF; nenhum byte de dado correspondente existe no arquivo — é por isso que `.bss` \"não ocupa espaço em disco\"."
+            ],
+            [
+              "3",
+              "carregamento",
+              "o kernel aloca páginas anônimas zeradas (`mmap` com `MAP_ANONYMOUS`) para cobrir essa região em DRAM."
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Detalhe fino",
+          "text": "Mesmo uma variável escrita como `int x = 0;` (com `= 0` explícito) costuma ir parar em `.bss` também — o compilador reconhece que o valor final é zero e escolhe a representação mais barata, já que `.bss` não consome espaço em disco."
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-stack",
+      "number": "5.5",
+      "title": "Pilha de execução (Stack)",
+      "tag": "STACK",
+      "accent": "violet",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Região contígua usada para gerenciar chamadas de função e variáveis locais de duração automática. Em x86 e x86-64, a pilha cresce para **baixo** (endereços menores). Cada chamada aloca um **Stack Frame**, delimitado pelo **Stack Pointer** (`%rsp`) e pelo **Frame Pointer** (`%rbp`)."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart TD\n    C1(\"Chamada de função (call)\") --> P1(\"Empilha endereço de retorno + salva %rbp antigo\")\n    P1 --> L1(\"Reserva espaço para variáveis locais (sub %rsp)\")\n    L1 --> R1(\"Corpo da função executa\")\n    R1 --> E1(\"leave / pop: desfaz o quadro\")\n    E1 --> RT1(\"ret: volta ao chamador\")",
+          "caption": "fluxo simplificado",
+          "accent": "violet"
+        },
+        {
+          "type": "heading",
+          "level": 4,
+          "text": "Visualização: anatomia de um quadro de pilha"
+        },
+        {
+          "type": "svg",
+          "svg": "<svg aria-labelledby=\"stack-title stack-desc\" class=\"diagram diagram-stack\" role=\"img\" viewBox=\"0 0 820 390\" xmlns=\"http://www.w3.org/2000/svg\">\n<title id=\"stack-title\">Anatomia de um quadro de pilha</title>\n<desc id=\"stack-desc\">Quadro de pilha em x86-64: argumentos e endereço de retorno ficam em endereços mais altos; variáveis locais ficam abaixo do rbp; o rsp marca o topo atual e a pilha cresce para endereços menores.</desc>\n<defs><marker id=\"stack-arrow\" markerHeight=\"9\" markerWidth=\"9\" orient=\"auto\" refX=\"7\" refY=\"4.5\"><path d=\"M0,0 L9,4.5 L0,9 Z\" fill=\"#c4b5fd\"></path></marker></defs>\n<text fill=\"#e7edf3\" font-family=\"IBM Plex Mono, monospace\" font-size=\"14\" font-weight=\"600\" x=\"34\" y=\"28\">QUADRO DE PILHA — exemplo sem otimização</text>\n<text fill=\"#aebdca\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"13\" x=\"34\" y=\"51\">endereços maiores</text>\n<line marker-end=\"url(#stack-arrow)\" stroke=\"#8293a1\" stroke-width=\"2\" x1=\"34\" x2=\"34\" y1=\"60\" y2=\"320\"></line>\n<text fill=\"#aebdca\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"13\" transform=\"rotate(-90 8 347)\" x=\"8\" y=\"347\">direção de crescimento</text>\n<rect fill=\"#403765\" height=\"48\" rx=\"7\" stroke=\"#c4b5fd\" stroke-width=\"2\" width=\"340\" x=\"150\" y=\"68\"></rect>\n<text fill=\"#f4f0ff\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"14\" font-weight=\"600\" x=\"170\" y=\"89\">argumentos extras</text>\n<text fill=\"#ded6f7\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" x=\"170\" y=\"107\">7º parâmetro em diante, quando houver</text>\n<rect fill=\"#514477\" height=\"48\" rx=\"7\" stroke=\"#c4b5fd\" stroke-width=\"2\" width=\"340\" x=\"150\" y=\"120\"></rect>\n<text fill=\"#f4f0ff\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"14\" font-weight=\"600\" x=\"170\" y=\"141\">endereço de retorno</text>\n<text fill=\"#ded6f7\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" x=\"170\" y=\"159\">empilhado pela instrução call</text>\n<rect fill=\"#65548e\" height=\"48\" rx=\"7\" stroke=\"#c4b5fd\" stroke-width=\"2\" width=\"340\" x=\"150\" y=\"172\"></rect>\n<text fill=\"#fffaff\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"14\" font-weight=\"600\" x=\"170\" y=\"193\">%rbp salvo do chamador</text>\n<text fill=\"#eee8ff\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" x=\"170\" y=\"211\">referência do quadro anterior</text>\n<rect fill=\"#806da9\" height=\"78\" rx=\"7\" stroke=\"#c4b5fd\" stroke-width=\"2\" width=\"340\" x=\"150\" y=\"224\"></rect>\n<text fill=\"#fffaff\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"14\" font-weight=\"600\" x=\"170\" y=\"247\">variáveis locais</text>\n<text fill=\"#f5f0ff\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" x=\"170\" y=\"266\">total → -12(%rbp)</text>\n<text fill=\"#f5f0ff\" font-family=\"IBM Plex Mono, monospace\" font-size=\"11\" x=\"170\" y=\"284\">a → -4(%rbp) · b → -8(%rbp)</text>\n<line stroke=\"#c4b5fd\" stroke-width=\"2\" x1=\"495\" x2=\"570\" y1=\"196\" y2=\"196\"></line>\n<text fill=\"#e6defc\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" font-weight=\"600\" x=\"585\" y=\"191\">%rbp</text>\n<text fill=\"#b9aee0\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"12\" x=\"585\" y=\"209\">base fixa do quadro</text>\n<line stroke=\"#c4b5fd\" stroke-width=\"2\" x1=\"495\" x2=\"570\" y1=\"302\" y2=\"302\"></line>\n<text fill=\"#e6defc\" font-family=\"IBM Plex Mono, monospace\" font-size=\"13\" font-weight=\"600\" x=\"585\" y=\"297\">%rsp</text>\n<text fill=\"#b9aee0\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"12\" x=\"585\" y=\"315\">topo atual da pilha</text>\n<text fill=\"#c4b5fd\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"13\" x=\"150\" y=\"342\">↓ endereços menores · o quadro cresce quando %rsp é decrementado</text>\n<text fill=\"#91a0ad\" font-family=\"IBM Plex Sans, sans-serif\" font-size=\"11\" x=\"150\" y=\"366\">Observação: registradores e layout exato variam com ABI, compilador e otimização.</text>\n</svg>",
+          "alt": "Anatomia de um quadro de pilha"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "int soma(int a, int b) {\n    int total = a + b;\n    return total;\n}"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa",
+          "code": "soma:\n    push   %rbp\n    mov    %rsp, %rbp\n    sub    $16, %rsp         # reserva 16 bytes (alinhamento de 16 exigido antes de calls)\n    mov    %edi, -4(%rbp)    # a\n    mov    %esi, -8(%rbp)    # b\n    mov    -4(%rbp), %edx\n    mov    -8(%rbp), %eax\n    add    %edx, %eax        # eax = a + b\n    mov    %eax, -12(%rbp)   # total\n    mov    -12(%rbp), %eax\n    leave                    # == mov %rbp,%rsp ; pop %rbp\n    ret"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`push %rbp` / `mov %rsp, %rbp`",
+              "prólogo padrão: guarda o quadro do chamador e cria o novo."
+            ],
+            [
+              "2",
+              "`sub $16, %rsp`",
+              "abre espaço para as variáveis locais movendo `%rsp` para um endereço menor."
+            ],
+            [
+              "3",
+              "`int a, int b`",
+              "chegam em `%edi` e `%esi` (convenção da ABI) e são copiados para a pilha."
+            ],
+            [
+              "4",
+              "`int total = a + b;`",
+              "vira `add`, com o resultado guardado em outra posição da pilha."
+            ],
+            [
+              "5",
+              "`leave`",
+              "uma única instrução que equivale a `mov %rbp, %rsp` seguido de `pop %rbp` — desfaz o quadro de uma vez."
+            ],
+            [
+              "6",
+              "`ret`",
+              "desempilha o endereço de retorno (empilhado pelo `call` do chamador) e salta para lá."
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "O que é hardware e o que é convenção?",
+          "text": "Em x86-64, `call` empilha o endereço de retorno e `ret` o recupera; `%rsp` é um registrador real. Já “frame” é uma organização criada pelo compilador/ABI. `%rbp` pode ser omitido, variáveis podem viver em registradores e uma função pode sofrer inlining ou tail-call. A norma C++ não exige stack nem crescimento para endereços menores."
+        },
+        {
+          "type": "paragraph",
+          "text": "O kernel protege o limite com uma guard page ou área equivalente. O acesso à página protegida gera uma exceção de proteção e costuma resultar em `SIGSEGV`. O tamanho nominal da stack de uma thread é principalmente espaço virtual; as páginas físicas são materializadas conforme são tocadas, sujeitas a limites, *overcommit* (o kernel prometer mais memória virtual do que fisicamente garante ter, apostando que nem tudo será usado ao mesmo tempo) e políticas de paginação."
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sec-heap",
+      "number": "5.6",
+      "title": "Monte dinâmico (Heap)",
+      "tag": "HEAP",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Região para alocação sob demanda em tempo de execução (duração dinâmica). Em mapas tradicionais, costuma crescer para **cima**, expandindo seu limite pelo ponteiro **Program Break** (`brk`) ou, para blocos grandes, por `mmap` — ambos geridos pelo kernel e por alocadores como `malloc` ou os operadores do C++."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n    N(\"operator new(n)\") -->|\"chama\"| M(\"malloc (brk ou mmap)\")\n    M --> B(\"bloco cru no Heap\")\n    B --> CT(\"construtor roda sobre o bloco\")\n    CT --> OBJ(\"objeto pronto\")",
+          "caption": "fluxo simplificado",
+          "accent": "orange"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Código C++",
+          "code": "Base* obj = new Derivada(1, 100);"
+        },
+        {
+          "type": "code",
+          "language": "asm",
+          "title": "Tradução ilustrativa",
+          "code": "mov    $16, %edi\ncall   operator_new@PLT      # passo 1: aloca 16 bytes crus (não constrói nada ainda)\nmov    %rax, %rbx            # %rbx guarda o endereço bruto\nmov    $1, %esi\nmov    $100, %edx\nmov    %rbx, %rdi            # 1º argumento implícito: this\ncall   _ZN8DerivadaC1Eii     # passo 2: construtor roda sobre o bloco\nmov    %rbx, obj(%rip)"
+        },
+        {
+          "type": "table",
+          "header": [
+            "#",
+            "C++ / instrução",
+            "O que acontece"
+          ],
+          "rows": [
+            [
+              "1",
+              "`new Derivada(...)`",
+              "o compilador o desmembra em duas chamadas distintas — nunca é uma operação atômica."
+            ],
+            [
+              "2",
+              "`call operator_new@PLT`",
+              "reserva 16 bytes crus no heap (internamente chama `malloc`). `@PLT` é a *Procedure Linkage Table*, o mecanismo que resolve chamadas para funções de bibliotecas compartilhadas."
+            ],
+            [
+              "3",
+              "`mov %rbx, %rdi` / `call _ZN8Derivada...`",
+              "o construtor de `Derivada` é chamado com o endereço recém-alocado como ponteiro `this` (ver Seção 6.2) — só agora o objeto passa a existir de fato."
+            ],
+            [
+              "4",
+              "`delete obj;` (caminho inverso, não mostrado)",
+              "chama primeiro o destrutor `obj->~T()` e só depois `operator delete(obj)`, que devolve a memória ao heap."
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "O caminho real do `new`",
+          "text": "Uma *new-expression* obtém armazenamento por uma allocation function, depois constrói o objeto. Em uma implementação comum, `operator new` chega ao `malloc` da glibc; o allocator pode reutilizar um chunk em uma arena, expandir o program break com `brk`/`sbrk` ou criar uma VMA anônima com `mmap` para pedidos grandes. Isso é Linux/glibc, não uma garantia do C++."
+        },
+        {
+          "type": "paragraph",
+          "text": "Mesmo depois de `delete`, a RAM não precisa diminuir imediatamente: o destrutor termina a vida do objeto, `operator delete` devolve o bloco ao allocator, e o allocator pode conservar páginas para reutilização. RSS, VmSize e bytes vivos de objetos são medidas diferentes."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Você viu, região por região, o que cada parte do mapa de endereços da Seção 4 realmente guarda e por quê: `.text` (código, somente leitura), `.rodata`/`.data`/`.bss` (dados conforme inicialização), stack (frames e ponteiro `%rsp`) e heap (alocação sob demanda, `new` como alocação seguida de construção). Essas regiões de baixo nível são a base sobre a qual a Seção 6 constrói o modelo de objetos do C++: membros estáticos vão para `.data`/`.bss` exatamente como descrito aqui, e o `new` de um objeto polimórfico (visto na Seção 5.6) ganha vtable e vptr na Seção 6.3."
+    }
+  ]
+}

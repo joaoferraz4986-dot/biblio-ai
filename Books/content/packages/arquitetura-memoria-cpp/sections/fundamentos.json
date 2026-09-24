@@ -1,0 +1,183 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "fundamentos",
+  "number": "1",
+  "title": "Antes da memória: processador, ISA e assembly",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "lead": true,
+      "text": "Antes de seguir um ponteiro pela memória, precisamos entender quem o segue: o processador. Este capítulo constrói a ponte entre a máquina abstrata do C++ e uma implementação concreta Linux x86-64, separando cuidadosamente o que é garantia da linguagem do que é convenção de arquitetura."
+    },
+    {
+      "type": "callout",
+      "variant": "definition",
+      "title": "Três camadas que não devem ser misturadas",
+      "text": "A **linguagem C++** define objetos, tipos, tempo de vida e comportamento observável. A **ISA** (*Instruction Set Architecture*) define o contrato visível entre software e processador: instruções, registradores, endereçamento e exceções. A **microarquitetura** é a implementação interna concreta da ISA, com caches, unidades de execução, renomeação e predição. Um programa C++ pode ser correto sem mencionar nenhuma delas."
+    },
+    {
+      "type": "mermaid",
+      "caption": "camadas de abstração: cada camada preserva contratos diferentes",
+      "accent": "blue",
+      "code": "flowchart TD\n  C(\"Programa C++\") --> I(\"Compilador e ABI\")\n  I --> A(\"ISA: instruções e registradores visíveis\")\n  A --> M(\"Microarquitetura: pipeline, caches e execução\")\n  M --> H(\"Hardware físico\")"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "O estado que a ISA torna visível"
+    },
+    {
+      "type": "paragraph",
+      "text": "Um **registrador arquitetural** é um armazenamento pequeno cujo nome e efeito fazem parte da ISA. Em x86-64, `RAX`–`R15` são registradores gerais de 64 bits; `RIP` aponta para a instrução corrente ou seguinte; `RSP` aponta para o topo da pilha; e `RFLAGS` contém bits de condição como `ZF` (resultado zero), `CF` (carry/borrow), `SF` (sinal) e `OF` (overflow assinado). `EAX`, `AX` e `AL` designam porções de `RAX`; escrever em `EAX` normalmente zera os 32 bits superiores de `RAX`. Isso é uma regra x86-64, não uma propriedade de um `int` C++."
+    },
+    {
+      "type": "table",
+      "header": [
+        "Mnemônico",
+        "Efeito conceitual",
+        "Exemplo detalhado"
+      ],
+      "rows": [
+        [
+          "`mov`",
+          "Copia bits entre registrador, memória ou imediato; não significa necessariamente acesso à RAM.",
+          "`mov %edi, %eax` copia os 32 bits de `EDI` para `EAX`; `mov (%rdi), %eax` calcula o endereço em `RDI` e lê 4 bytes."
+        ],
+        [
+          "`lea`",
+          "Calcula um endereço efetivo sem ler o conteúdo apontado.",
+          "`lea 8(%rdi,%rsi,4), %rax` calcula `RDI + RSI*4 + 8`, útil para `&v[i].campo`."
+        ],
+        [
+          "`add` / `sub`",
+          "Soma ou subtrai e atualiza flags.",
+          "`add %edx, %eax` calcula `EAX = EAX + EDX`; `ZF`, `CF`, `SF` e `OF` podem mudar."
+        ],
+        [
+          "`cmp` / `test`",
+          "Compara ou combina valores atualizando flags, sem guardar o resultado principal.",
+          "`cmp $0, %eax` permite `je` quando `EAX == 0`; `test %eax,%eax` é uma forma comum de testar zero."
+        ],
+        [
+          "`jmp` / `jcc`",
+          "Altera o fluxo; `jcc` é um salto condicional baseado em flags.",
+          "`jne loop` salta se `ZF=0`; o preditor de desvios pode especular esse caminho."
+        ],
+        [
+          "`call` / `ret`",
+          "Faz chamada e retorno conforme a convenção de código.",
+          "`call f` guarda um endereço de retorno; `ret` o recupera da pilha. Argumentos e resultado seguem a ABI."
+        ],
+        [
+          "`push` / `pop`",
+          "Ajusta `RSP` e grava ou carrega um valor na pilha.",
+          "`push %rbp` equivale conceitualmente a decrementar `RSP` e armazenar o antigo `RBP`."
+        ],
+        [
+          "`imul`",
+          "Multiplica inteiros, com formas de um, dois ou três operandos.",
+          "`imul -4(%rbp), %eax` calcula o quadrado de um valor local de 32 bits."
+        ],
+        [
+          "`and` / `or` / `xor`",
+          "Operações bit a bit; `xor reg,reg` costuma zerar um registrador.",
+          "`and $7, %eax` conserva apenas os três bits menos significativos."
+        ],
+        [
+          "`shl` / `shr` / `sar`",
+          "Deslocam bits; `sar` preserva o sinal em deslocamento aritmético.",
+          "`shl $2,%eax` multiplica por 4 apenas sob as condições apropriadas de overflow."
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Como uma instrução atravessa o processador"
+    },
+    {
+      "type": "paragraph",
+      "text": "Um modelo didático usa **fetch** (buscar bytes da instrução), **decode** (decodificar opcode e operandos), renomeação/alocação, despacho, execução, acesso à memória, escrita de resultados e **retirement** (confirmar efeitos em ordem). Processadores reais sobrepõem muitas instruções. A execução fora de ordem pode executar uma operação pronta antes de outra bloqueada, mas o retirement preserva uma visão arquitetural coerente. Um **hazard** é uma dependência de dados, conflito de recursos ou incerteza de controle que impede o avanço ideal. A quantidade de estágios, micro-operações, largura de emissão e latência varia por microarquitetura."
+    },
+    {
+      "type": "mermaid",
+      "caption": "pipeline didático, não uma descrição universal de uma CPU",
+      "accent": "teal",
+      "code": "flowchart LR\n  F(\"fetch\") --> D(\"decode\") --> R(\"renomear e agendar\") --> X(\"executar\") --> W(\"escrever resultado\") --> T(\"retirement em ordem\")"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "title": "Latência não é throughput",
+      "text": "**Latência** é o tempo até o resultado de uma operação estar disponível para uma dependência. **Throughput** é a taxa de operações independentes que uma unidade consegue sustentar. Duas multiplicações podem ter a mesma latência, mas serem iniciadas em ciclos diferentes; cache miss, dependências, prefetch e contenção alteram o tempo observado."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Como ler assembly sem atribuir uma instrução a cada linha C++"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "title": "Fonte",
+      "code": "int soma_quadrado(const int* v, int i) {\n    return v[i] * v[i] + 1;\n}"
+    },
+    {
+      "type": "code",
+      "language": "asm",
+      "title": "Uma tradução possível, AT&T, x86-64 System V",
+      "code": "soma_quadrado:\n    movslq  %esi, %rax          # converte i para 64 bits\n    movl    (%rdi,%rax,4), %eax # carrega v[i], 4 bytes por int\n    imull   %eax, %eax           # eax = v[i] * v[i]\n    addl    $1, %eax             # eax += 1\n    ret                           # retorno inteiro em eax"
+    },
+    {
+      "type": "paragraph",
+      "text": "Na sintaxe AT&T, a ordem usual é **fonte, destino**; `%` marca registradores e `$` marca imediatos. Na sintaxe Intel, a ordem é destino, fonte, e os prefixos mudam. `(%rdi,%rax,4)` significa endereço base `RDI`, índice `RAX`, escala 4 e deslocamento zero. A ABI System V AMD64 coloca o primeiro ponteiro em `RDI`, o segundo inteiro em `ESI` e devolve um `int` em `EAX`. O compilador pode vetorizar, eliminar a função, manter valores em registradores ou produzir código completamente diferente sob otimização."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Memória, MMU, TLB e cache em uma leitura"
+    },
+    {
+      "type": "paragraph",
+      "text": "O endereço usado pelo processo é **virtual**. A **MMU** (*Memory Management Unit*) consulta tabelas de páginas; a **TLB** (*Translation Lookaside Buffer*) é um cache dessas traduções. Depois, a hierarquia procura a linha em L1, L2 e LLC (último nível de cache), antes de recorrer à DRAM. Uma linha de cache é a unidade usual de transferência. Tamanho de página, número de níveis de cache, associatividade e coerência não são garantias do C++. **Localidade temporal** é reutilizar dados recentes; **localidade espacial** é acessar endereços próximos."
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "O que este livro assume",
+      "text": "Quando um exemplo mostrar `%rdi`, ELF, Itanium ABI ou offsets de 8 bytes, a hipótese é **Linux x86-64, System V AMD64, GCC/Clang e ponteiros de 64 bits**. Quando uma regra vier do C++, ela será marcada como linguagem. A distinção evita transformar uma fotografia de uma implementação em uma lei universal."
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Você viu as três camadas que não podem ser misturadas — linguagem C++, ISA e microarquitetura —, o vocabulário de registradores e instruções x86-64, a diferença entre latência e throughput, e uma primeira passagem por MMU, TLB e cache. Esse vocabulário de baixo nível é o alicerce do livro inteiro: a Seção 2 usa exatamente essas camadas para separar \"duração de armazenamento\" (garantia do C++) de \"região de memória\" (implementação Linux/x86-64), e o caminho MMU→TLB→cache introduzido aqui é detalhado passo a passo na Seção 5."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "As quatro durações de armazenamento em C++"
+    },
+    {
+      "type": "paragraph",
+      "text": "A duração estática cobre objetos que existem durante toda a execução; a duração thread_local cria uma instância por thread; a duração automática vale para objetos locais e parâmetros; a duração dinâmica acompanha a alocação e a liberação pela aplicação. Duração não é sinônimo de região física: o padrão da linguagem descreve tempo de vida e identidade, enquanto o sistema operacional decide páginas, pilhas, heaps e registradores."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "title": "Uma instância por thread",
+      "code": "thread_local unsigned long requestsHandled = 0;\n\nvoid handleRequest() {\n    ++requestsHandled;\n}"
+    },
+    {
+      "type": "history",
+      "name": "Bjarne Stroustrup",
+      "shortBio": "Bjarne Stroustrup criou e evoluiu C++, inicialmente combinando abstração de alto nível com controle de recursos próximo ao hardware.",
+      "insight": "A história ajuda a entender por que C++ preserva escolhas de desempenho, compatibilidade e abstração: o modelo da linguagem precisa conversar com compiladores, ABI e sistemas reais.",
+      "image": {
+        "src": "images/history-stroustrup.jpg",
+        "alt": "Retrato de Bjarne Stroustrup"
+      }
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "derivacoes-e-metodo",
+  "number": "7",
+  "title": "Como físicos e matemáticos chegam às leis e fórmulas",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Uma fórmula não nasce isolada. Há quatro origens recorrentes: definições que fixam o significado de uma grandeza; leis empíricas obtidas de medições; teoremas matemáticos aplicados a leis físicas; e aproximações construídas ao desprezar termos pequenos. Esta seção mostra a cadeia de raciocínio para os resultados centrais do livro e aponta a fonte oficial em que a derivação pode ser estudada em detalhes.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "1. Da medição de força à lei de Coulomb"
+    },
+    {
+      "type": "paragraph",
+      "text": "Coulomb mediu a força entre cargas usando uma balança de torção. O procedimento separava duas variáveis: ao mudar a distância, a força variava como 1/r²; ao mudar a quantidade de carga, a força variava proporcionalmente ao produto das cargas. A direção radial e a superposição transformam esses resultados experimentais em"
+    },
+    {
+      "type": "math",
+      "tex": "F=k\\frac{|q_1q_2|}{r^2},\\quad \\vec E=\\vec F/q_0",
+      "caption": "Resultado experimental e definição de campo"
+    },
+    {
+      "type": "paragraph",
+      "text": "A definição E=F/q₀ não é uma segunda lei empírica: ela define uma propriedade do ponto do espaço e permite separar a fonte da carga de teste. O OpenStax apresenta a lei de Coulomb e a construção do campo; o MIT 8.02 mostra como medições e simetria levam à forma vetorial. [1] [2]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "2. Por que a lei de Gauss segue da forma radial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para uma carga puntiforme, o campo tem módulo kQ/r² e é radial. Em uma esfera de raio r, dA aponta radialmente e E é constante na superfície. Portanto, o fluxo é E·4πr²=kQ/r²·4πr²=Q/ε₀. O passo matemático é a escolha de uma superfície adaptada à simetria; a lei de Gauss generaliza esse fluxo para qualquer distribuição e segue da forma integral do teorema da divergência."
+    },
+    {
+      "type": "math",
+      "tex": "\\oint_S E\\cdot dA=E(4\\pi r^2)=Q/\\varepsilon_0",
+      "caption": "Derivação esférica de Gauss"
+    },
+    {
+      "type": "paragraph",
+      "text": "O teorema da divergência transforma o fluxo de um campo pela fronteira em uma integral volumétrica de sua divergência. Assim, a forma integral e a forma diferencial ∇·E=ρ/ε₀ são equivalentes sob regularidade suficiente. A cautela é essencial: Gauss sempre vale, mas só fornece E diretamente quando a simetria torna E constante ou orientado de modo simples. [3] [4]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "3. Potencial a partir do trabalho"
+    },
+    {
+      "type": "paragraph",
+      "text": "A força eletrostática é conservativa porque o trabalho entre dois pontos não depende do caminho. Define-se energia potencial pela relação dU=−dW_field e potencial por V=U/q. Com F=qE, o trabalho ao longo de um deslocamento é q∫E·dl. Dividindo por q, obtém-se"
+    },
+    {
+      "type": "math",
+      "tex": "V_B-V_A=-\\int_A^B E\\cdot dl,\\quad E=-\\nabla V",
+      "caption": "Definição energética do potencial"
+    },
+    {
+      "type": "paragraph",
+      "text": "A igualdade E=−∇V é a forma local da integral quando o campo é suficientemente regular. O MIT 8.02 e o OpenStax deduzem o potencial de uma carga integrando o campo de Coulomb; a liberdade de escolher V(∞)=0 é uma escolha de referência, não uma propriedade observável isolada. [1] [2]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "4. Capacitor e energia armazenada"
+    },
+    {
+      "type": "paragraph",
+      "text": "A capacitância C=Q/V é definida pela razão entre carga e diferença de potencial no regime linear. Para adicionar uma quantidade infinitesimal dq, o trabalho externo é dW=V dq=(q/C)dq. Integrando de 0 a Q, obtém-se W=∫₀^Q(q/C)dq=Q²/(2C)=½CV². A densidade u_E=½εE² vem de distribuir essa energia no volume onde existe campo. [5]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "5. Corrente, Ohm e potência"
+    },
+    {
+      "type": "paragraph",
+      "text": "I=dQ/dt é definição de corrente. A lei de Ohm macroscópica foi obtida como relação material para condutores em determinada faixa: V=IR. Microscopicamente, um modelo de deriva relaciona velocidade média dos portadores ao campo, gerando J=σE. A potência vem da energia transferida por carga: dW=V dq; dividindo por dt, P=VI. O OpenStax separa explicitamente definição de corrente, relação constitutiva e energia elétrica. [6] [7]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "6. Kirchhoff a partir de conservação"
+    },
+    {
+      "type": "paragraph",
+      "text": "KCL não é uma regra decorada: integrar a equação de continuidade ∂ρ/∂t+∇·J=0 em um pequeno volume ao redor de um nó produz “corrente que entra menos corrente que sai” igual à variação de carga acumulada. No modelo de circuito concentrado, a carga acumulada no nó é desprezível, então ΣI=0. KVL resulta da circulação de campo elétrico em regime em que o fluxo magnético variável através da malha pode ser desprezado; a forma geral de Faraday exige incluir esse fluxo. [8]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "7. RC e a exponencial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aplicando KVL ao circuito série, V_s=Ri+v_C. Substitua i=C dv_C/dt: RC dv_C/dt+v_C=V_s. A solução homogênea é Ae^(−t/RC); uma solução particular para fonte constante é V_s. A condição inicial determina A=−V_s para capacitor descarregado. Daí v_C(t)=V_s(1−e^(−t/RC)). A constante τ=RC aparece como escala natural da equação diferencial, não como uma regra empírica arbitrária. [9]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "8. Maxwell e ondas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Faraday e Ampère-Maxwell ligam circulação elétrica e magnética. Em região sem fontes, tome o rotacional de uma equação e substitua a outra. Usando a identidade vetorial ∇×(∇×E)=∇(∇·E)−∇²E e ∇·E=0, resulta"
+    },
+    {
+      "type": "math",
+      "tex": "\\nabla^2E-\\mu_0\\varepsilon_0\\frac{\\partial^2E}{\\partial t^2}=0,\\quad c=1/\\sqrt{\\mu_0\\varepsilon_0}",
+      "caption": "Equação de onda eletromagnética"
+    },
+    {
+      "type": "paragraph",
+      "text": "A mesma operação vale para B. A velocidade calculada coincide com a luz, levando Maxwell a identificar luz como onda eletromagnética; Hertz confirmou a propagação em experimentos. O MIT, OpenStax e Feynman apresentam essa cadeia: leis locais → equação de onda → velocidade e relações entre E e B. [10] [11] [12]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "9. Junção PN, transistor e modelos de engenharia"
+    },
+    {
+      "type": "paragraph",
+      "text": "Em semicondutores, a equação de Poisson liga potencial à densidade de carga. As equações de continuidade ligam variação de portadores à corrente e recombinação. Sob hipóteses de junção abrupta, equilíbrio e aproximação de depleção, integrar Poisson por regiões produz campo triangular, potencial incorporado e largura W. A relação exponencial do diodo vem da estatística de portadores e das condições de contorno de difusão; ela não deve ser confundida com a lei de Ohm."
+    },
+    {
+      "type": "paragraph",
+      "text": "Para MOSFET de canal longo, a corrente é obtida integrando a carga de inversão ao longo do canal e usando o transporte de deriva. A aproximação de saturação ocorre quando o canal se estrangula no dreno. MIT 6.012, 6.720J e Berkeley EE W230A apresentam as hipóteses e mostram quais efeitos de canal curto quebram o modelo quadrático. [13] [14] [15]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "10. ADC, Nyquist e ruído"
+    },
+    {
+      "type": "paragraph",
+      "text": "O teorema de Nyquist–Shannon é matemático: um sinal limitado em banda pode ser reconstruído a partir de amostras acima de duas vezes sua maior frequência, usando interpolação sinc ideal. A exigência prática de filtro anti-alias decorre do fato de que componentes fora da banda dobram para dentro da banda ao amostrar. Quantização arredonda o valor para níveis separados por Δ; se o erro for modelado como uniforme independente, sua variância é Δ²/12. NPTEL, TI e Analog Devices explicam as hipóteses e limites desse modelo. [16] [17] [18]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "11. Controle e metrologia"
+    },
+    {
+      "type": "paragraph",
+      "text": "PID é uma combinação escolhida por engenharia: proporcional reage ao erro atual, integral acumula erro e derivativo reage à taxa de mudança. As tendências de overshoot e erro estacionário dependem da planta; não são teoremas universais. Em espaço de estados, controlabilidade e observabilidade são propriedades de posto de matrizes derivadas das equações x_dot=Ax+Bu e y=Cx+Du. Na metrologia, a propagação de incerteza vem da expansão de Taylor de primeira ordem: linearize Y=f(X) ao redor dos valores estimados e calcule a variância quadrática com covariâncias. CTMS, MIT 2.14 e NIST GUM/Technical Note 1297 apresentam essas derivações. [19] [20] [21]"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Mapa de evidência"
+    },
+    {
+      "type": "table",
+      "header": [
+        "Resultado",
+        "Origem do raciocínio",
+        "Tipo"
+      ],
+      "rows": [
+        [
+          "Coulomb",
+          "medição de força + ajuste em r e carga",
+          "lei experimental"
+        ],
+        [
+          "E=F/q",
+          "definição operacional",
+          "definição"
+        ],
+        [
+          "Gauss",
+          "fluxo radial + teorema da divergência",
+          "lei/teorema"
+        ],
+        [
+          "V e energia",
+          "trabalho de força conservativa",
+          "definição + cálculo"
+        ],
+        [
+          "RC",
+          "KVL + relação do capacitor + EDO",
+          "dedução matemática"
+        ],
+        [
+          "Maxwell → onda",
+          "rotacional + identidade vetorial",
+          "dedução matemática"
+        ],
+        [
+          "Diodo/MOSFET",
+          "Poisson, continuidade, transporte e hipóteses de dispositivo",
+          "modelo físico"
+        ],
+        [
+          "Nyquist",
+          "reconstrução de sinal limitado em banda",
+          "teorema matemático"
+        ],
+        [
+          "Incerteza",
+          "Taylor + variância/covariância",
+          "propagação estatística"
+        ]
+      ],
+      "caption": "Como ler as fórmulas"
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Quando uma fonte apresenta uma equação pronta, procure as etapas: hipóteses, lei de conservação ou definição usada, operação matemática, condição inicial/de contorno e teste de limite. Esse roteiro é mais transferível do que memorizar a expressão final.",
+      "title": "Método de derivação"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Derive a energia do capacitor integrando V(q)dq.",
+        "Partindo de KCL e i=C dv/dt, obtenha a equação diferencial de um RC.",
+        "Use a identidade do duplo rotacional para mostrar a forma de onda de E no vácuo.",
+        "Explique qual hipótese deixa de ser válida quando uma linha de transmissão é tratada como circuito concentrado.",
+        "Diferencie em uma frase definição, lei experimental, teorema e aproximação."
+      ]
+    }
+  ]
+}

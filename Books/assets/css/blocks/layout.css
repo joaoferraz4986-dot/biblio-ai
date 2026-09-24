@@ -1,0 +1,27 @@
+/* Subseção, recolhível, colunas e HTML avançado. */
+.b-subsection { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--panel); overflow: hidden; scroll-margin-top: var(--space-6); }
+.b-subsection__head { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border-soft); background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%); display: flex; align-items: center; gap: var(--space-3); }
+.b-subsection__tag { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em; color: var(--accent); border: 1px solid var(--accent); border-radius: var(--radius-pill); padding: 3px 10px; flex: none; }
+.b-subsection__title { font-family: var(--font-display); font-size: var(--fs-h3); display: flex; gap: 8px; align-items: baseline; }
+.b-subsection__title .num { color: var(--accent); font-variant-numeric: tabular-nums; font-size: .85em; }
+.b-subsection__body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); width: 100%; }
+.b-subsection__body > * { max-width: 100%; }
+
+.b-details { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--panel); overflow: hidden; }
+.b-details summary { list-style: none; display: flex; align-items: center; gap: 8px; padding: var(--space-3) var(--space-4); cursor: pointer; font-family: var(--font-mono); font-size: .84rem; color: var(--text-dim); }
+.b-details summary::-webkit-details-marker { display: none; }
+.b-details summary svg { transition: transform var(--dur-fast) var(--ease); }
+.b-details[open] summary svg { transform: rotate(90deg); }
+.b-details__body { padding: 0 var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); }
+
+.b-columns { width: 100%; display: grid; gap: var(--space-5); }
+.b-columns--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.b-columns--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.b-columns--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.b-columns__col { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.b-columns__col > * { max-width: 100%; }
+@media (max-width: 720px) { .b-columns--2, .b-columns--3, .b-columns--4 { grid-template-columns: 1fr; } }
+
+.b-html { width: 100%; max-width: 74ch; line-height: 1.65; }
+.b-html p { margin-bottom: 10px; }
+.b-html table { width: 100%; }

@@ -1,0 +1,37 @@
+{
+  "schema": "books.header.v2",
+  "kind": "book-header",
+  "kicker": "curso completo · c++ / algoritmos / competições",
+  "title": "Programação Competitiva em C++: do básico ao avançado",
+  "subtitle": "Aprenda a modelar, provar, implementar e otimizar soluções — da primeira busca binária ao fluxo e às técnicas avançadas.",
+  "guideTitle": "Como usar este livro",
+  "guideText": "Leia as seções em ordem nas primeiras passagens. Depois use o sumário como referência: tente os exercícios do CSES ou de outra plataforma antes de consultar uma solução, escreva a prova em poucas linhas e faça testes adversariais.",
+  "cover": {
+    "src": "cover.svg",
+    "alt": "Capa abstrata com uma grade de nós, arestas e símbolos de código",
+    "ratio": "16:9"
+  },
+  "legend": [
+    {
+      "label": "ideia",
+      "color": "blue"
+    },
+    {
+      "label": "implementação",
+      "color": "teal"
+    },
+    {
+      "label": "atenção",
+      "color": "amber"
+    },
+    {
+      "label": "avançado",
+      "color": "violet"
+    },
+    {
+      "label": "correção",
+      "color": "red"
+    }
+  ],
+  "footer": "Material didático autoral em português, inspirado em referências públicas da comunidade. Consulte as licenças e links da seção final."
+}

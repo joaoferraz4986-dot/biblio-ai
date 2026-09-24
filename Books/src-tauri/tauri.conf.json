@@ -1,0 +1,55 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Books",
+  "version": "0.1.0",
+  "identifier": "dev.books.library",
+  "build": {
+    "frontendDist": "../.frontend",
+    "devUrl": "http://127.0.0.1:8000",
+    "beforeDevCommand": {
+      "script": "npm run dev:tauri",
+      "cwd": ".."
+    },
+    "beforeBuildCommand": {
+      "script": "npm run build:bundle",
+      "cwd": ".."
+    }
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Books — Biblioteca de livros técnicos",
+        "width": 1440,
+        "height": 920,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      },
+      "csp": "default-src 'self' asset: http://asset.localhost; connect-src 'self' ipc: http://ipc.localhost https:; img-src 'self' asset: http://asset.localhost data: blob: https:; font-src 'self' asset: http://asset.localhost data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["appimage", "deb"],
+    "category": "Education",
+    "shortDescription": "Biblioteca, leitor e editor de livros técnicos",
+    "longDescription": "Biblioteca offline com leitor, progresso, personalização e editor visual de livros técnicos.",
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0"]
+      }
+    }
+  },
+  "plugins": {
+    "dialog": {}
+  }
+}

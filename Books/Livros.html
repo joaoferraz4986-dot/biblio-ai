@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Biblioteca de livros técnicos com leitor, sumário navegável e editor visual de conteúdo." />
+<title>Biblioteca de livros técnicos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<!-- CSS modular: tokens primeiro, depois reset, layout, componentes e blocos.
+     Cada arquivo cobre uma responsabilidade só — ver docs/ARQUITETURA.md. -->
+<link rel="stylesheet" href="assets/css/tokens.css?v=2" />
+<link rel="stylesheet" href="assets/css/themes.css?v=2" />
+<link rel="stylesheet" href="assets/css/reset.css" />
+<link rel="stylesheet" href="assets/css/layout.css" />
+<link rel="stylesheet" href="assets/css/components/buttons.css?v=2" />
+<link rel="stylesheet" href="assets/css/components/dock.css?v=2" />
+<link rel="stylesheet" href="assets/css/components/toast.css" />
+  <link rel="stylesheet" href="assets/css/components/library.css?v=3" />
+<link rel="stylesheet" href="assets/css/components/settings.css?v=2" />
+<link rel="stylesheet" href="assets/css/components/background.css?v=2" />
+<link rel="stylesheet" href="assets/css/editor/editor.css?v=2" />
+<link rel="stylesheet" href="assets/css/editor/fields.css" />
+<link rel="stylesheet" href="assets/css/blocks/text.css" />
+<link rel="stylesheet" href="assets/css/blocks/code.css" />
+<link rel="stylesheet" href="assets/css/blocks/diagram.css" />
+<link rel="stylesheet" href="assets/css/blocks/history.css" />
+<link rel="stylesheet" href="assets/css/blocks/data.css" />
+<link rel="stylesheet" href="assets/css/blocks/layout.css" />
+<link rel="stylesheet" href="assets/css/blocks/math.css" />
+<link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Camada de plano de fundo (padrão/textura da personalização) — ver assets/css/components/background.css -->
+  <div id="bgLayer" aria-hidden="true"></div>
+
+  <!-- Dock de ações: Livros, Editar, Modo foco (nesta ordem — foco e Livros trocaram de posição). -->
+  <div class="dock">
+    <button class="dock__btn" id="libraryDockBtn" type="button" aria-label="Livros" title="Livros" aria-haspopup="dialog" aria-controls="libraryOverlay">
+      <span class="dock__icon" data-icon="library"></span><span class="dock__label">livros</span>
+    </button>
+    <button class="dock__btn" id="editDockBtn" type="button" aria-label="Editar livro" title="Editar livro" aria-haspopup="dialog" aria-controls="editorOverlay">
+      <span class="dock__icon" data-icon="edit"></span><span class="dock__label">editar livro</span>
+    </button>
+    <button class="dock__btn" id="focusToggle" type="button" aria-label="Modo foco" title="Modo foco" aria-pressed="false">
+      <span class="dock__icon" data-icon="focus"></span><span class="dock__label">modo foco</span>
+    </button>
+  </div>
+
+  <button class="back-top" id="backTop" type="button" aria-label="Voltar ao topo" title="Voltar ao topo">
+    <span data-icon="top"></span>
+  </button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Biblioteca -->
+  <div class="overlay" id="libraryOverlay" hidden>
+    <div class="library" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+      <div class="library__head">
+        <div>
+          <p class="library__kicker">biblioteca</p>
+          <h2 id="libraryTitle">Escolha um livro</h2>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn--primary btn--sm" id="libraryNew" type="button"><span data-icon="plus"></span><span>novo livro</span></button>
+          <button class="btn btn--ghost btn--sm" id="libraryOpenSettings" type="button" aria-haspopup="dialog" aria-controls="settingsOverlay"><span data-icon="settings"></span><span>configurações</span></button>
+          <button class="btn btn--ghost btn--sm" id="libraryClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
+        </div>
+      </div>
+      <div class="library__tools">
+        <input type="search" id="librarySearch" placeholder="buscar por título ou tag…" aria-label="Buscar livro" />
+        <span class="library__count" id="libraryCount"></span>
+      </div>
+      <div class="library__grid" id="libraryGrid"></div>
+      <p class="library__empty" id="libraryEmpty" hidden>Nenhum livro encontrado.</p>
+    </div>
+  </div>
+
+  <!-- Editor -->
+  <div class="overlay" id="editorOverlay" hidden>
+    <div class="editor" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <div class="editor__head">
+        <h2 id="editorTitle">Editor</h2>
+        <div class="editor__head-actions">
+          <button class="btn btn--primary btn--sm" id="editorSave" type="button" title="Grava diretamente os arquivos do projeto"><span data-icon="folder"></span><span>salvar</span></button>
+          <button class="btn btn--ghost btn--sm" id="editorClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
+        </div>
+      </div>
+      <div class="editor__tabs" id="editorTabs"></div>
+      <div class="editor__validation" id="editorValidation" hidden></div>
+      <div class="editor__body" id="editorBody"></div>
+    </div>
+  </div>
+  <div class="add-menu" id="blockAddMenu" hidden></div>
+
+  <!-- Configurações: tema, plano de fundo e fonte (assets/js/ui/settings-panel.js) -->
+  <div class="overlay" id="settingsOverlay" hidden>
+    <div class="settings" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="settings__head">
+        <div>
+          <p class="settings__kicker">personalização</p>
+          <h2 id="settingsTitle">Configurações</h2>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="settingsClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
+      </div>
+      <div class="settings__tabs" id="settingsTabs"></div>
+      <div id="settingsBody"></div>
+    </div>
+  </div>
+
+  <!-- Livro -->
+  <header class="hero">
+    <div class="wrap">
+      <p class="kicker" id="heroKicker"></p>
+      <h1 class="title" id="heroTitle"></h1>
+      <p class="subtitle" id="heroSubtitle"></p>
+      <div class="reading-note" id="readingNote" role="note">
+        <span class="icon" data-icon="info" aria-hidden="true"></span>
+        <div><strong id="guideTitle"></strong><p id="guideText"></p></div>
+      </div>
+      <div class="legend" id="legend" aria-label="Legenda de cores"></div>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <nav class="toc">
+      <div class="toc-progress" id="readProgress-wrap"><span id="readProgress"></span></div>
+      <h4>Sumário</h4>
+      <ol id="tocList"></ol>
+    </nav>
+    <main id="mainContent"></main>
+  </div>
+
+  <footer class="site-footer" id="bookFooter">
+    <div class="wrap"></div>
+  </footer>
+
+  <!-- Núcleo (sem DOM) -->
+  <script src="assets/js/core/namespace.js"></script>
+  <script src="assets/js/core/util.js"></script>
+  <script src="assets/js/core/events.js"></script>
+  <script src="assets/js/core/store.js"></script>
+  <script src="assets/js/core/schema.js"></script>
+  <script src="assets/js/core/native.js"></script>
+  <script src="assets/js/core/state.js"></script>
+  <script src="assets/js/core/personalization.js?v=2"></script>
+  <!-- Conteúdo: marcação inline, sanitização, realce, ícones -->
+  <script src="assets/js/content/inline.js"></script>
+  <script src="assets/js/content/sanitize.js"></script>
+  <script src="assets/js/content/highlight.js"></script>
+  <script src="assets/js/content/icons.js?v=2"></script>
+  <!-- Blocos: registro + tipos -->
+  <script src="assets/js/blocks/registry.js"></script>
+  <script src="assets/js/blocks/text.js"></script>
+  <script src="assets/js/blocks/code.js"></script>
+  <script src="assets/js/blocks/diagram.js"></script>
+  <script src="assets/js/blocks/history.js"></script>
+  <script src="assets/js/blocks/data.js"></script>
+  <script src="assets/js/blocks/layout.js"></script>
+  <script src="assets/js/blocks/math.js"></script>
+  <!-- Conteúdo: validação, migração, repositório (dependem dos blocos) -->
+  <script src="assets/js/content/validate.js"></script>
+  <script src="assets/js/content/migrate.js"></script>
+  <script src="assets/js/content/repository.js?v=3"></script>
+  <!-- Bundle embutido (gerado por tools/build_bundle.py) — permite abrir por duplo clique -->
+  <script src="assets/js/embedded-bundle.js?v=4"></script>
+  <!-- Renderização -->
+  <script src="assets/js/render/diagrams.js"></script>
+  <script src="assets/js/render/math.js"></script>
+  <script src="assets/js/render/book.js"></script>
+  <!-- UI -->
+  <script src="assets/js/ui/toast.js"></script>
+  <script src="assets/js/ui/progress.js"></script>
+  <script src="assets/js/ui/focus.js?v=2"></script>
+  <script src="assets/js/ui/navigation.js?v=2"></script>
+  <script src="assets/js/ui/library.js"></script>
+  <script src="assets/js/ui/settings-panel.js?v=2"></script>
+  <!-- Editor -->
+  <script src="assets/js/editor/fields.js"></script>
+  <script src="assets/js/editor/blocks-tree.js"></script>
+  <script src="assets/js/editor/zip.js"></script>
+  <script src="assets/js/editor/ai-prompt.js"></script>
+  <script src="assets/js/editor/main.js?v=3"></script>
+  <!-- App -->
+  <script src="assets/js/app.js?v=2"></script>
+  <script>
+    // Ícones do dock/topo (fora do fluxo de módulos porque rodam antes do boot completo).
+    document.querySelectorAll('[data-icon]').forEach(function (el) {
+      el.appendChild(Books.icons.get(el.dataset.icon, 15));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "provas-recorrencias",
+  "number": "3",
+  "title": "Técnicas de prova e recorrências",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "A combinatória não é um catálogo de fórmulas. Uma prova explica por que a representação não perde nem duplica objetos. Este capítulo apresenta indução, invariantes, dupla contagem e recorrências, com cada hipótese explicitada.",
+      "lead": true
+    },
+    {
+      "type": "subsection",
+      "id": "comb-inducao",
+      "number": "3.1",
+      "title": "Indução matemática e estrutural",
+      "tag": "PROVAS",
+      "accent": "blue",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Na indução matemática, prova-se uma proposição $P(n)$ mostrando o caso-base e que $P(n)$ implica $P(n+1)$. A indução forte permite usar todos os casos anteriores. Na indução estrutural, o passo acompanha como o objeto é construído, como árvores e expressões."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: soma dos primeiros n inteiros"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para $n\\ge1$, $1+2+…+n=n(n+1)/2$."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Base",
+              "text": "Para $n=1$, o lado esquerdo é 1 e o direito é $1\\cdot2/2=1$."
+            },
+            {
+              "title": "Hipótese",
+              "text": "Suponha a igualdade para um `n` fixo: $1+…+n=n(n+1)/2$."
+            },
+            {
+              "title": "Passo",
+              "text": "Some `n+1` aos dois lados: $1+…+n+(n+1)=n(n+1)/2+(n+1)$."
+            },
+            {
+              "title": "Fatorar",
+              "text": "$n(n+1)/2+(n+1)=(n+1)(n/2+1)=(n+1)(n+2)/2$."
+            },
+            {
+              "title": "Conclusão",
+              "text": "A igualdade vale para `n+1`; base e passo provam todos os $n\\ge1$."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Prova por indução estrutural: folhas de uma árvore binária cheia"
+        },
+        {
+          "type": "paragraph",
+          "text": "Se cada nó interno tem exatamente dois filhos, então uma árvore com `i` nós internos tem `i+1` folhas."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Base",
+              "text": "Uma árvore sem nós internos tem uma folha; $0+1=1$."
+            },
+            {
+              "title": "Construção",
+              "text": "Toda árvore não-base nasce de uma raiz interna e duas subárvores menores."
+            },
+            {
+              "title": "Aplicar hipótese",
+              "text": "Se as subárvores têm `i1` e `i2` internos, suas folhas são `i1+1` e `i2+1`."
+            },
+            {
+              "title": "Somar",
+              "text": "A árvore inteira tem $i=1+i1+i2$ internos e $(i1+1)+(i2+1)=i+1$ folhas."
+            },
+            {
+              "title": "Conclusão",
+              "text": "A propriedade é preservada pela construção recursiva."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-dupla-contagem",
+      "number": "3.2",
+      "title": "Dupla contagem e identidades",
+      "tag": "TECNICAS",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: soma dos coeficientes binomiais"
+        },
+        {
+          "type": "paragraph",
+          "text": "$\\sum_{k=0}^{n}\\binom{n}{k}=2^n$."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Definir o conjunto",
+              "text": "Considere todos os subconjuntos de um conjunto com `n` elementos."
+            },
+            {
+              "title": "Contar por tamanho",
+              "text": "Para cada `k`, existem $\\binom{n}{k}$ subconjuntos com exatamente `k` elementos; somar todos os k conta todos os subconjuntos."
+            },
+            {
+              "title": "Contar por decisões",
+              "text": "Para cada elemento há duas decisões independentes: entra ou não entra. Pela regra do produto, existem $2\\cdot2…2=2^n$ subconjuntos."
+            },
+            {
+              "title": "Igualar contagens",
+              "text": "As duas contagens descrevem o mesmo conjunto; portanto a soma é $2^n$."
+            }
+          ]
+        },
+        {
+          "type": "math",
+          "tex": "\\sum_{k=0}^{n}\\binom{n}{k}=2^n",
+          "caption": "dupla contagem de subconjuntos"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Leitura da fórmula.** Leitura: a soma dos coeficientes binomiais para k de zero até n é igual a dois elevado a n, isto é, ao número de subconjuntos de um conjunto com n elementos."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: identidade do aperto de mãos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Em qualquer grafo finito, a soma dos graus dos vértices é duas vezes o número de arestas."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Contar incidências",
+              "text": "Uma incidência é um par (vértice, aresta) em que a aresta toca o vértice."
+            },
+            {
+              "title": "Contar por vértices",
+              "text": "O vértice `v` participa de `deg(v)` incidências; a soma dos graus conta todas."
+            },
+            {
+              "title": "Contar por arestas",
+              "text": "Cada aresta tem exatamente duas extremidades; logo contribui com duas incidências."
+            },
+            {
+              "title": "Igualar",
+              "text": "As duas formas contam o mesmo conjunto de incidências: $\\sum_{v\\in V}\\operatorname{deg}(v)=2|E|$."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-recorrencias",
+      "number": "3.3",
+      "title": "Recorrências e análise passo a passo",
+      "tag": "RECORRENCIAS",
+      "accent": "violet",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma recorrência precisa de equação, domínio e casos-base. Resolver uma recorrência significa encontrar uma expressão que satisfaz os três. Em algoritmos, ela surge quando um problema é dividido em subproblemas."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: Fibonacci e tilings"
+        },
+        {
+          "type": "paragraph",
+          "text": "O número de maneiras de cobrir uma faixa de comprimento `n` com peças de tamanho 1 e 2 satisfaz $T(n)=T(n-1)+T(n-2)$, com $T(0)=1$ e $T(1)=1$."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Observar a última peça",
+              "text": "Toda cobertura termina com uma peça de tamanho 1 ou com uma peça de tamanho 2."
+            },
+            {
+              "title": "Caso 1",
+              "text": "Se termina com 1, as posições anteriores formam uma cobertura de comprimento `n-1`: $T(n-1)$."
+            },
+            {
+              "title": "Caso 2",
+              "text": "Se termina com 2, as posições anteriores formam uma cobertura de comprimento `n-2`: $T(n-2)$."
+            },
+            {
+              "title": "Disjunção",
+              "text": "Os casos não se sobrepõem e cobrem todas as coberturas."
+            },
+            {
+              "title": "Somar",
+              "text": "Logo $T(n)=T(n-1)+T(n-2)$. A faixa vazia tem uma cobertura vazia, por isso $T(0)=1$; uma faixa de tamanho 1 tem uma cobertura, por isso $T(1)=1$."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Resolução por expansão"
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Expandir",
+              "text": "$T(n)=T(n-1)+T(n-2)$."
+            },
+            {
+              "title": "Expandir novamente",
+              "text": "$T(n)=2T(n-2)+T(n-3)$ não é a forma mais conveniente; reorganize usando a árvore de chamadas ou matriz."
+            },
+            {
+              "title": "Árvore de chamadas",
+              "text": "A versão ingênua repete subproblemas; memoização calcula cada $T(i)$ uma vez."
+            },
+            {
+              "title": "Complexidade",
+              "text": "Com memoização há `n+1` estados e cada estado usa trabalho constante: tempo `Theta(n)` e memória `Theta(n)`."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-prova-algoritmo",
+      "number": "3.4",
+      "title": "Prova de correção como contrato de algoritmo",
+      "tag": "LOGICA",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma prova combinatória e uma prova de correção têm a mesma disciplina: definir o universo, estabelecer uma correspondência e verificar que nenhuma possibilidade foi perdida ou duplicada. Em um algoritmo, a propriedade que permanece verdadeira durante o processamento é o **invariante**."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Inicialização",
+              "text": "Prove que o invariante é verdadeiro antes do primeiro passo. Em uma DP, isso corresponde aos casos-base."
+            },
+            {
+              "title": "Manutenção",
+              "text": "Prove que cada transição preserva o invariante. Em uma recorrência, é a justificativa de que os subproblemas representam exatamente os casos menores."
+            },
+            {
+              "title": "Terminação",
+              "text": "Prove que a medida de tamanho diminui ou que a fila de estados se esgota."
+            },
+            {
+              "title": "Conclusão",
+              "text": "Quando o algoritmo termina, combine o invariante com a condição de término para obter a propriedade desejada."
+            },
+            {
+              "title": "Complexidade",
+              "text": "Conte quantas vezes a transição é executada; a prova de correção não substitui a análise de custo."
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "example",
+          "title": "Aplicação: BFS",
+          "text": "Na busca em largura, o invariante é que um vértice retirado da fila recebe sua menor distância da fonte. A prova depende da ordem FIFO e do fato de cada aresta aumentar a distância em no máximo uma unidade; a contagem de níveis explica o custo $O(|V|+|E|)$."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Esta seção formalizou as técnicas de prova que sustentam o livro inteiro: indução (comum e estrutural), dupla contagem e recorrências com casos-base explícitos, terminando na ideia de que uma prova de correção de algoritmo segue a mesma disciplina de uma prova combinatória. A dupla contagem prova aqui a identidade do aperto de mãos e a soma dos binomiais — o mesmo coeficiente binomial definido na Seção 2. As recorrências deduzidas aqui (Fibonacci/tilings) são o ponto de partida da Seção 4, onde funções geradoras oferecem uma segunda ferramenta para resolvê-las."
+    }
+  ]
+}

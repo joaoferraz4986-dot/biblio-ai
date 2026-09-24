@@ -1,0 +1,10 @@
+node_modules/
+.npm-cache/
+.frontend/
+index.html
+target/
+src-tauri/target/
+src-tauri/gen/
+__pycache__/
+tools/__pycache__/
+.DS_Store

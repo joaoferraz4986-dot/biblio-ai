@@ -1,0 +1,154 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "engenharia-contest",
+  "number": "12",
+  "title": "Engenharia de contest: correção, desempenho e pós-análise",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Conhecer algoritmos não basta: submissões falham por I/O, índices, overflow, estado não reinicializado, recursão profunda e interpretação. Uma rotina operacional reduz falhas sem tornar o código ilegível.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Checklist antes de enviar"
+    },
+    {
+      "type": "list",
+      "style": "check",
+      "items": [
+        "O tipo numérico comporta a maior soma, produto e multiplicidade?",
+        "Há arrays limpos entre casos de teste?",
+        "A resposta para `n=0`, `n=1`, todos iguais e valores extremos está definida?",
+        "A complexidade cabe no pior caso, incluindo ordenações e alocações?",
+        "A saída tem exatamente o formato pedido, sem debug?",
+        "A prova depende de uma hipótese que o código realmente garante?"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Testes adversariais"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());\nfor (int tc = 0; tc < 10000; ++tc) {\n    int n = rng() % 8 + 1;\n    // compare solução otimizada com força bruta\n}",
+      "lineNumbers": true,
+      "title": "Stress testing conceitual"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para criar um validador, gere casos pequenos aleatórios, execute a solução rápida e uma solução lenta obviamente correta e compare saídas. Reduza o caso que falha até obter um contraexemplo mínimo; ele normalmente revela o invariante quebrado."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Undefined behavior e portabilidade"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Não acesse fora do vetor, mesmo que “a memória pareça funcionar”.",
+        "Não dependa de overflow assinado; ele é comportamento indefinido em C++.",
+        "Use `long long` e `__int128` explicitamente nas expressões.",
+        "Evite recursão profunda em grafos de até centenas de milhares de vértices.",
+        "Não assuma que a ordem de iteração de `unordered_map` é estável."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "text": "O melhor código competitivo é curto porque a ideia foi simplificada antes, não porque detalhes importantes foram escondidos. Nomeie estados, isolе funções de prova e mantenha o template como ferramenta, não como superstição.",
+      "title": "Clareza vence micro-otimização"
+    },
+    {
+      "type": "subsection",
+      "id": "roadmap",
+      "number": "12.1",
+      "title": "Roteiro de progressão",
+      "tag": "PLANO",
+      "accent": "green",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma progressão sustentável é mais valiosa que uma lista infinita de tópicos. Refaça problemas após uma semana, resolva variações e escreva a prova em português antes de olhar a implementação de terceiros."
+        },
+        {
+          "type": "list",
+          "style": "number",
+          "items": [
+            "**Etapa 1:** C++ básico, complexidade, STL, ordenação, prefixos e busca binária.",
+            "**Etapa 2:** greedy, DP introdutória, BFS/DFS, DSU, caminhos mínimos e árvores.",
+            "**Etapa 3:** Fenwick, segment tree, strings, matemática modular, SCC, LCA e MST.",
+            "**Etapa 4:** fluxo, matching, otimizações de DP, suffix structures, geometria e técnicas offline.",
+            "**Etapa 5:** contests completos, análise de editoriais, problemas de nível e especialização."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "referencias",
+      "number": "12.2",
+      "title": "Referências e prática",
+      "tag": "REFERÊNCIAS",
+      "accent": "blue",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Este livro foi inspirado na organização temática do [Competitive Programmer’s Handbook em português](https://github.com/natanlimaz/cphb_ptbr), mas o texto e os exemplos aqui são autorais e foram ampliados para C++ moderno."
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "[CSES Problem Set](https://cses.fi/problemset/) — trilhas de problemas por tema.",
+            "[cp-algorithms](https://cp-algorithms.com/) — algoritmos, provas e implementações de referência.",
+            "[cppreference](https://en.cppreference.com/w/cpp) — linguagem C++ e biblioteca padrão.",
+            "[USACO Guide](https://usaco.guide/) — currículo progressivo e listas de exercícios.",
+            "[Codeforces](https://codeforces.com/) e [AtCoder](https://atcoder.jp/) — competições e problemas variados.",
+            "[ICPC](https://icpc.global/) — contexto e regulamentos de competições universitárias."
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Respeite as licenças de cada fonte, confira versões de C++ aceitas pela plataforma e trate editoriais como material de estudo, não como substituto da prova.",
+          "title": "Uso responsável das referências"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Escreva uma solução lenta para comparar com uma solução rápida em casos aleatórios.",
+        "Crie testes para vetor vazio, um elemento, todos iguais e valores máximos.",
+        "Meça o impacto de reservar capacidade em um vetor.",
+        "Faça uma checklist pessoal de cinco itens antes de enviar uma solução."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    }
+  ]
+}

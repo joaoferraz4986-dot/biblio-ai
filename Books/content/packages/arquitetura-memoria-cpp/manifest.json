@@ -1,0 +1,30 @@
+{
+  "schema": "books.package.v2",
+  "kind": "book-package",
+  "id": "arquitetura-memoria-cpp",
+  "title": "Arquitetura de Memória, Compilação e Modelo de Objetos em C++",
+  "description": "Do processador e assembly ao pré-processador, compilador, linker, ELF, memória virtual, modelo de objetos e Itanium ABI em C++.",
+  "language": "pt-BR",
+  "tags": [
+    "c++",
+    "memória",
+    "assembly",
+    "ELF",
+    "ABI",
+    "sistemas"
+  ],
+  "header": "header.json",
+  "sections": [
+    "sections/fundamentos.json",
+    "sections/visao-geral.json",
+    "sections/toolchain.json",
+    "sections/pipeline.json",
+    "sections/regioes.json",
+    "sections/objetos.json",
+    "sections/modernizacoes.json",
+    "sections/resumo.json",
+    "sections/exercicios.json",
+    "sections/glossario.json",
+    "sections/referencias.json"
+  ]
+}

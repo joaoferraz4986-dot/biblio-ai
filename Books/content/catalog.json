@@ -1,0 +1,83 @@
+{
+  "schema": "books.catalog.v2",
+  "kind": "book-catalog",
+  "version": 2,
+  "packages": [
+    {
+      "id": "arquitetura-memoria-cpp",
+      "title": "Arquitetura de Memória, Compilação e Modelo de Objetos em C++",
+      "description": "Do processador e assembly ao pré-processador, compilador, linker, ELF, memória virtual, modelo de objetos e Itanium ABI em C++.",
+      "manifest": "packages/arquitetura-memoria-cpp/manifest.json",
+      "cover": {
+        "src": "packages/arquitetura-memoria-cpp/cover.jpg",
+        "alt": "Capa técnica de arquitetura de memória, compilação e modelo de objetos em C++.",
+        "ratio": "16:9"
+      },
+      "tags": [
+        "c++",
+        "memória",
+        "assembly",
+        "ELF",
+        "ABI",
+        "sistemas"
+      ]
+    },
+    {
+      "id": "combinatoria-computacao",
+      "title": "Combinatória: fundamentos, provas e aplicações em computação",
+      "description": "Percurso completo da combinatória elementar à universitária avançada, com definições, fórmulas provadas passo a passo, recorrências, grafos, probabilidade, algoritmos, simetria e exercícios.",
+      "tags": [
+        "combinatória",
+        "matemática discreta",
+        "algoritmos",
+        "grafos",
+        "probabilidade",
+        "provas"
+      ],
+      "manifest": "packages/combinatoria-computacao/manifest.json",
+      "cover": {
+        "src": "packages/combinatoria-computacao/cover.jpg",
+        "alt": "Capa abstrata com árvores, conjuntos e símbolos de contagem.",
+        "ratio": "16:9"
+      }
+    },
+    {
+      "id": "programacao-competitiva-cpp",
+      "title": "Programação Competitiva em C++: do básico ao avançado",
+      "description": "Curso completo e moderno de programação competitiva em C++, com algoritmos, estruturas de dados, matemática, grafos, strings, DP e engenharia de contest.",
+      "manifest": "packages/programacao-competitiva-cpp/manifest.json",
+      "cover": {
+        "src": "packages/programacao-competitiva-cpp/cover.svg",
+        "alt": "Capa abstrata com uma grade de nós, arestas e símbolos de código.",
+        "ratio": "16:9"
+      },
+      "tags": [
+        "c++",
+        "programação competitiva",
+        "algoritmos",
+        "estruturas de dados",
+        "ICPC",
+        "CSES"
+      ]
+    },
+    {
+      "id": "fisica-eletrica-engenharia-embarcada",
+      "title": "Física Elétrica: da Eletrostática à Engenharia de Sistemas Embarcados",
+      "description": "Livro completo sobre eletricidade, eletromagnetismo, circuitos, semicondutores, eletrônica, sistemas embarcados, controle, DSP, instrumentação, confiabilidade e segurança.",
+      "manifest": "packages/fisica-eletrica-engenharia-embarcada/manifest.json",
+      "cover": {
+        "src": "packages/fisica-eletrica-engenharia-embarcada/cover.svg",
+        "alt": "Capa abstrata com campos elétricos, circuito e microcontrolador.",
+        "ratio": "16:9"
+      },
+      "tags": [
+        "física",
+        "eletricidade",
+        "eletromagnetismo",
+        "circuitos",
+        "eletrônica",
+        "sistemas embarcados"
+      ]
+    }
+  ]
+}

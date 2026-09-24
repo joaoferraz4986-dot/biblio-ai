@@ -1,0 +1,516 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "grafos-arvores",
+  "number": "5",
+  "title": "Grafos, árvores e estruturas discretas",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Grafos conectam combinatória a redes, compiladores, dependências, roteamento e análise de algoritmos. Cada teorema será acompanhado da contagem que o sustenta.",
+      "lead": true
+    },
+    {
+      "type": "subsection",
+      "id": "comb-grafos",
+      "number": "5.1",
+      "title": "Definições, caminhos e conectividade",
+      "tag": "GRAFOS",
+      "accent": "blue",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Um grafo não dirigido é $G=(V,E)$, em que `V` é o conjunto de vértices e `E` é um conjunto de pares não ordenados de vértices. O grau `deg(v)` é o número de arestas incidentes em `v`. Um caminho é uma sequência de vértices adjacentes; um ciclo é um caminho fechado sem repetir vértices internos."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: caracterizações de árvore"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para um grafo finito com `n` vértices, são equivalentes: ser conexo e acíclico; ter exatamente `n-1` arestas e ser conexo; e ter exatamente um caminho simples entre quaisquer dois vértices."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Árvore implica n−1 arestas",
+              "text": "Induza em `n`. A árvore de um vértice tem 0 arestas. Toda árvore com mais de um vértice tem uma folha; remova-a e aplique a hipótese à árvore restante, obtendo $(n-2)+1=n-1$."
+            },
+            {
+              "title": "Conectividade e n−1 implica acíclico",
+              "text": "Se houvesse um ciclo, remova uma aresta do ciclo: o grafo continuaria conexo, mas passaria a ter `n-2` arestas. Isso contradiz que um grafo conexo precisa de pelo menos `n-1` arestas."
+            },
+            {
+              "title": "Conectividade e aciclicidade implicam caminho único",
+              "text": "Se o grafo é conexo e houvesse dois caminhos simples distintos entre os mesmos vértices, siga-os até a primeira divergência e até a primeira convergência; a união contém um ciclo."
+            },
+            {
+              "title": "Caminho único implica conectividade e aciclicidade",
+              "text": "Há caminho entre todo par, logo é conexo. Um ciclo forneceria dois caminhos diferentes entre dois vértices do ciclo."
+            },
+            {
+              "title": "Conclusão",
+              "text": "As propriedades se implicam mutuamente."
+            }
+          ]
+        },
+        {
+          "type": "mermaid",
+          "code": "graph TD\n A((\"raiz\")) --> B((\"subárvore\"))\n A --> C((\"subárvore\"))\n B --> D((\"folha\"))\n C --> E((\"folha\"))",
+          "caption": "árvore como grafo conexo sem ciclos",
+          "accent": "blue"
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-dag",
+      "number": "5.2",
+      "title": "DAGs, ordenação topológica e fluxo",
+      "tag": "ALGORITMOS",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Um DAG é um grafo dirigido sem ciclos. Uma ordenação topológica coloca cada vértice antes de todos os seus sucessores; ela existe exatamente quando o grafo não tem ciclo."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Prova por remoção de fonte"
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Existência de fonte",
+              "text": "Se todo vértice tivesse uma aresta entrando, comece em qualquer vértice e siga predecessores. Como o grafo é finito, algum vértice se repetiria, formando ciclo; contradição. Logo existe uma fonte."
+            },
+            {
+              "title": "Remover a fonte",
+              "text": "Retire a fonte e suas arestas. O grafo restante continua sem ciclos."
+            },
+            {
+              "title": "Repetir",
+              "text": "Aplique o mesmo argumento ao grafo restante até remover todos os vértices."
+            },
+            {
+              "title": "Preservar a ordem",
+              "text": "Cada removido é colocado antes dos vértices que dependiam dele; portanto a lista obtida é topológica."
+            },
+            {
+              "title": "Algoritmo",
+              "text": "Uma fila de fontes implementa o processo em $O(|V|+|E|)$ usando listas de adjacência."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema max-flow/min-cut — ideia de prova por aumento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Em uma rede com capacidades, o valor de qualquer fluxo é no máximo a capacidade de qualquer corte. Quando não existe caminho aumentante na rede residual, o corte formado pelos vértices alcançáveis a partir da fonte tem capacidade igual ao fluxo atual."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Limite superior",
+              "text": "Toda unidade que sai da fonte e chega ao sumidouro precisa atravessar um corte; portanto fluxo ≤ capacidade do corte."
+            },
+            {
+              "title": "Rede residual",
+              "text": "A rede residual registra quanto ainda pode ser enviado para frente e quanto pode ser desfeito por arestas reversas."
+            },
+            {
+              "title": "Sem caminho aumentante",
+              "text": "Se não há caminho residual até o sumidouro, os alcançáveis formam um conjunto S e o restante forma T."
+            },
+            {
+              "title": "Saturação das arestas S→T",
+              "text": "Se uma aresta S→T tivesse capacidade residual positiva, seu destino seria alcançável; logo todas estão saturadas."
+            },
+            {
+              "title": "Zero retorno útil T→S",
+              "text": "Uma aresta residual T→S positiva representaria fluxo que poderia ser ajustado, mas não altera a capacidade líquida do corte."
+            },
+            {
+              "title": "Igualdade",
+              "text": "O fluxo enviado é exatamente a soma das capacidades das arestas S→T; ele atinge a capacidade do corte. Junto ao limite superior, é máximo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-buscas-caminhos",
+      "number": "5.3",
+      "title": "BFS, DFS e Dijkstra: explorar e otimizar caminhos",
+      "tag": "ALGORITMOS",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "BFS, DFS e Dijkstra percorrem grafos, mas resolvem problemas diferentes. BFS explora por camadas e encontra distâncias mínimas em grafos não ponderados; DFS aprofunda uma possibilidade antes de voltar e é adequada para conectividade, ciclos, componentes e ordenação; Dijkstra mantém a melhor distância conhecida e funciona quando todos os pesos são não negativos."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "BFS: busca em largura"
+        },
+        {
+          "type": "paragraph",
+          "text": "BFS mantém uma fila FIFO (first in, first out, isto é, o primeiro vértice descoberto é o primeiro a ser processado). Ao descobrir um vértice, registra sua distância como a distância do predecessor mais um. Como todos os passos têm custo unitário, nenhum caminho futuro pode alcançar esse vértice com menos passos depois que ele foi descoberto."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Inicializar",
+              "text": "Coloque a origem s na fila, marque-a como visitada e defina $d(s)=0$. Para os demais vértices, use distância infinita."
+            },
+            {
+              "title": "Expandir uma camada",
+              "text": "Retire o primeiro vértice u. Para cada vizinho v ainda não visitado, marque v, defina $d(v)=d(u)+1$ e coloque v no fim da fila."
+            },
+            {
+              "title": "Preservar o invariante",
+              "text": "A fila contém vértices em ordem não decrescente de distância. Todos os vértices retirados antes de u estão a distância no máximo $d(u)$."
+            },
+            {
+              "title": "Concluir a distância mínima",
+              "text": "Qualquer caminho para v precisa vir de um vizinho anterior. Como BFS processa todas as camadas menores antes da camada de v, o primeiro valor atribuído a v é mínimo."
+            },
+            {
+              "title": "Analisar custo",
+              "text": "Com listas de adjacência, cada vértice entra na fila uma vez e cada aresta é examinada uma vez em cada sentido; o custo é $O(|V|+|E|)$ e a memória é $O(|V|)$."
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "BFS com distâncias",
+          "code": "std::queue<int> q;\ndist[s] = 0;\nq.push(s);\nwhile (!q.empty()) {\n    int u = q.front(); q.pop();\n    for (int v : adj[u]) {\n        if (dist[v] == INF) {\n            dist[v] = dist[u] + 1;\n            parent[v] = u;\n            q.push(v);\n        }\n    }\n}"
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "DFS: busca em profundidade"
+        },
+        {
+          "type": "paragraph",
+          "text": "DFS usa uma pilha explícita ou a pilha de chamadas da recursão. Ela segue uma aresta até não haver vizinho novo; então retorna pelo caminho de predecessores e tenta a próxima aresta. A ordem depende da ordem da lista de adjacência, mas a propriedade de visitar cada vértice alcançável permanece."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Descobrir",
+              "text": "Ao entrar em u, marque u como descoberto e registre seu tempo de entrada."
+            },
+            {
+              "title": "Aprofundar",
+              "text": "Escolha cada vizinho v. Se v não foi descoberto, a aresta u→v é de árvore e DFS chama-se recursivamente em v."
+            },
+            {
+              "title": "Retornar",
+              "text": "Quando todos os vizinhos forem tratados, registre o tempo de saída de u e retorne ao predecessor."
+            },
+            {
+              "title": "Detectar ciclos",
+              "text": "Em grafo dirigido, encontrar uma aresta para um vértice descoberto mas ainda não finalizado indica uma aresta de retorno e um ciclo."
+            },
+            {
+              "title": "Aplicar",
+              "text": "A mesma estrutura encontra componentes, classifica arestas, produz ordenação topológica por tempos de saída e identifica pontes com tempos baixos."
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "DFS recursivo com tempos de descoberta e término",
+          "code": "int tempo = 0;\nstd::vector<int> disc(n, -1), fim(n, -1);\n\nvoid dfs(int u, int pai) {\n    disc[u] = ++tempo;\n    for (int v : adj[u]) {\n        if (v == pai) continue;      // não volta pela mesma aresta ao pai\n        if (disc[v] == -1) {\n            dfs(v, u);                // aresta de árvore\n        }\n        // disc[v] != -1 e v != pai: aresta de retorno (back edge)\n    }\n    fim[u] = ++tempo;\n}",
+          "highlight": "",
+          "lineNumbers": false
+        },
+        {
+          "type": "paragraph",
+          "text": "O custo de DFS também é $O(|V|+|E|)$ com listas de adjacência. A profundidade da recursão pode chegar a $|V|$; em grafos muito profundos, uma pilha explícita evita estouro da pilha do processo."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Dijkstra: caminhos mínimos com pesos não negativos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dijkstra resolve o problema de menor custo em um grafo ponderado quando cada peso $w(u,v)\\ge 0$. Ele mantém uma estimativa $dist[v]$ e escolhe, entre os vértices ainda não finalizados, aquele com menor estimativa. A operação de relaxamento testa se passar por u melhora o caminho para v: se $dist[u]+w(u,v)<dist[v]$, atualiza a distância e o predecessor."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Inicializar",
+              "text": "Defina $dist[s]=0$ e todas as outras distâncias como infinito. Nenhum vértice está finalizado."
+            },
+            {
+              "title": "Extrair o mínimo",
+              "text": "Escolha o vértice u não finalizado com menor $dist[u]$. Esse valor se torna definitivo."
+            },
+            {
+              "title": "Justificar a escolha",
+              "text": "Qualquer caminho alternativo até u que passe por um vértice ainda não finalizado teria de atravessar uma estimativa pelo menos tão grande quanto $dist[u]$; como os pesos não são negativos, não poderia chegar mais barato a u."
+            },
+            {
+              "title": "Relaxar",
+              "text": "Para cada aresta u→v, compare o caminho conhecido com o caminho que chega a u e atravessa a aresta. Atualize v quando o segundo for menor."
+            },
+            {
+              "title": "Repetir e terminar",
+              "text": "Continue até a fila de prioridade esvaziar ou até o destino ser finalizado. Os predecessores reconstruem o caminho ótimo."
+            },
+            {
+              "title": "Analisar custo",
+              "text": "Com heap binário e listas de adjacência, o custo é $O((|V|+|E|)\\log |V|)$; com matriz e busca linear do mínimo, é $O(|V|^2)$."
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Dijkstra com fila de prioridade",
+          "code": "std::vector<int> dist(n, INF);\nstd::priority_queue<std::pair<int,int>,\n                     std::vector<std::pair<int,int>>,\n                     std::greater<>> pq;   // (distância, vértice)\ndist[s] = 0;\npq.push({0, s});\nwhile (!pq.empty()) {\n    auto [d, u] = pq.top(); pq.pop();\n    if (d > dist[u]) continue;        // entrada obsoleta, já superada\n    for (auto [v, peso] : adj[u]) {\n        if (dist[u] + peso < dist[v]) {\n            dist[v] = dist[u] + peso;\n            pq.push({dist[v], v});\n        }\n    }\n}",
+          "highlight": "",
+          "lineNumbers": false
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Limite essencial de Dijkstra",
+          "text": "Uma aresta de peso negativo pode tornar falsa a decisão de finalizar o menor rótulo atual. Para pesos negativos, estude Bellman–Ford; para todos os pesos iguais a um, BFS é mais simples e linear."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Algoritmo",
+            "Estrutura",
+            "Hipótese de peso",
+            "Resultado"
+          ],
+          "rows": [
+            [
+              "BFS",
+              "fila FIFO",
+              "arestas sem peso ou peso unitário",
+              "distância mínima em número de arestas"
+            ],
+            [
+              "DFS",
+              "pilha ou recursão",
+              "não depende de pesos",
+              "exploração, ciclos e estrutura"
+            ],
+            [
+              "Dijkstra",
+              "fila de prioridade",
+              "todos os pesos não negativos",
+              "menor custo de cada origem"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 4,
+          "text": "Exemplo numérico: os três algoritmos no mesmo grafo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Considere o grafo não dirigido com vértices `A, B, C, D, E` e arestas `A–B`, `A–C`, `B–D`, `C–D`, `D–E` — um ciclo `A–B–D–C–A` com um \"apêndice\" `D–E`. Para Dijkstra, atribua pesos `A–B=2`, `A–C=5`, `B–D=1`, `C–D=1`, `D–E=3`. A listagem de adjacência de cada vértice segue a ordem em que aparece nas arestas acima (ex.: `A: [B, C]`, `D: [B, C, E]`)."
+        },
+        {
+          "type": "mermaid",
+          "caption": "grafo de exemplo — ciclo A-B-D-C-A com apêndice D-E",
+          "accent": "teal",
+          "code": "flowchart LR\n  A((\"A\")) --- B((\"B\"))\n  A --- C((\"C\"))\n  B --- D((\"D\"))\n  C --- D\n  D --- E((\"E\"))"
+        },
+        {
+          "type": "table",
+          "caption": "BFS, DFS e Dijkstra a partir de A, lado a lado",
+          "header": [
+            "Vértice",
+            "BFS: ordem / distância (arestas)",
+            "DFS: descoberta / término",
+            "Dijkstra: ordem finalizada / distância"
+          ],
+          "rows": [
+            [
+              "A",
+              "1ª / 0",
+              "1 / 10",
+              "1ª / 0"
+            ],
+            [
+              "B",
+              "2ª / 1",
+              "2 / 9",
+              "2ª / 2"
+            ],
+            [
+              "C",
+              "3ª / 1",
+              "4 / 5",
+              "4ª / 4"
+            ],
+            [
+              "D",
+              "4ª / 2",
+              "3 / 8",
+              "3ª / 3"
+            ],
+            [
+              "E",
+              "5ª / 3",
+              "6 / 7",
+              "5ª / 6"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "Por que os números divergem",
+          "text": "BFS mede distância em **número de arestas**, ignorando peso — por isso `C` chega em 2ª posição com distância 1. Dijkstra usa o **peso real**: como `A–C` pesa 5 mas `A–B–D–C` pesa `2+1+1=4`, `C` só é finalizado depois de `D`, com distância 4, não 5. DFS não mede distância nenhuma — `disc`/`fim` registram apenas a ordem de visita e retorno, o que é exatamente o que a Seção 5.1 (`low`) usa a seguir para achar pontes."
+        },
+        {
+          "type": "heading",
+          "level": 4,
+          "text": "Indo além: pontes e pontos de articulação com \"tempos baixos\" (low-link)"
+        },
+        {
+          "type": "paragraph",
+          "text": "A frase \"identifica pontes com tempos baixos\", usada acima, se refere a uma extensão clássica do DFS (o algoritmo de **Tarjan** para pontes). Além de `disc[v]` (o tempo de descoberta), o algoritmo mantém `low[v]`: o menor `disc` alcançável a partir de `v` usando arestas de árvore seguidas de **no máximo uma** aresta de retorno. Formalmente, `low[v] = min(disc[v], min{disc[w] : (v,w) é aresta de retorno}, min{low[c] : c é filho de v na árvore de DFS})`."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Calcular disc e low",
+              "text": "Execute o DFS normalmente. Ao descobrir `v`, defina `disc[v]=low[v]=tempo`. Ao retornar de um filho `c`, atualize `low[v] = min(low[v], low[c])`. Ao encontrar uma aresta de retorno para um ancestral `w` já visitado (e que não é o pai), atualize `low[v] = min(low[v], disc[w])`."
+            },
+            {
+              "title": "Testar a condição de ponte",
+              "text": "A aresta de árvore `(v, c)` é uma **ponte** se, e somente se, `low[c] > disc[v]`: nenhum caminho a partir da subárvore de `c` consegue \"voltar\" para `v` ou para um ancestral de `v` sem usar essa aresta."
+            },
+            {
+              "title": "Ponto de articulação (ideia correlata)",
+              "text": "Um vértice `v` (não raiz) é ponto de articulação se algum filho `c` satisfaz `low[c] >= disc[v]` — a condição é `>=` em vez de `>`, porque remover o vértice (não a aresta) já desconecta a subárvore de `c` mesmo que `low[c] == disc[v]`."
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "Pontes via DFS com low-link (Tarjan)",
+          "code": "int tempo = 0;\nstd::vector<int> disc(n, -1), low(n, -1);\nstd::vector<std::pair<int,int>> pontes;\n\nvoid dfs(int u, int pai) {\n    disc[u] = low[u] = ++tempo;\n    for (int v : adj[u]) {\n        if (v == pai) continue;\n        if (disc[v] == -1) {\n            dfs(v, u);\n            low[u] = std::min(low[u], low[v]);\n            if (low[v] > disc[u])\n                pontes.push_back({u, v});      // condição de ponte\n        } else {\n            low[u] = std::min(low[u], disc[v]); // aresta de retorno\n        }\n    }\n}",
+          "highlight": "",
+          "lineNumbers": false
+        },
+        {
+          "type": "callout",
+          "variant": "example",
+          "title": "No grafo do exemplo acima",
+          "text": "Com a árvore de DFS `A→B→D→C` (mais a aresta de retorno `C–A`) e o ramo `D→E`: `low[C]=min(disc[C]=4, disc[A]=1)=1`; `low[D]=min(disc[D]=3, low[C]=1, low[E]=6)=1`; `low[B]=min(disc[B]=2, low[D]=1)=1`. Testando cada aresta de árvore: `low[B]=1 > disc[A]=1`? Não — `A–B` não é ponte. `low[D]=1 > disc[B]=2`? Não — `B–D` não é ponte. `low[C]=1 > disc[D]=3`? Não — `D–C` não é ponte (as três estão no ciclo). Já `low[E]=6 > disc[D]=3`? **Sim** — `D–E` é a única ponte do grafo, exatamente o apêndice que não pertence a nenhum ciclo."
+        },
+        {
+          "type": "heading",
+          "level": 4,
+          "text": "Indo além: 0-1 BFS e outras variantes de fonte múltipla"
+        },
+        {
+          "type": "paragraph",
+          "text": "Quando todo peso de aresta é `0` ou `1`, rodar Dijkstra completo ($O((|V|+|E|)\\log|V|)$) é desperdício: existe uma variante em $O(|V|+|E|)$ chamada **0-1 BFS**. A ideia: em vez de uma fila FIFO simples, use um `deque` (fila de duas pontas). Ao relaxar uma aresta de peso `0`, insira o vizinho na **frente** do deque (ele deve ser processado o quanto antes, pois não aumentou a distância); ao relaxar uma aresta de peso `1`, insira no **fim**. Isso mantém o deque sempre ordenado por distância não decrescente, como a fila do BFS comum mantinha — só que agora tolerando dois \"níveis\" de custo."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "title": "0-1 BFS com deque",
+          "code": "std::vector<int> dist(n, INF);\nstd::deque<int> dq;\ndist[s] = 0;\ndq.push_front(s);\nwhile (!dq.empty()) {\n    int u = dq.front(); dq.pop_front();\n    for (auto [v, peso] : adj[u]) {   // peso é 0 ou 1\n        if (dist[u] + peso < dist[v]) {\n            dist[v] = dist[u] + peso;\n            if (peso == 0) dq.push_front(v);\n            else            dq.push_back(v);\n        }\n    }\n}",
+          "highlight": "",
+          "lineNumbers": false
+        },
+        {
+          "type": "paragraph",
+          "text": "Duas outras variantes resolvem problemas específicos sem exigir um algoritmo novo: **BFS multi-fonte** coloca todos os vértices de origem na fila com distância 0 antes de começar (útil para \"distância até a fonte mais próxima dentre várias\", como em problemas de incêndio se espalhando a partir de vários pontos); **busca bidirecional** roda um BFS a partir da origem e outro a partir do destino simultaneamente, parando quando as duas fronteiras se encontram — reduz o espaço explorado de $O(b^d)$ para aproximadamente $O(2b^{d/2})$ em um grafo com fator de ramificação `b` e distância `d`, o que é significativo em grafos muito grandes (redes de estradas, redes sociais)."
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-grafos-aplicacoes",
+      "number": "5.4",
+      "title": "Aplicações: compiladores, redes e escalonamento",
+      "tag": "APLICACOES",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A modelagem por grafos transforma relações em objetos que algoritmos conseguem percorrer. O tipo de grafo determina o teorema disponível: dependências acíclicas permitem ordenação topológica; ciclos indicam uma inconsistência ou uma dependência circular."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Problema computacional",
+            "Modelo",
+            "Ferramenta combinatória"
+          ],
+          "rows": [
+            [
+              "ordem de compilação",
+              "DAG de dependências",
+              "ordenamento topológico"
+            ],
+            [
+              "rotas em uma rede",
+              "grafo ponderado",
+              "caminhos mínimos"
+            ],
+            [
+              "alocação de tarefas",
+              "grafo bipartido",
+              "emparelhamento (casamento máximo em grafo bipartido)"
+            ],
+            [
+              "capacidade de transporte",
+              "rede capacitada",
+              "fluxo máximo e corte mínimo"
+            ],
+            [
+              "conectividade de módulos",
+              "grafo não dirigido",
+              "BFS, DFS e árvores"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "key",
+          "title": "Como a prova orienta o código",
+          "text": "O algoritmo não deve apenas produzir uma ordem ou fluxo. A prova identifica por que a estrutura existe, quais invariantes são preservados e em que condição a saída é ótima. Se o grafo violar a hipótese — por exemplo, contiver ciclo quando se exige um DAG — o código precisa detectar ou rejeitar a entrada."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Grafos trouxeram um novo objeto combinatório, mas as ferramentas de prova continuam as mesmas: a equivalência entre árvore, n−1 arestas e caminho único é provada por indução (Seção 3), e a identidade do aperto de mãos (dupla contagem, também Seção 3) sustenta implicitamente a contagem de arestas. BFS, DFS e Dijkstra foram apresentados com invariante, prova de terminação e código — o mesmo roteiro de \"inicialização, manutenção, terminação\" da prova de correção de algoritmos (Seção 3.4) — e o exemplo numérico mostrou por que BFS, DFS e Dijkstra dão respostas diferentes no mesmo grafo (arestas × peso × ordem de visita). A extensão para pontes via low-link reaproveita exatamente disc/fim do DFS básico, e o 0-1 BFS mostra como uma restrição no problema (pesos só 0/1) permite trocar Dijkstra por algo mais simples e mais rápido — o mesmo tipo de raciocínio \"qual hipótese vale, e o que ela simplifica\" cobrado desde a Seção 1. Esses algoritmos retornam na Seção 7 como exemplos de programação dinâmica e análise de complexidade sobre estruturas discretas."
+    }
+  ]
+}

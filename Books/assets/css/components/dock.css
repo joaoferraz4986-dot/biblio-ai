@@ -1,0 +1,53 @@
+/*
+ * Dock de ações: barra fixa vertical no canto superior direito.
+ * Ordem (de cima para baixo): Livros, Editar livro, Modo foco — o botão de modo foco
+ * e o de Livros trocaram de posição em relação à versão anterior do projeto.
+ * "voltar ao topo" fica solto, no canto inferior direito.
+ */
+.dock { position: fixed; top: var(--space-4); right: var(--space-4); z-index: var(--z-dock); display: flex; flex-direction: column; gap: var(--dock-gap); align-items: stretch; }
+.dock__btn { display: flex; align-items: center; justify-content: center; width: var(--control-height); height: var(--control-height); min-width: var(--control-height); min-height: var(--control-height); padding: 0; font: 600 .72rem/1 var(--font-mono); letter-spacing: .02em; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm); cursor: pointer; transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+.dock__btn:hover { border-color: var(--accent); color: var(--accent); }
+.dock__btn[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #0b1420; }
+.dock__label { display: none; }
+
+.back-top { position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: var(--z-dock); display: flex; align-items: center; justify-content: center; width: var(--control-height); height: var(--control-height); min-width: var(--control-height); min-height: var(--control-height); background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0; box-shadow: var(--shadow-sm); font: 600 .72rem var(--font-mono); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.back-top.visible { opacity: 1; transform: none; pointer-events: auto; }
+
+/*
+ * Modo foco esconde Livros/Editar, o "voltar ao topo" e o sumário. O botão de modo
+ * foco nunca some de vez (não haveria como sair) — mas fica INVISÍVEL até o mouse
+ * chegar perto (:hover) ou ele ganhar foco de teclado (Tab). O elemento continua no
+ * lugar (só com opacity:0), então a área ainda responde ao mouse/toque normalmente.
+ * Esc também sai do modo foco, como rede de segurança (ver assets/js/ui/focus.js).
+ */
+body.focus-mode[data-focus-bg='solid'] #bgLayer { background-image: none !important; background-color: var(--bg) !important; mask-image: none; opacity: 1; }
+body.focus-mode[data-focus-bg='keep'] #bgLayer { opacity: 1; }
+body.focus-mode[data-focus-width='wide'] #mainContent { max-width: min(1080px, 100%); }
+body.focus-mode[data-focus-width='comfortable'] #mainContent { max-width: var(--content-max); }
+body.focus-mode[data-focus-hide-dock='true'] #libraryDockBtn, body.focus-mode[data-focus-hide-dock='true'] #editDockBtn, body.focus-mode[data-focus-hide-dock='true'] .back-top { display: none; }
+body.focus-mode[data-focus-hide-toc='true'] nav.toc { display: none; }
+body.focus-mode #focusToggle { opacity: 0; transition: opacity var(--dur) var(--ease); }
+body.focus-mode #focusToggle:hover, body.focus-mode #focusToggle:focus-visible { opacity: 1; }
+/* Toque não tem "aproximar o mouse": em telas sem hover de verdade, fica sempre
+   visível (discreto) em vez de inacessível. */
+@media (hover: none), (pointer: coarse) {
+  body.focus-mode #focusToggle { opacity: .55; }
+}
+body.focus-mode .layout { width: 100%; max-width: none; display: block; padding-inline: var(--space-6); }
+body.focus-mode #mainContent { max-width: var(--content-max); margin-inline: auto; font-size: calc(1rem * var(--focus-scale, 1.08)); }
+body.focus-mode #mainContent .b-paragraph { font-size: 1.08em; }
+body.focus-mode #mainContent .b-paragraph--lead { font-size: 1.18em; }
+body.focus-mode #mainContent .b-heading--3 { font-size: 1.22em; }
+body.focus-mode #mainContent .b-subsection__title { font-size: 1.18em; }
+body.focus-mode #mainContent .b-subsection__body { padding: calc(var(--space-5) * 1.2); gap: calc(var(--space-4) * 1.2); }
+body.focus-mode #mainContent .b-steps__body p { font-size: 1.04em; }
+body.focus-mode #mainContent .b-callout__title { font-size: 1em; }
+body.focus-mode #mainContent .b-callout__body { font-size: 1.06em; }
+body.focus-mode #mainContent .b-diagram__cap,
+body.focus-mode #mainContent .b-math figcaption { font-size: .9rem; }
+
+@media (max-width: 600px) {
+  .dock { top: var(--space-3); right: var(--space-3); }
+  .dock__label { display: none; }
+  .dock__btn { padding: 10px; }
+}

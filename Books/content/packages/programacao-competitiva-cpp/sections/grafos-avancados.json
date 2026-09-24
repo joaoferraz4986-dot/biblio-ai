@@ -1,0 +1,229 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "grafos-avancados",
+  "number": "7",
+  "title": "Grafos II: caminhos, árvores e fluxo",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Depois de BFS e DFS, a escolha do algoritmo depende das propriedades dos pesos: não negativos, negativos, todos iguais, ou estrutura acíclica. A maior fonte de erro é aplicar um algoritmo correto em um cenário diferente de suas hipóteses.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Caminhos mínimos"
+    },
+    {
+      "type": "table",
+      "header": [
+        "Algoritmo",
+        "Hipótese",
+        "Complexidade"
+      ],
+      "rows": [
+        [
+          "BFS",
+          "pesos unitários",
+          "O(V+E)"
+        ],
+        [
+          "0–1 BFS",
+          "pesos 0 ou 1",
+          "O(V+E)"
+        ],
+        [
+          "Dijkstra",
+          "pesos não negativos",
+          "O((V+E) log V)"
+        ],
+        [
+          "Bellman–Ford",
+          "aceita negativos; detecta ciclo negativo",
+          "O(VE)"
+        ],
+        [
+          "Floyd–Warshall",
+          "todos os pares, `V` pequeno",
+          "O(V³)"
+        ]
+      ],
+      "caption": "Escolha orientada pelas hipóteses"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "using P = pair<long long,int>;\nconst long long INF = (1LL << 62);\nvector<long long> d(n, INF);\npriority_queue<P, vector<P>, greater<P>> pq;\nd[source] = 0; pq.push({0, source});\nwhile (!pq.empty()) {\n    auto [du, v] = pq.top(); pq.pop();\n    if (du != d[v]) continue;\n    for (auto [to, w] : g[v]) if (d[to] > du + w) {\n        d[to] = du + w; pq.push({d[to], to});\n    }\n}",
+      "lineNumbers": true,
+      "title": "Dijkstra com descarte de entradas antigas"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Árvores e LCA"
+    },
+    {
+      "type": "paragraph",
+      "text": "Uma árvore tem caminho simples único entre dois vértices. Pré-calcule ancestrais em potências de dois (binary lifting) para responder LCA e subir k níveis em `O(log n)` depois de uma DFS."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "const int LOG = 20;\nvector<array<int, LOG>> up(n);\nvector<int> depth(n);\n// up[v][j] = 2^j-ésimo ancestral de v\nfor (int j = 1; j < LOG; ++j)\n    up[v][j] = up[up[v][j - 1]][j - 1];",
+      "lineNumbers": true,
+      "title": "Binary lifting"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "MST e fluxo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Kruskal combina arestas em ordem crescente com DSU e produz uma árvore geradora mínima. Prim expande uma fronteira com prioridade. Em fluxo máximo, residual e caminho aumentante são o modelo mental; Dinic é uma escolha geral para limites médios."
+    },
+    {
+      "type": "subsection",
+      "id": "scc-e-pontes",
+      "number": "7.1",
+      "title": "SCC, pontes e articulações",
+      "tag": "LOW-LINK",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Kosaraju usa duas passagens de DFS para componentes fortemente conexas; Tarjan faz isso em uma passagem com low-link. Em grafos não direcionados, `low[to] > tin[v]` identifica uma ponte, enquanto a condição de articulação depende de raiz e filhos."
+        },
+        {
+          "type": "mermaid",
+          "code": "flowchart LR\n  A[\"DFS: tin\"] --> B[\"low\"] --> C[\"ponte / articulação\"]",
+          "caption": "Relação entre tempos de descoberta e low-link",
+          "accent": "orange"
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "maxflow",
+      "number": "7.2",
+      "title": "Fluxo máximo e corte mínimo",
+      "tag": "FLUXO",
+      "accent": "red",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "O teorema max-flow min-cut diz que o valor do maior fluxo é igual à capacidade do menor corte que separa fonte e sumidouro. Modele capacidade, conservação e, quando necessário, divisões de vértices para impor capacidade em nós."
+        },
+        {
+          "type": "callout",
+          "variant": "key",
+          "text": "Sempre use `long long` para capacidades se a soma das arestas puder exceder 32 bits. Depois do fluxo, vértices alcançáveis na rede residual a partir da fonte identificam um corte mínimo.",
+          "title": "Diagnóstico do corte"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Calcule menores distâncias em grafo com pesos 0/1.",
+        "Construa uma MST com Kruskal.",
+        "Responda o ancestral comum mais baixo em uma árvore pequena por subida ingênua.",
+        "Detecte se existem ciclos negativos alcançáveis usando Bellman–Ford."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "subsection",
+      "id": "problema-voo-desconto",
+      "number": "7.3",
+      "title": "Problema difícil guiado: menor rota com um desconto",
+      "tag": "WALKTHROUGH",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "**Problema.** Em um grafo direcionado com preços não negativos, encontre o menor custo de `1` até `n` podendo aplicar 50% de desconto em exatamente uma aresta. O insight é transformar “usei o desconto?” em uma dimensão do estado."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "1. Estado e transições"
+        },
+        {
+          "type": "paragraph",
+          "text": "Use dois estados por vértice: `discountUsed = 0` ou `1`. Ao atravessar uma aresta `(u,v,w)`, sempre podemos pagar `w` mantendo o estado; se ainda não usamos o desconto, também podemos ir para `(v,1)` pagando `w/2`. Como todos os custos continuam não negativos, Dijkstra permanece válido."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "struct State { long long cost; int vertex; int discountUsed; };\nstruct StateOrder {\n    bool operator()(const State& left, const State& right) const { return left.cost > right.cost; }\n};\n\nvector<vector<long long>> shortestCost(\n    int vertexCount, const vector<vector<pair<int, long long>>>& graph, int sourceVertex) {\n    const long long infinity = (1LL << 62);\n    vector<vector<long long>> minimumCost(vertexCount, vector<long long>(2, infinity));\n    priority_queue<State, vector<State>, StateOrder> pendingStates;\n    minimumCost[sourceVertex][0] = 0;\n    pendingStates.push({0, sourceVertex, 0});\n\n    while (!pendingStates.empty()) {\n        State currentState = pendingStates.top();\n        pendingStates.pop();\n        if (currentState.cost != minimumCost[currentState.vertex][currentState.discountUsed]) continue;\n        for (auto [nextVertex, edgeCost] : graph[currentState.vertex]) {\n            int sameState = currentState.discountUsed;\n            if (currentState.cost + edgeCost < minimumCost[nextVertex][sameState]) {\n                minimumCost[nextVertex][sameState] = currentState.cost + edgeCost;\n                pendingStates.push({minimumCost[nextVertex][sameState], nextVertex, sameState});\n            }\n            if (!currentState.discountUsed) {\n                long long discountedCost = currentState.cost + edgeCost / 2;\n                if (discountedCost < minimumCost[nextVertex][1]) {\n                    minimumCost[nextVertex][1] = discountedCost;\n                    pendingStates.push({discountedCost, nextVertex, 1});\n                }\n            }\n        }\n    }\n    return minimumCost;\n}",
+          "lineNumbers": true,
+          "title": "Dijkstra em grafo de estados"
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "2. Fórmula e correção"
+        },
+        {
+          "type": "math",
+          "tex": "dp[v][s] = menor custo para chegar a v usando s descontos,\\quad s\\in\\{0,1\\}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Toda rota válida pode ser decomposta no último salto. Se o desconto não foi usado, o salto custa `w` e mantém `s=0`; se foi aplicado nele, custa `floor(w/2)` e muda para `s=1`. Dijkstra relaxa essas duas possibilidades e, por indução no menor rótulo extraído, fixa cada estado com seu menor custo."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "3. Complexidade e variações"
+        },
+        {
+          "type": "paragraph",
+          "text": "O grafo duplicou o número de estados, mas ainda tem `2V` vértices e `2E` transições efetivas: `O((V+E) log V)`. Com `k` cupons, substitua a dimensão binária por `0..k`; com cupons de tipos diferentes, o estado passa a representar a máscara ou o inventário permitido."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "4. Exemplo de entrada e saída"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "code": "3 3\n1 2 10\n2 3 10\n1 3 25",
+          "lineNumbers": true,
+          "title": "Entrada"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "code": "15",
+          "lineNumbers": true,
+          "title": "Saída"
+        }
+      ]
+    }
+  ]
+}

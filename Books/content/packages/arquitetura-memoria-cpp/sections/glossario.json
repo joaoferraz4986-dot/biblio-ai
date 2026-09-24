@@ -1,0 +1,94 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "glossario",
+  "number": "10",
+  "title": "Glossário, mapa de camadas e autorrevisão",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Use este glossário como índice de retorno. Cada termo informa a camada em que a palavra faz sentido: **C++** (semântica portátil), **ABI/ELF** (contrato binário), **ISA** (instruções visíveis) ou **SO/hardware** (implementação de execução)."
+    },
+    {
+      "type": "table",
+      "header": [
+        "Termo",
+        "Definição sem pressupor conhecimento anterior",
+        "Camada"
+      ],
+      "rows": [
+        [
+          "ABI",
+          "Application Binary Interface: contrato de chamadas, registradores, alinhamento, layout, símbolos, exceções e formato que permite componentes binários cooperarem.",
+          "ABI"
+        ],
+        [
+          "ISA",
+          "Instruction Set Architecture: conjunto de instruções, registradores arquiteturais, modos de endereçamento e efeitos visíveis ao software.",
+          "ISA"
+        ],
+        [
+          "microarquitetura",
+          "Implementação interna de uma ISA, incluindo pipeline, unidades de execução, caches, predição e renomeação.",
+          "hardware"
+        ],
+        [
+          "unidade de tradução",
+          "Resultado lógico das fases de tradução que o compilador analisa; costuma nascer de um `.cpp` após includes e macros.",
+          "C++/toolchain"
+        ],
+        [
+          "relocation",
+          "Registro que instrui linker ou dynamic linker a preencher um campo com fórmula dependente de símbolo e endereço.",
+          "ELF"
+        ],
+        [
+          "segmento ELF",
+          "Agrupamento descrito por program headers para criar mapeamentos em memória; não é sinônimo de seção.",
+          "ELF/SO"
+        ],
+        [
+          "TLB",
+          "Translation Lookaside Buffer: cache de traduções de páginas virtuais para frames físicos.",
+          "hardware/SO"
+        ],
+        [
+          "lifetime",
+          "Intervalo em que um objeto C++ existe como objeto de seu tipo; não é sinônimo de morar na stack.",
+          "C++"
+        ],
+        [
+          "vptr/vtable",
+          "Implementação comum de despacho virtual: ponteiro oculto e tabela binária. A posição exata pertence à ABI, não ao padrão.",
+          "C++/ABI"
+        ],
+        [
+          "RTTI",
+          "Run-Time Type Information: metadados (como `type_info`) que permitem consultar o tipo dinâmico de um objeto polimórfico em tempo de execução, usados por `dynamic_cast` e `typeid`.",
+          "C++/ABI"
+        ],
+        [
+          "address point",
+          "Endereço dentro de uma vtable para o qual o vptr aponta na Itanium ABI; metadados podem precedê-lo.",
+          "ABI"
+        ],
+        [
+          "comportamento indefinido",
+          "Situação em que a norma C++ não impõe requisitos; o compilador pode assumir que ela não ocorre.",
+          "C++"
+        ],
+        [
+          "data race",
+          "Acessos conflitantes não atômicos entre threads sem sincronização; em C++ resulta em comportamento indefinido.",
+          "C++"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Perguntas para cada exemplo",
+      "text": "Qual é a especificação que garante esta afirmação? O C++ exige isso, ou é a ABI? Estou descrevendo um segmento ou uma seção? O linker já decidiu o endereço, ou o loader ainda aplicará relocations? O diagrama mostra um address point ou o começo físico da tabela?"
+    }
+  ]
+}

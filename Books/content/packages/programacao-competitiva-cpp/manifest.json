@@ -1,0 +1,32 @@
+{
+  "schema": "books.package.v2",
+  "kind": "book-package",
+  "id": "programacao-competitiva-cpp",
+  "title": "Programação Competitiva em C++: do básico ao avançado",
+  "description": "Curso completo e moderno de programação competitiva em C++, com algoritmos, estruturas de dados, matemática, grafos, strings, DP, engenharia de contest e trilhas de prática.",
+  "language": "pt-BR",
+  "tags": [
+    "c++",
+    "programação competitiva",
+    "algoritmos",
+    "estruturas de dados",
+    "ICPC",
+    "CSES"
+  ],
+  "header": "header.json",
+  "sections": [
+    "sections/cpp-e-analise-assintotica.json",
+    "sections/fundamentos-e-metodo.json",
+    "sections/cpp-moderno-stl.json",
+    "sections/ordenacao-busca-gulosos.json",
+    "sections/prefixos-janelas.json",
+    "sections/dp.json",
+    "sections/grafos-basicos.json",
+    "sections/grafos-avancados.json",
+    "sections/estruturas-arvore.json",
+    "sections/strings.json",
+    "sections/matematica.json",
+    "sections/tecnicas-avancadas.json",
+    "sections/engenharia-contest.json"
+  ]
+}

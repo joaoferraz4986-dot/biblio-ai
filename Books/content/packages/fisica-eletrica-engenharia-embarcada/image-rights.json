@@ -1,0 +1,104 @@
+{
+  "schema": "books.image-rights.v1",
+  "kind": "image-rights",
+  "files": {
+    "images/history-newton.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3ASir_Isaac_Newton_%281643-1727%29.jpg",
+      "sourceFile": "File:Sir Isaac Newton (1643-1727).jpg",
+      "license": "Public domain",
+      "credit": "Godfrey Kneller",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-gauss.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3ACarl_Friedrich_Gauss.jpg",
+      "sourceFile": "File:Carl Friedrich Gauss.jpg",
+      "license": "Public domain",
+      "credit": "Gottlieb Biermann / After Christian Albrecht Jensen",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-ohm.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AGeorg-simon-ohm2.jpg",
+      "sourceFile": "File:Georg-simon-ohm2.jpg",
+      "license": "Public domain",
+      "credit": "Wikimedia Commons",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-kirchhoff.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AGustav_Robert_Kirchhoff._Wood_engraving._Wellcome_V0003228.jpg",
+      "sourceFile": "File:Gustav Robert Kirchhoff. Wood engraving. Wellcome V0003228.jpg",
+      "license": "CC BY 4.0",
+      "credit": "Wikimedia Commons",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-orsted.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AHans_Christian_%C3%98rsted_daguerreotype.jpg",
+      "sourceFile": "File:Hans Christian Ørsted daguerreotype.jpg",
+      "license": "Public domain",
+      "credit": "Unknown authorUnknown author",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-faraday.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3APortrait_of_Michael_Faraday%2C_by_Drummond_after_Eddis_Wellcome_L0005470.jpg",
+      "sourceFile": "File:Portrait of Michael Faraday, by Drummond after Eddis Wellcome L0005470.jpg",
+      "license": "CC BY 4.0",
+      "credit": "Wikimedia Commons",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-maxwell.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AJames_Clerk_Maxwell_profile.jpg",
+      "sourceFile": "File:James Clerk Maxwell profile.jpg",
+      "license": "Public domain",
+      "credit": "Unidentified photographer. Smithsonian Institution from United States",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-hertz.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AHeinrich_Rudolf_Hertz.jpg",
+      "sourceFile": "File:Heinrich Rudolf Hertz.jpg",
+      "license": "Public domain",
+      "credit": "Robert Krewaldt",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-fourier.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AJoseph_Fourier.jpg",
+      "sourceFile": "File:Joseph Fourier.jpg",
+      "license": "Public domain",
+      "credit": "Amédée Félix Barthélemy Geille / After Julien-Léopold Boilly",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-watt.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3AWatt_James_von_Breda.jpg",
+      "sourceFile": "File:Watt James von Breda.jpg",
+      "license": "Public domain",
+      "credit": "Carl Frederik von Breda",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-coulomb.jpg": {
+      "source": "https://commons.wikimedia.org/wiki/File%3ACoulomb.jpg",
+      "sourceFile": "File:Coulomb.jpg",
+      "license": "Public domain",
+      "credit": "Wikimedia Commons",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-shannon.png": {
+      "source": "https://commons.wikimedia.org/wiki/File:Claude_Shannon_c1930.png",
+      "sourceFile": "File:Claude Shannon c1930.png",
+      "license": "Public domain",
+      "credit": "Wikimedia Commons",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-transistor.jpg": {
+      "source": "https://technoventions.substack.com/",
+      "sourceFile": "Imagem histórica dos inventores do transistor",
+      "license": "Direitos não determinados na fonte de busca; uso educacional interno até substituição por imagem licenciada",
+      "credit": "Technoventions / fonte indicada na busca",
+      "retrievedAt": "2026-09-24"
+    },
+    "images/history-nyquist.jpg": {
+      "source": "https://kids.kiddle.co/Harry_Nyquist",
+      "sourceFile": "Image:Harry Nyquist.jpg",
+      "license": "Direitos não determinados na fonte de busca; substituir antes de publicação comercial",
+      "credit": "Kiddle / fonte indicada no arquivo",
+      "retrievedAt": "2026-09-24"
+    }
+  }
+}

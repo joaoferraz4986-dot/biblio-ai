@@ -1,0 +1,117 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "strings",
+  "number": "9",
+  "title": "Strings: prefixos, padrões e palíndromos",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Strings escondem grafos e automatos. A escolha entre hash, Z, KMP, trie e Aho–Corasick depende de quantos padrões existem, se há atualizações e se você precisa de garantias determinísticas.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Prefix function / KMP"
+    },
+    {
+      "type": "paragraph",
+      "text": "A função prefixo `pi[i]` é o tamanho do maior prefixo próprio de `s[0..i]` que também é sufixo. Ela permite buscar um padrão em texto em tempo linear, reaproveitando bordas após uma falha."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "vector<int> prefix_function(const string& s) {\n    vector<int> pi(s.size());\n    for (int i = 1; i < (int)s.size(); ++i) {\n        int j = pi[i - 1];\n        while (j && s[i] != s[j]) j = pi[j - 1];\n        if (s[i] == s[j]) ++j;\n        pi[i] = j;\n    }\n    return pi;\n}",
+      "lineNumbers": true,
+      "title": "Prefix function em O(n)"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Z-function e suffix array"
+    },
+    {
+      "type": "paragraph",
+      "text": "A Z-function mede o maior prefixo que começa em cada posição e resolve ocorrências e periodicidade com uma janela `[l,r]`. Para ordenação lexicográfica de todos os sufixos, suffix array e LCP transformam problemas de substrings em problemas sobre um array ordenado."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "vector<int> z_function(const string& s) {\n    int n = s.size(); vector<int> z(n);\n    for (int i = 1, l = 0, r = 0; i < n; ++i) {\n        if (i <= r) z[i] = min(r - i + 1, z[i - l]);\n        while (i + z[i] < n && s[z[i]] == s[i + z[i]]) ++z[i];\n        if (i + z[i] - 1 > r) l = i, r = i + z[i] - 1;\n    }\n    return z;\n}",
+      "lineNumbers": true,
+      "title": "Z-function"
+    },
+    {
+      "type": "subsection",
+      "id": "trie",
+      "number": "9.1",
+      "title": "Trie e dicionários de prefixos",
+      "tag": "PREFIXOS",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma trie armazena caracteres em caminhos, permitindo prefixos em tempo proporcional ao comprimento da palavra. Para alfabeto grande, use `map` ou vetor comprimido; para muitas palavras e poucos caracteres, arrays são mais rápidos."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "struct Node { array<int, 26> next; bool terminal = false; Node() { next.fill(-1); } };\nvector<Node> trie(1);\nvoid add(const string& s) {\n    int v = 0;\n    for (char c : s) {\n        int x = c - 'a';\n        if (trie[v].next[x] == -1) trie[v].next[x] = trie.size(), trie.emplace_back();\n        v = trie[v].next[x];\n    }\n    trie[v].terminal = true;\n}",
+          "lineNumbers": true
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "palindromos",
+      "number": "9.2",
+      "title": "Palíndromos e Manacher",
+      "tag": "PADRÃO",
+      "accent": "pink",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Manacher calcula todos os raios de palíndromos centrados em posições e entre posições em `O(n)`. Uma alternativa mais simples é DP ou expansão de centro quando `n` é pequeno. Escolha a técnica cuja prova e implementação sejam proporcionais ao limite."
+        },
+        {
+          "type": "list",
+          "style": "check",
+          "items": [
+            "Palíndromo de uma consulta: hash reverso ou expansão.",
+            "Muitas consultas: Manacher, eertree ou hash com verificação.",
+            "Muitos padrões: Aho–Corasick."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Imprima a função prefixo de uma string.",
+        "Encontre todas as ocorrências de um padrão usando KMP.",
+        "Insira palavras em uma trie e consulte prefixos.",
+        "Verifique se uma string é palíndromo ignorando espaços e maiúsculas."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    }
+  ]
+}

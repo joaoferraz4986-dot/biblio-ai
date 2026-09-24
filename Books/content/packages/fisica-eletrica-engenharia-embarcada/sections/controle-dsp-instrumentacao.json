@@ -1,0 +1,162 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "controle-dsp-instrumentacao",
+  "number": "6",
+  "title": "Tópicos avançados: controle, DSP, metrologia e confiabilidade",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Depois de dominar campos, circuitos e dispositivos, pode-se modelar sistemas dinâmicos completos. O objetivo passa a ser medir, estimar, filtrar, controlar e provar que o sistema continua seguro sob incerteza.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Controle e realimentação"
+    },
+    {
+      "type": "paragraph",
+      "text": "Em malha fechada, o erro é a diferença entre referência e saída. Um PID contínuo é u=K_p e+K_i∫e dt+K_d de/dt. O termo proporcional reage ao erro, o integral reduz erro estacionário e o derivativo antecipa variação; saturação exige anti-windup."
+    },
+    {
+      "type": "math",
+      "tex": "C(s)=K_p+K_i/s+K_ds,\\quad \\dot x=Ax+Bu,\\quad y=Cx+Du",
+      "caption": "PID e espaço de estados"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlabilidade usa a matriz [B AB … Aⁿ⁻¹B]; observabilidade usa [C; CA; …; CAⁿ⁻¹]. Polos de A determinam modos naturais no modelo contínuo. Realimentação de estados u=−Kx move os polos quando o par é controlável."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "DSP e amostragem"
+    },
+    {
+      "type": "paragraph",
+      "text": "Amostragem converte tempo contínuo em sequência. Para sinal limitado a B, o modelo ideal exige f_s>2B e filtro anti-alias antes do ADC. A transformada Z descreve sequências e filtros digitais; sua região de convergência faz parte da solução."
+    },
+    {
+      "type": "math",
+      "tex": "X(z)=\\sum_{n=-\\infty}^{\\infty}x[n]z^{-n},\\quad H(z)=Y(z)/X(z)",
+      "caption": "Transformada Z"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Instrumentação e incerteza"
+    },
+    {
+      "type": "paragraph",
+      "text": "O mensurando é a grandeza que se pretende medir. Calibração relaciona indicação a padrão. A incerteza quantifica dispersão; não é simplesmente “erro”. Para Y=f(X₁,…,X_n), a propagação de primeira ordem usa derivadas parciais e covariâncias. Avaliação Tipo A usa repetição; Tipo B usa especificações, certificados e distribuições assumidas."
+    },
+    {
+      "type": "math",
+      "tex": "u_c^2(y)=\\sum_i\\sum_j c_i c_j u(x_i,x_j),\\quad c_i=\\partial f/\\partial x_i",
+      "caption": "Lei de propagação de incerteza"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Confiabilidade"
+    },
+    {
+      "type": "paragraph",
+      "text": "No modelo exponencial com taxa de falha constante λ, R(t)=e^(−λt) e MTTF=1/λ para componentes não reparáveis. MTBF é uma métrica de sistemas reparáveis e não deve ser atribuído automaticamente a um componente não reparável. Weibull usa parâmetro de forma para representar taxa decrescente, constante ou crescente. Declare sempre a parametrização e o mecanismo de falha assumido."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Problema guiado: filtro digital de média móvel"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dado x[n], um filtro de média móvel de N amostras é y[n]=(1/N)Σ_{k=0}^{N−1}x[n−k]. Ele reduz ruído não correlacionado aproximadamente por √N, mas introduz atraso e atenua mudanças rápidas. A implementação mantém uma soma corrente para evitar recomputar N valores."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "class MovingAverageFilter {\nprivate:\n    vector<double> sampleWindow;\n    size_t nextSampleIndex = 0;\n    double runningSum = 0.0;\n\npublic:\n    explicit MovingAverageFilter(size_t windowLength) {\n        if (windowLength == 0) throw invalid_argument(\"windowLength deve ser maior que zero\");\n        sampleWindow.assign(windowLength, 0.0);\n    }\n\n    double processSample(double newSample) {\n        runningSum -= sampleWindow[nextSampleIndex];\n        sampleWindow[nextSampleIndex] = newSample;\n        runningSum += newSample;\n        nextSampleIndex = (nextSampleIndex + 1) % sampleWindow.size();\n        return runningSum / sampleWindow.size();\n    }\n};",
+      "lineNumbers": true,
+      "title": "Filtro com estado explícito"
+    },
+    {
+      "type": "paragraph",
+      "text": "O custo por amostra é O(1) e a memória é O(N). O filtro não substitui um projeto de banda: avalie frequência de corte, atraso, saturação numérica, inicialização e ruído de quantização."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Calcule a saída de um PID em três instantes com erro fornecido.",
+        "Determine a taxa mínima de amostragem para um sensor limitado a 2 kHz.",
+        "Propague a incerteza de uma resistência calculada por V/I.",
+        "Compare um modelo exponencial e um Weibull para uma taxa de falha crescente."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Por que o limite de Nyquist–Shannon não é só uma fórmula"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para um sinal idealmente limitado a B hertz, a reconstrução sem ambiguidade requer f_s>2B e um filtro anti-alias antes da conversão. Se componentes acima da banda dobram para dentro da banda observada, ocorre aliasing: frequências diferentes passam a produzir a mesma sequência. O limite descreve uma condição de reconstrução ideal; sensores reais também exigem margem, filtro com banda de transição, jitter e análise de ruído."
+    },
+    {
+      "type": "history",
+      "name": "Harry Nyquist e Claude Shannon",
+      "shortBio": "Harry Nyquist (1889–1976) estudou limites de transmissão e estabilidade; Claude Shannon (1916–2001) formalizou a teoria matemática da comunicação.",
+      "insight": "Nyquist estabeleceu resultados fundamentais sobre taxa e largura de banda, e Shannon provou no fim dos anos 1940 a reconstrução de sinais limitados em banda. O nome composto não é uma regra decorativa: ele resume uma cadeia histórica que liga comunicação analógica, amostragem e reconstrução.",
+      "image": {
+        "src": "images/history-shannon.png",
+        "alt": "Retrato de Claude Shannon"
+      }
+    },
+    {
+      "type": "history",
+      "name": "Harry Nyquist",
+      "shortBio": "Harry Theodor Nyquist (1889–1976) foi um físico e engenheiro sueco-americano ligado à teoria da comunicação, ao ruído e à estabilidade de sistemas.",
+      "insight": "O trabalho de Nyquist ajudou a quantificar quanta informação uma linha pode transportar e a relacionar banda, taxa e estabilidade. Na amostragem, seu nome aparece junto ao de Shannon porque a reconstrução rigorosa depende de uma hipótese de banda limitada e de uma taxa suficientemente alta.",
+      "image": {
+        "src": "images/history-nyquist.jpg",
+        "alt": "Retrato de Harry Nyquist"
+      }
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "PID: sintonia é uma escolha experimental"
+    },
+    {
+      "type": "paragraph",
+      "text": "A fórmula u=K_p e+K_i∫e dt+K_d de/dt descreve a estrutura, mas não escolhe ganhos. As regras de Ziegler–Nichols usam resposta em malha aberta ou ganho último em malha fechada para obter uma configuração inicial; o resultado pode produzir sobressinal e precisa ser validado contra saturação, ruído, atraso e requisitos de estabilidade."
+    },
+    {
+      "type": "history",
+      "name": "James Watt",
+      "shortBio": "James Watt (1736–1819) foi um engenheiro e inventor escocês cuja melhoria da máquina a vapor tornou central o problema de regular velocidade e potência.",
+      "insight": "A regulação de máquinas a vapor é um antecedente histórico do controle por realimentação: medir a velocidade e corrigir a entrada transforma uma máquina em sistema dinâmico controlado. O PID moderno é posterior, mas a pergunta de engenharia — como corrigir sem oscilar — já aparece nesse contexto.",
+      "image": {
+        "src": "images/history-watt.jpg",
+        "alt": "Retrato de James Watt"
+      }
+    },
+    {
+      "type": "history",
+      "name": "Joseph Fourier",
+      "shortBio": "Joseph Fourier (1768–1830) foi um matemático e físico francês que estudou a condução de calor.",
+      "insight": "Decompor um sinal em frequências transforma uma forma de onda difícil de analisar em componentes senoidais mais simples. Essa ideia é útil para filtragem, transmissão e diagnóstico.",
+      "image": {
+        "src": "images/history-fourier.jpg",
+        "alt": "Retrato de Joseph Fourier"
+      }
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wallpaper">
+
+    <LinearLayout
+        android:id="@+id/generalContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nav_bar_container"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:id="@+id/containerHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/blurViewHome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:blurOverlayColor="#15FFFFFF">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/login_background" />
+            </eightbitlab.com.blurview.BlurView>
+
+            <LinearLayout
+                android:id="@+id/homeContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="30dp">
+
+                <TextView
+                    android:id="@+id/txtWelcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textColor="#cdd6f4"
+                    android:text="Bem-vindo"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/chicken_pie" />
+
+                <TextView
+                    android:id="@+id/txtEmailDisplay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textColor="#bac2de"
+                    android:layout_marginTop="5dp"
+                    android:text="do email: "
+                    android:textSize="14sp"
+                    android:fontFamily="@font/coconut_island" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="30dp"
+                    android:background="#45475a" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#cdd6f4"
+                    android:text="Sobre o NixOS"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/chicken_pie" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:textColor="#bac2de"
+                    android:lineSpacingExtra="4dp"
+                    android:text="NixOS é uma distribuição Linux baseada no gerenciador de pacotes Nix. Ela utiliza um modelo de configuração declarativa, onde todo o estado do sistema é descrito em um único arquivo, permitindo reproduzir ambientes idênticos e realizar rollbacks atômicos com facilidade. É ideal para quem busca imutabilidade e controle total sobre as dependências."
+                    android:textSize="14sp"
+                    android:fontFamily="@font/coconut_island" />
+
+                <Button
+                    android:id="@+id/btnGoToNix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="CONHECER NIXOS"
+                    android:background="@drawable/button_main_background"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/coconut_island" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/nav_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <include layout="@layout/nav_bar" />
+    </FrameLayout>
+
+</RelativeLayout>

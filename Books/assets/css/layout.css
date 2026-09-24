@@ -1,0 +1,69 @@
+/*
+ * Estrutura da página: capa (hero), grade sumário+conteúdo e rodapé.
+ * Regra do projeto: todo bloco de texto/conteúdo usa `width:100%; max-width:100%`
+ * dentro do seu contêiner — nunca uma largura fixa em px. Isso evita blocos "presos"
+ * que não acompanham os demais (o bug do callout que não expandia horizontalmente).
+ */
+.wrap { max-width: var(--page-max); margin-inline: auto; padding-inline: var(--space-6); }
+
+.hero { padding: var(--space-9) 0 var(--space-7); border-bottom: 1px solid var(--border-soft); background: radial-gradient(1100px 420px at 15% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%); }
+.hero .kicker { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-3); }
+.hero .title { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1.08; font-weight: 700; max-width: 22ch; }
+.hero .subtitle { margin-top: var(--space-4); font-size: var(--fs-lead); color: var(--text-dim); max-width: 68ch; }
+
+.reading-note { margin-top: var(--space-6); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: start; padding: var(--space-5); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-lg); max-width: 68ch; }
+.reading-note .icon { display: flex; align-items: center; justify-content: center; flex: none; width: 26px; height: 26px; color: var(--accent); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.reading-note strong { display: block; margin-bottom: var(--space-1); }
+.reading-note p { color: var(--text-dim); }
+
+.legend { margin-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.legend .chip { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: .74rem; color: var(--text-dim); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 5px 11px; }
+.legend .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+.layout { width: 100%; max-width: none; margin: 0; padding: var(--space-4) var(--space-4) 120px; display: grid; grid-template-columns: var(--toc-width) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+
+/* O sumário fica preso à esquerda da VIEWPORT (não do conteúdo) — só com a margem
+   padronizada do topo, esquerda e baixo (--space-4 nos três). Como `top` e `bottom`
+   ficam definidos e `height` não, ele se estica sozinho para preencher essa faixa. */
+nav.toc { position: sticky; top: var(--space-4); width: var(--toc-width); height: calc(100vh - 2 * var(--space-4)); z-index: var(--z-toc); overflow-y: auto; padding: var(--space-5) var(--space-3) var(--space-5) var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--panel); scrollbar-width: none; -ms-overflow-style: none; }
+nav.toc::-webkit-scrollbar { width: 0; height: 0; }
+nav.toc h4 { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: var(--space-3); }
+nav.toc ol#tocList > li { margin-bottom: var(--space-1); }
+nav.toc a { display: block; padding: 6px 8px; border-radius: var(--radius-sm); color: var(--text-dim); font-size: .88rem; text-decoration: none; line-height: 1.3; transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
+nav.toc a:hover { background: var(--panel-2); color: var(--text); }
+nav.toc a[aria-current='true'] { color: var(--accent); background: var(--panel-2); font-weight: 600; }
+nav.toc a.is-parent { color: var(--text); }
+nav.toc ol.sub { margin: 2px 0 6px; padding-left: var(--space-3); border-left: 1px solid var(--border-soft); }
+nav.toc ol.sub a { font-size: .82rem; padding: 4px 8px; }
+nav.toc-progress { height: 3px; border-radius: 2px; background: var(--border-soft); margin-bottom: var(--space-4); overflow: hidden; }
+nav.toc-progress span { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+#mainContent { width: 100%; max-width: var(--content-max); margin-inline: auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); font-size: .96rem; }
+.chapter { min-width: 0; scroll-margin-top: var(--space-6); }
+.chapter__head { margin-bottom: var(--space-5); padding-bottom: var(--space-4); border-bottom: 1px solid var(--border-soft); }
+.chapter__title { font-family: var(--font-display); font-size: var(--fs-h2); font-weight: 700; display: flex; gap: var(--space-2); align-items: baseline; }
+.chapter__title .num { color: var(--accent); font-variant-numeric: tabular-nums; }
+.chapter__body { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+.chapter__body > * { max-width: 100%; }
+
+footer.site-footer { border-top: 1px solid var(--border-soft); margin-top: var(--space-8); }
+footer.site-footer .wrap { padding-block: var(--space-6); color: var(--text-faint); font-size: .86rem; max-width: 76ch; }
+
+/*
+ * O sumário só cabe ao lado do conteúdo centralizado quando a tela é larga o
+ * bastante para os dois não se encostarem: largura mínima do sumário (--toc-width)
+ * + a margem dele (--space-4) + a largura do conteúdo (--page-max).
+ *   258px + 16px + 1240px = 1514px
+ * Abaixo disso, o sumário some e o conteúdo continua centralizado sozinho — não há
+ * mais nenhuma outra dependência entre os dois (o conteúdo nunca "abre espaço" pro
+ * sumário; ele só aparece por cima quando há folga na tela).
+ */
+@media (max-width: 1040px) {
+  .layout { display: block; padding-inline: var(--space-4); }
+  nav.toc { display: none; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 84px 0 var(--space-6); }
+  .wrap { padding-inline: var(--space-4); }
+  .layout { padding-top: var(--space-6); }
+}

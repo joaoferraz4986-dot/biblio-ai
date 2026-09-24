@@ -1,0 +1,255 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "fundamentos",
+  "number": "1",
+  "title": "Fundamentos: conjuntos, lógica e modelos de contagem",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Combinatória estuda estruturas discretas: objetos que podem ser separados em casos, posições, relações ou estados. A pergunta “quantos?” só tem uma resposta quando o universo, a identidade dos objetos e as regras de equivalência estão definidos. Este livro começa com conjuntos e termina em aplicações de nível universitário, sempre provando as fórmulas antes de usá-las.",
+      "lead": true
+    },
+    {
+      "type": "callout",
+      "variant": "definition",
+      "title": "Como ler uma afirmação combinatória",
+      "text": "Em cada resultado, declare o conjunto contado, a função que representa uma configuração e se duas configurações são consideradas iguais. Ordem, repetição, simetria e restrições não são detalhes: são parte da definição."
+    },
+    {
+      "type": "subsection",
+      "id": "comb-conjuntos",
+      "number": "1.1",
+      "title": "Conjuntos, funções e cardinalidade",
+      "tag": "BASE",
+      "accent": "blue",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Um **conjunto** é uma coleção em que a pertinência é a única informação relevante. Uma **sequência** preserva posições e pode repetir elementos. Uma **função** associa cada elemento do domínio a exatamente um elemento do contradomínio. Para conjuntos finitos, a cardinalidade `|A|` é o número de elementos."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: regra da soma"
+        },
+        {
+          "type": "paragraph",
+          "text": "Se `A` e `B` são conjuntos finitos e disjuntos, então $|A \\cup B| = |A| + |B|$."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Passo 1 — particionar",
+              "text": "Como $A \\cap B = \\varnothing$, cada elemento de $A \\cup B$ pertence a exatamente um dos dois conjuntos."
+            },
+            {
+              "title": "Passo 2 — construir a contagem",
+              "text": "Liste primeiro todos os elementos de `A` e depois todos os elementos de `B`. Nenhum elemento aparece duas vezes."
+            },
+            {
+              "title": "Passo 3 — contar posições",
+              "text": "A lista tem `|A|` posições vindas de `A` e `|B|` posições vindas de `B`; portanto tem `|A|+|B|` posições."
+            },
+            {
+              "title": "Conclusão",
+              "text": "Como a lista contém cada elemento da união exatamente uma vez, $|A \\cup B|=|A|+|B|$."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Teorema: regra do produto"
+        },
+        {
+          "type": "paragraph",
+          "text": "Se uma configuração é formada por uma escolha em `A` seguida de uma escolha em `B`, então o número de configurações é $|A|\\cdot|B|$."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Passo 1 — representar",
+              "text": "Represente cada configuração por um par ordenado `(a,b)`, com $a\\in A$ e $b\\in B$."
+            },
+            {
+              "title": "Passo 2 — contar para cada primeiro componente",
+              "text": "Para cada um dos `|A|` valores de `a`, existem exatamente `|B|` escolhas de `b`."
+            },
+            {
+              "title": "Passo 3 — somar blocos iguais",
+              "text": "Há `|A|` blocos, cada um com `|B|` pares. Pela regra da soma, o total é `|A|` repetido `|B|` vezes, isto é, $|A|\\cdot|B|$."
+            },
+            {
+              "title": "Conclusão",
+              "text": "A correspondência entre configurações e pares é bijetiva; logo a fórmula conta exatamente as configurações."
+            }
+          ]
+        },
+        {
+          "type": "math",
+          "tex": "\\lvert A \\times B\\rvert = \\lvert A\\rvert\\,\\lvert B\\rvert",
+          "caption": "cardinalidade do produto cartesiano"
+        },
+        {
+          "type": "paragraph",
+          "text": "**Leitura da fórmula.** Leitura: o número de elementos do produto cartesiano de A e B é igual ao número de elementos de A multiplicado pelo número de elementos de B."
+        },
+        {
+          "type": "table",
+          "header": [
+            "Estrutura",
+            "Ordem importa?",
+            "Repetição?",
+            "Exemplo"
+          ],
+          "rows": [
+            [
+              "conjunto",
+              "não",
+              "não por definição",
+              "{a,b,c}"
+            ],
+            [
+              "sequência",
+              "sim",
+              "pode haver",
+              "(a,b,a)"
+            ],
+            [
+              "subconjunto de tamanho k",
+              "não",
+              "não",
+              "{a,c}"
+            ],
+            [
+              "função de [k] para A",
+              "sim, por posição",
+              "sim",
+              "f(1)=a, f(2)=a"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-funcoes",
+      "number": "1.2",
+      "title": "Bijeções e princípio da casa dos pombos",
+      "tag": "PROVAS",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma **bijeção** é uma função simultaneamente injetiva (elementos diferentes têm imagens diferentes) e sobrejetiva (todo elemento do contradomínio é atingido). Se existe uma bijeção entre `A` e `B`, então os conjuntos têm a mesma cardinalidade."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Prova do princípio da casa dos pombos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Se `n+1` objetos são colocados em `n` caixas, alguma caixa contém pelo menos dois objetos."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Supor o contrário",
+              "text": "Suponha que nenhuma caixa contenha dois objetos."
+            },
+            {
+              "title": "Consequência da hipótese",
+              "text": "Então cada caixa contém no máximo um objeto."
+            },
+            {
+              "title": "Contar o máximo possível",
+              "text": "Com `n` caixas e no máximo um objeto em cada uma, cabem no máximo `n` objetos."
+            },
+            {
+              "title": "Contradição",
+              "text": "A situação contém `n+1` objetos, que é maior que `n`; a hipótese é impossível."
+            },
+            {
+              "title": "Conclusão",
+              "text": "Logo existe uma caixa com pelo menos dois objetos."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A versão generalizada afirma que, ao colocar `N` objetos em `k` caixas, alguma caixa contém pelo menos $ceil(N/k)$ objetos. A prova segue dividindo `N` pela capacidade máxima `r`: se todas tivessem no máximo `r-1`, o total seria no máximo `k(r-1)`, contradizendo `N>k(r-1)`."
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "comb-modelagem",
+      "number": "1.3",
+      "title": "Da pergunta lógica ao modelo computacional",
+      "tag": "PONTE",
+      "accent": "orange",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Antes de escolher uma fórmula, transforme o problema em uma função de contagem. O domínio é o conjunto de entradas válidas; o contradomínio é o conjunto de configurações; a função deve ser injetiva quando duas representações diferentes não podem descrever a mesma configuração. Essa formalização é a ponte entre lógica e algoritmo."
+        },
+        {
+          "type": "steps",
+          "items": [
+            {
+              "title": "Definir a identidade",
+              "text": "Pergunte quais diferenças importam. Em um conjunto, trocar a ordem não cria outro objeto; em uma sequência, cria."
+            },
+            {
+              "title": "Escolher uma representação",
+              "text": "Use tupla, sequência, subconjunto, bitmask, grafo ou função conforme o objeto. A representação precisa permitir testar validade."
+            },
+            {
+              "title": "Particionar casos",
+              "text": "Crie casos mutuamente exclusivos. Em código, isso vira `if`, estados de uma DP ou ramos de uma prova."
+            },
+            {
+              "title": "Provar cobertura",
+              "text": "Mostre que toda entrada válida cai em algum caso. Sem esta etapa, o algoritmo pode omitir soluções."
+            },
+            {
+              "title": "Provar não duplicação",
+              "text": "Mostre que uma solução não aparece em dois caminhos. Sem esta etapa, a contagem e o algoritmo podem supercontar."
+            },
+            {
+              "title": "Extrair complexidade",
+              "text": "Conte estados, transições e memória. A fórmula final informa se a implementação é polinomial, exponencial ou inviável."
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "example",
+          "title": "Aplicação: configuração de compilação",
+          "text": "Se um experimento combina 3 compiladores, 4 níveis de otimização e 2 arquiteturas, a regra do produto produz $3\\cdot4\\cdot2=24$ configurações. Se algumas combinações são incompatíveis, o conjunto deve ser particionado pelas restrições antes da multiplicação."
+        }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Nesta seção você aprendeu a base de toda a combinatória: distinguir conjunto de sequência, provar a regra da soma e do produto, usar bijeções e o princípio da casa dos pombos, e traduzir um problema em uma função de contagem antes de aplicar qualquer fórmula. Os próximos capítulos reaproveitam diretamente esse vocabulário: a regra do produto reaparece na dedução de permutações e do teorema binomial (Seção 2), e a ideia de bijeção volta em quase toda prova do livro, incluindo estrelas-e-barras (2.3) e os números de Catalan (4.2)."
+    },
+    {
+      "type": "history",
+      "name": "Leonhard Euler",
+      "shortBio": "Leonhard Euler (1707–1783) foi um matemático suíço que contribuiu para a teoria dos grafos, análise e combinatória.",
+      "insight": "O problema das pontes de Königsberg mostrou como abstrair uma situação física em vértices e arestas. Essa mudança de representação é uma das ideias centrais da combinatória aplicada.",
+      "image": {
+        "src": "images/history-euler.jpg",
+        "alt": "Retrato de Leonhard Euler"
+      }
+    }
+  ]
+}

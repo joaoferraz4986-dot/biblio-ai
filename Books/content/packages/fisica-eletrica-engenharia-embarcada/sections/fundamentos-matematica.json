@@ -1,0 +1,151 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "fundamentos-matematica",
+  "number": "0",
+  "title": "Pré-requisitos, unidades e linguagem dos modelos",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Este livro começa com as ferramentas usadas para descrever fenômenos elétricos. O objetivo não é decorar fórmulas, mas saber quais grandezas são conservadas, quais hipóteses tornam um modelo válido e como verificar dimensionalmente um resultado.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Grandezas e unidades SI"
+    },
+    {
+      "type": "paragraph",
+      "text": "Carga elétrica é medida em coulomb (C), corrente em ampere (A), tensão e potencial em volt (V), resistência em ohm (Ω), capacitância em farad (F), indutância em henry (H), potência em watt (W) e energia em joule (J). No SI, a carga elementar é e = 1,602 176 634 × 10⁻¹⁹ C, valor exato. A velocidade da luz no vácuo é c = 299 792 458 m/s, também exata."
+    },
+    {
+      "type": "table",
+      "header": [
+        "Grandeza",
+        "Símbolo",
+        "Unidade",
+        "Interpretação"
+      ],
+      "rows": [
+        [
+          "Carga",
+          "q",
+          "C",
+          "propriedade elétrica conservada"
+        ],
+        [
+          "Corrente",
+          "I",
+          "A = C/s",
+          "taxa de fluxo de carga"
+        ],
+        [
+          "Tensão",
+          "V",
+          "V = J/C",
+          "energia por unidade de carga"
+        ],
+        [
+          "Potência",
+          "P",
+          "W = J/s",
+          "taxa de transferência de energia"
+        ],
+        [
+          "Campo elétrico",
+          "E",
+          "N/C = V/m",
+          "força por carga de teste"
+        ],
+        [
+          "Campo magnético",
+          "B",
+          "T",
+          "efeito magnético sobre cargas em movimento"
+        ]
+      ],
+      "caption": "Mapa de grandezas"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Vetores, derivadas e integrais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Campo elétrico e campo magnético são vetoriais. Produto escalar mede projeção e fluxo; produto vetorial determina direção de torque e força magnética. Derivadas descrevem variação local. Integrais somam uma densidade ao longo de linha, superfície ou volume. Gradiente aponta para o crescimento mais rápido de um escalar; divergente mede fontes ou sumidouros locais; rotacional mede circulação local."
+    },
+    {
+      "type": "math",
+      "tex": "\\nabla V = (\\partial V/\\partial x,\\partial V/\\partial y,\\partial V/\\partial z),\\quad \\nabla\\cdot E,\\quad \\nabla\\times E",
+      "caption": "Operadores vetoriais centrais"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Como validar uma equação"
+    },
+    {
+      "type": "list",
+      "style": "check",
+      "items": [
+        "Confira unidades em cada termo; não se pode somar volts a amperes.",
+        "Teste limites: resistência nula, tempo zero, tempo infinito, distância grande e simetrias.",
+        "Declare o sistema de coordenadas e os sinais.",
+        "Separe modelo ideal de efeitos reais como perdas, parasitas, saturação e temperatura.",
+        "Compare uma ordem de grandeza antes de confiar em muitos algarismos."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "Uma fórmula sem as hipóteses que a acompanham é incompleta. Por exemplo, a lei de Ohm descreve componentes ôhmicos; um diodo exige uma relação não linear e um transistor depende do ponto de operação.",
+      "title": "Modelos têm domínio de validade"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Trilha de pré-requisitos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para a parte introdutória, revise álgebra, trigonometria, vetores, energia e derivadas. Para Maxwell e ondas, acrescente cálculo vetorial, integrais de linha e superfície e equações diferenciais. Para controle e DSP, acrescente números complexos, Laplace, Fourier, álgebra linear e probabilidade."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Converta 2,5 mA em A, 3,3 kΩ em Ω e 470 nF em F.",
+        "Verifique dimensionalmente P = VI e E = V/d.",
+        "Represente um vetor de módulo 5 em componentes quando ele faz 53° com o eixo x.",
+        "Explique por que uma corrente é uma grandeza escalar orientada por uma convenção, enquanto o campo elétrico é vetorial."
+      ]
+    },
+    {
+      "type": "history",
+      "name": "Newton e Leibniz",
+      "shortBio": "Isaac Newton (1643–1727), matemático e físico inglês, e Gottfried Wilhelm Leibniz (1646–1716), filósofo e matemático alemão, desenvolveram o cálculo de forma independente.",
+      "insight": "O cálculo nasceu da necessidade de descrever variação e acumulação contínuas. A derivada mede uma taxa local; a integral soma contribuições infinitesimais. A disputa posterior de prioridade não muda o fato de que as duas notações influenciaram a forma moderna da disciplina.",
+      "image": {
+        "src": "images/history-newton.jpg",
+        "alt": "Retrato de Isaac Newton"
+      }
+    },
+    {
+      "type": "history",
+      "name": "Carl Friedrich Gauss",
+      "shortBio": "Carl Friedrich Gauss (1777–1855) foi um matemático e físico alemão que trabalhou em teoria dos números, geodesia e eletromagnetismo.",
+      "insight": "A Lei de Gauss transforma uma distribuição com simetria em um cálculo de fluxo pela superfície. O ganho não é uma nova força, mas um atalho baseado na conservação e na simetria do campo.",
+      "image": {
+        "src": "images/history-gauss.jpg",
+        "alt": "Retrato de Carl Friedrich Gauss"
+      }
+    }
+  ]
+}

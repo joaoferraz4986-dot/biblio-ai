@@ -1,0 +1,81 @@
+/*
+ * Tokens de design: cores, tipografia, espaçamento, raios e sombras.
+ * Mude a aparência do site inteiro editando SOMENTE este arquivo sempre que possível.
+ * Tema claro/escuro: troque `data-theme` em <html> (GitHub Dark é o padrão do projeto).
+ */
+:root {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --bg-elevated: #0f151c;
+  --panel: #121a23;
+  --panel-2: #182430;
+  --panel-3: #1e2c3a;
+  --border: #223140;
+  --border-soft: #1a2530;
+  --text: #eef3f8;
+  --text-dim: #9fb3c8;
+  --text-faint: #64798d;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.32);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+
+  --accent-blue: #76a9fa;
+  --accent-teal: #2dd4bf;
+  --accent-amber: #f2b84b;
+  --accent-gray: #9aa7b4;
+  --accent-violet: #b39ef3;
+  --accent-orange: #f2955c;
+  --accent-pink: #f19ec2;
+  --accent-slate: #8fa3c8;
+  --accent-green: #6fcf7d;
+  --accent-red: #f27272;
+  --accent-cyan: #63d4e8;
+  --accent: var(--accent-blue);
+
+  --tone-ok: #6fcf7d;
+  --tone-warn: #f2b84b;
+  --tone-bad: #f27272;
+  --tone-dim: var(--text-faint);
+
+  --font-display: 'Space Grotesk', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --fs-body: clamp(0.96rem, 0.9rem + 0.25vw, 1.05rem);
+  --fs-lead: clamp(1.08rem, 1rem + 0.35vw, 1.2rem);
+  --fs-h1: clamp(2rem, 1.5rem + 2.2vw, 3.2rem);
+  --fs-h2: clamp(1.4rem, 1.2rem + 0.9vw, 1.9rem);
+  --fs-h3: clamp(1.14rem, 1.05rem + 0.4vw, 1.32rem);
+  --fs-h4: 1.02rem;
+  --lh-body: 1.68;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-7: 32px; --space-8: 44px; --space-9: 64px;
+
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 22px; --radius-pill: 999px;
+  --control-height: 38px; --control-height-sm: 32px;
+  --control-pad-y: 9px; --control-pad-x: 13px;
+  --control-pad-y-sm: 6px; --control-pad-x-sm: 10px;
+  --control-radius: var(--radius-sm);
+
+  --content-max: 860px;
+  --page-max: 1240px;
+  --toc-width: 258px;
+  --dock-gap: 10px;
+
+  --z-toc: 20; --z-dock: 40; --z-toast: 60; --z-overlay: 70; --z-menu: 80;
+
+  --ease: cubic-bezier(.22, .61, .36, 1);
+  --dur-fast: .15s; --dur: .22s; --dur-slow: .4s;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f4f6f9; --bg-elevated: #ffffff; --panel: #ffffff; --panel-2: #eef1f5; --panel-3: #e4e9ef;
+  --border: #d7dee6; --border-soft: #e4e9ef; --text: #10161c; --text-dim: #46596b; --text-faint: #7a8ea2;
+  --shadow: 0 18px 50px rgba(20, 30, 45, 0.12); --shadow-sm: 0 6px 18px rgba(20, 30, 45, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0s; --dur: 0s; --dur-slow: 0s; }
+}

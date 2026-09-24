@@ -1,0 +1,60 @@
+/*
+ * Blocos de texto. Regra fixa do projeto: todo bloco é `width:100%` dentro de
+ * `.chapter__body` / `.b-subsection__body` / coluna — nunca `display:inline-block`,
+ * `float` ou uma largura fixa em px. É essa regra que evita blocos "presos" que não
+ * acompanham a largura dos demais (era o bug do callout "Distinção importante").
+ */
+.b-heading { width: 100%; font-family: var(--font-display); font-weight: 700; scroll-margin-top: var(--space-6); }
+.b-heading--3 { font-size: var(--fs-h3); margin-top: var(--space-2); }
+.b-heading--4 { font-size: var(--fs-h4); color: var(--text-dim); text-transform: uppercase; letter-spacing: .04em; font-family: var(--font-mono); font-weight: 600; }
+
+.b-paragraph { width: 100%; max-width: 74ch; }
+.b-paragraph--lead { font-size: var(--fs-lead); color: var(--text-dim); }
+
+.b-list { width: 100%; display: flex; flex-direction: column; gap: 8px; max-width: 74ch; }
+.b-list > li { position: relative; padding-left: 1.5em; }
+.b-list--bullet > li::before { content: ''; position: absolute; left: .35em; top: .68em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.b-list--number { counter-reset: item; }
+.b-list--number > li { counter-increment: item; }
+.b-list--number > li::before { content: counter(item) '.'; position: absolute; left: 0; color: var(--accent); font-family: var(--font-mono); font-size: .84em; }
+.b-list--check > li::before { content: '✓'; position: absolute; left: 0; color: var(--tone-ok); font-family: var(--font-mono); }
+.b-list .b-list { margin-top: 8px; }
+
+.b-quote { width: 100%; max-width: 74ch; border-left: 3px solid var(--accent); padding: var(--space-2) 0 var(--space-2) var(--space-5); }
+.b-quote p { font-size: var(--fs-lead); font-style: italic; color: var(--text); }
+.b-quote footer { margin-top: var(--space-2); font-family: var(--font-mono); font-size: .78rem; color: var(--text-faint); }
+.b-quote footer::before { content: '— '; }
+
+.b-callout { width: 100%; display: flex; flex-direction: column; gap: var(--space-2); border: 1px solid var(--border); border-left: 3px solid var(--accent, var(--accent-blue)); border-radius: var(--radius-md); background: var(--panel); padding: var(--space-4) var(--space-5); }
+.b-callout__head { display: flex; align-items: center; gap: 8px; color: var(--accent, var(--accent-blue)); }
+.b-callout__title { font-size: .88rem; font-family: var(--font-display); }
+.b-callout__body { display: flex; flex-direction: column; gap: 8px; color: var(--text); }
+.b-callout__body > .block-list, .b-callout__body > .b-code, .b-callout__body > figure { width: 100%; }
+.b-callout--info { --accent: var(--accent-cyan); }
+.b-callout--key { --accent: var(--accent-teal); background: linear-gradient(90deg, rgba(45, 212, 191, .08), transparent 60%); }
+.b-callout--tip { --accent: var(--accent-green); }
+.b-callout--warning { --accent: var(--tone-warn); background: linear-gradient(90deg, rgba(242, 184, 75, .08), transparent 60%); }
+.b-callout--danger { --accent: var(--tone-bad); background: linear-gradient(90deg, rgba(242, 114, 114, .08), transparent 60%); }
+.b-callout--definition { --accent: var(--accent-violet); }
+.b-callout--example { --accent: var(--accent-pink); }
+
+.b-steps { width: 100%; display: flex; flex-direction: column; gap: var(--space-4); counter-reset: step; max-width: 74ch; }
+.b-steps__item { position: relative; padding-left: 44px; counter-increment: step; }
+.b-steps__item::before { content: counter(step); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--border); color: var(--accent); font-family: var(--font-mono); font-weight: 600; display: flex; align-items: center; justify-content: center; font-size: .84rem; }
+.b-steps__body strong { display: block; margin-bottom: 4px; font-family: var(--font-display); }
+.b-steps__body p { color: var(--text-dim); font-size: .92rem; }
+
+.b-divider { width: 100%; border: none; border-top: 1px solid var(--border); margin: var(--space-2) 0; }
+
+/* tons e código inline de marcação (Books.inline) */
+code.inline, kbd { font-family: var(--font-mono); font-size: .88em; }
+code.inline { background: var(--panel-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: .1em .38em; }
+kbd { background: var(--panel-3); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: .05em .5em; }
+.tone { border-radius: 4px; padding: .04em .3em; }
+.tone--ok { color: var(--tone-ok); } .tone--warn { color: var(--tone-warn); } .tone--bad { color: var(--tone-bad); } .tone--dim { color: var(--tone-dim); }
+.tone--blue { color: var(--accent-blue); } .tone--teal { color: var(--accent-teal); } .tone--amber { color: var(--accent-amber); }
+.tone--gray { color: var(--accent-gray); } .tone--violet { color: var(--accent-violet); } .tone--orange { color: var(--accent-orange); }
+.tone--pink { color: var(--accent-pink); } .tone--slate { color: var(--accent-slate); } .tone--green { color: var(--accent-green); }
+.tone--red { color: var(--accent-red); } .tone--cyan { color: var(--accent-cyan); }
+a { color: var(--accent); text-underline-offset: 2px; }
+.b-error { width: 100%; border: 1px solid var(--tone-bad); border-radius: var(--radius-md); padding: var(--space-4); color: var(--tone-bad); background: rgba(242, 114, 114, .08); }

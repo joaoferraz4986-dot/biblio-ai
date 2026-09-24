@@ -1,0 +1,207 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "grafos-basicos",
+  "number": "6",
+  "title": "Grafos I: representação, busca e componentes",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Um grafo modela entidades e relações: cidades e estradas, estados e transições, páginas e links. Escolha lista de adjacência para grafos esparsos e matriz apenas quando `n` for pequeno ou as consultas exigirem acesso constante entre todos os pares.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "BFS e DFS"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "vector<vector<int>> g(n);\nvector<int> dist(n, -1);\nqueue<int> q;\ndist[source] = 0; q.push(source);\nwhile (!q.empty()) {\n    int v = q.front(); q.pop();\n    for (int to : g[v]) if (dist[to] == -1) {\n        dist[to] = dist[v] + 1;\n        q.push(to);\n    }\n}",
+      "lineNumbers": true,
+      "title": "BFS — menores distâncias sem pesos"
+    },
+    {
+      "type": "paragraph",
+      "text": "DFS é natural para componentes, detecção de ciclos, pontes, articulações e ordenação topológica. Em grafos muito profundos, a pilha recursiva pode estourar; use uma versão iterativa ou aumente a cautela conforme a plataforma."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "DSU / Union-Find"
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "struct DSU {\n    vector<int> p, sz;\n    DSU(int n): p(n), sz(n, 1) { iota(p.begin(), p.end(), 0); }\n    int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }\n    bool unite(int a, int b) {\n        a = find(a); b = find(b);\n        if (a == b) return false;\n        if (sz[a] < sz[b]) swap(a, b);\n        p[b] = a; sz[a] += sz[b]; return true;\n    }\n};",
+      "lineNumbers": true,
+      "title": "União por tamanho + compressão"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "Em um grafo não direcionado, uma BFS/DFS visita exatamente a componente conexa alcançável. Em um grafo direcionado, “alcançável de u” e “alcança u” são perguntas diferentes; não transfira intuições sem verificar a direção das arestas.",
+      "title": "Direção importa"
+    },
+    {
+      "type": "subsection",
+      "id": "toposort",
+      "number": "6.1",
+      "title": "Ordenação topológica",
+      "tag": "DEPENDÊNCIAS",
+      "accent": "teal",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Uma ordenação topológica existe exatamente quando o grafo direcionado é acíclico. O algoritmo de Kahn mantém o grau de entrada e libera vértices que se tornam independentes."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "queue<int> q;\nfor (int v = 0; v < n; ++v) if (indeg[v] == 0) q.push(v);\nvector<int> order;\nwhile (!q.empty()) {\n    int v = q.front(); q.pop(); order.push_back(v);\n    for (int to : g[v]) if (--indeg[to] == 0) q.push(to);\n}\nif ((int)order.size() < n) cout << \"ciclo\\n\";",
+          "lineNumbers": true
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "bipartido",
+      "number": "6.2",
+      "title": "Bipartição e coloração",
+      "tag": "COLORAÇÃO",
+      "accent": "amber",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Um grafo é bipartido quando seus vértices podem ser coloridos com duas cores sem aresta monocromática. BFS/DFS detecta conflito; a mesma técnica resolve componentes e fornece uma partição para problemas de “duas equipes”."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "vector<int> color(n, -1);\nfor (int s = 0; s < n; ++s) if (color[s] == -1) {\n    queue<int> q; q.push(s); color[s] = 0;\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int to : g[v]) {\n            if (color[to] == -1) color[to] = color[v] ^ 1, q.push(to);\n            else if (color[to] == color[v]) ok = false;\n        }\n    }\n}",
+          "lineNumbers": true
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Conte componentes conexas em um grafo não direcionado.",
+        "Verifique se um grafo é bipartido.",
+        "Calcule a distância mínima em um labirinto sem pesos.",
+        "Detecte se um grafo direcionado possui ciclo usando três cores."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "subsection",
+      "id": "problema-labirinto-explicado",
+      "number": "6.3",
+      "title": "Problema difícil guiado: labirinto com caminho mínimo e reconstrução",
+      "tag": "WALKTHROUGH",
+      "accent": "red",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "**Problema.** Dada uma grade com `#` (parede), `.` (célula livre), `A` (início) e `B` (destino), encontre o menor caminho e imprima a sequência de movimentos. Se não existir, imprima `IMPOSSIBLE`. O ponto difícil não é apenas descobrir a distância: é recuperar o caminho sem guardar uma string inteira em cada estado.",
+          "lead": true
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "1. Intuição e modelagem"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cada célula livre é um vértice e cada movimento ortogonal é uma aresta de custo 1. Logo, BFS visita as células em camadas de distância crescente. A primeira vez que chegamos em `B` já temos uma distância mínima. Para reconstruir, guardamos em cada célula o predecessor e o movimento que levou até ela."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "2. Invariante"
+        },
+        {
+          "type": "paragraph",
+          "text": "Quando uma célula entra na fila, `distância[célula]` é a menor distância possível desde `A`. Isso vale porque BFS só expande uma camada depois de terminar a anterior e todas as arestas têm o mesmo peso."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "3. Código modular"
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "struct Cell { int row, column; };\n\nstring reconstructPath(Cell startCell, Cell targetCell,\n                       const vector<vector<Cell>>& predecessor,\n                       const vector<vector<char>>& moveUsed) {\n    string reversedPath;\n    Cell currentCell = targetCell;\n    while (!(currentCell.row == startCell.row && currentCell.column == startCell.column)) {\n        reversedPath.push_back(moveUsed[currentCell.row][currentCell.column]);\n        currentCell = predecessor[currentCell.row][currentCell.column];\n    }\n    reverse(reversedPath.begin(), reversedPath.end());\n    return reversedPath;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int rowCount, columnCount;\n    cin >> rowCount >> columnCount;\n    vector<string> grid(rowCount);\n    for (string& row : grid) cin >> row;\n\n    Cell startCell{-1, -1}, targetCell{-1, -1};\n    for (int row = 0; row < rowCount; ++row) {\n        for (int column = 0; column < columnCount; ++column) {\n            if (grid[row][column] == 'A') startCell = {row, column};\n            if (grid[row][column] == 'B') targetCell = {row, column};\n        }\n    }\n\n    vector<vector<int>> distance(rowCount, vector<int>(columnCount, -1));\n    vector<vector<Cell>> predecessor(rowCount, vector<Cell>(columnCount, {-1, -1}));\n    vector<vector<char>> moveUsed(rowCount, vector<char>(columnCount, 0));\n    const int rowDelta[4] = {-1, 1, 0, 0};\n    const int columnDelta[4] = {0, 0, -1, 1};\n    const char moveName[4] = {'U', 'D', 'L', 'R'};\n    queue<Cell> pendingCells;\n    distance[startCell.row][startCell.column] = 0;\n    pendingCells.push(startCell);\n\n    while (!pendingCells.empty()) {\n        Cell currentCell = pendingCells.front();\n        pendingCells.pop();\n        for (int direction = 0; direction < 4; ++direction) {\n            int nextRow = currentCell.row + rowDelta[direction];\n            int nextColumn = currentCell.column + columnDelta[direction];\n            bool insideGrid = 0 <= nextRow && nextRow < rowCount && 0 <= nextColumn && nextColumn < columnCount;\n            if (!insideGrid || grid[nextRow][nextColumn] == '#' || distance[nextRow][nextColumn] != -1) continue;\n            distance[nextRow][nextColumn] = distance[currentCell.row][currentCell.column] + 1;\n            predecessor[nextRow][nextColumn] = currentCell;\n            moveUsed[nextRow][nextColumn] = moveName[direction];\n            pendingCells.push({nextRow, nextColumn});\n        }\n    }\n\n    if (distance[targetCell.row][targetCell.column] == -1) { cout << \"IMPOSSIBLE\\n\"; return 0; }\n    string path = reconstructPath(startCell, targetCell, predecessor, moveUsed);\n    cout << \"YES\\n\" << path.size() << \"\\n\" << path << \"\\n\";\n}",
+          "lineNumbers": true,
+          "title": "Solução completa, com funções nomeadas e comentários implícitos por etapas"
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "4. Complexidade"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cada célula entra na fila no máximo uma vez e examina quatro direções. Portanto o tempo é `O(R·C)` e a memória também é `O(R·C)`. Guardar predecessores é o preço da reconstrução; se só a distância fosse necessária, bastaria `distance`."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "5. Como generalizar"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Pesos 0/1: troque a fila por deque e use 0–1 BFS.",
+            "Pesos positivos variados: use Dijkstra e predecessor.",
+            "Várias fontes: inicialize a fila com todas elas e distância 0.",
+            "Caminho lexicograficamente mínimo: controle a ordem de expansão ou reconstrua com uma regra adicional."
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "6. Exemplo de entrada e saída"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "code": "5 8\n########\n#A...B.#\n#.##.#.#\n#......#\n########",
+          "lineNumbers": true,
+          "title": "Entrada"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "code": "YES\n4\nRRRR",
+          "lineNumbers": true,
+          "title": "Saída possível"
+        }
+      ]
+    }
+  ]
+}

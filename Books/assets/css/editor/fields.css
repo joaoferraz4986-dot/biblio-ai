@@ -1,0 +1,50 @@
+/* Campos de formulário genéricos (Books.editorFields) e a árvore de blocos. */
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-3); min-width: 0; }
+.field__label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .02em; color: var(--text-faint); text-transform: uppercase; }
+.field__req { color: var(--tone-bad); }
+.field__check { flex-direction: row; align-items: center; gap: 8px; font-size: .85rem; cursor: pointer; }
+.field__check input { width: auto; }
+.field__mono { font-family: var(--font-mono); font-size: .84rem; white-space: pre; overflow-x: auto; }
+.field--nested { border-left: 2px solid var(--border); padding-left: var(--space-4); margin-top: var(--space-2); }
+
+/* A legenda mostra apenas a cor atualmente usada; clique no círculo para abrir o seletor nativo. */
+.accent-picker { display: inline-flex; gap: 8px; align-items: center; max-width: 280px; }
+.accent-picker__current { width: 28px; height: 28px; flex: none; border-radius: 50%; background: var(--accent); border: 2px solid var(--text); box-shadow: 0 0 0 2px var(--border); cursor: pointer; }
+.accent-picker__color { width: 30px; height: 30px; padding: 2px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); cursor: pointer; }
+.accent-picker__custom { max-width: 110px; }
+
+/* aspect-ratio é definido inline por JS a partir do campo "Proporção" (16:9 é o valor padrão) */
+.image-picker__preview { width: 100%; max-width: 320px; aspect-ratio: 16/9; background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-faint); font-size: .8rem; margin-bottom: 6px; }
+.image-picker__preview img { width: 100%; height: 100%; object-fit: cover; }
+.image-picker__row { display: flex; gap: 6px; align-items: center; }
+.image-picker__file { display: none; }
+
+.table-editor__grid { display: grid; gap: 4px; align-items: center; }
+.table-editor__cell { font-size: .82rem; }
+.table-editor__cell.is-header { font-weight: 600; }
+.table-editor__actions { display: flex; gap: 6px; margin-top: 6px; }
+
+.legend-editor__row { display: grid; grid-template-columns: minmax(0, 230px) 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+.group-list__item { border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); margin-bottom: var(--space-3); background: var(--panel-2); }
+.group-list__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-family: var(--font-mono); font-size: .74rem; color: var(--text-faint); }
+.columns-editor { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
+.columns-editor__col { border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: var(--space-3); background: var(--bg-elevated); }
+.columns-editor__head { display: flex; justify-content: space-between; font-size: .76rem; color: var(--text-faint); margin-bottom: 6px; }
+.columns-editor__add { display: flex; align-items: center; }
+
+/* ---- árvore de blocos ---- */
+.block-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.block-card { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--panel-2); overflow: hidden; }
+.block-card__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); cursor: pointer; }
+.block-card__toggle { flex: none; color: var(--text-faint); }
+.block-card__icon { flex: none; color: var(--accent); display: flex; }
+.block-card__title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.block-card__title strong { font-size: .8rem; }
+.block-card__summary { font-size: .76rem; color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.block-card__ops { display: flex; gap: 2px; flex: none; }
+.block-card__body { padding: var(--space-3) var(--space-4) var(--space-4); border-top: 1px solid var(--border-soft); background: var(--bg-elevated); }
+
+.add-menu { position: absolute; z-index: var(--z-menu); width: 240px; max-height: 340px; overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow); padding: var(--space-2); }
+.add-menu__group { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); padding: 8px 8px 4px; }
+.add-menu__item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 7px 8px; border-radius: var(--radius-sm); font-size: .82rem; }
+.add-menu__item:hover { background: var(--panel-2); color: var(--accent); }

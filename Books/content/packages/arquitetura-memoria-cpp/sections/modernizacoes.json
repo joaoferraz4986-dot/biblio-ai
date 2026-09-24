@@ -1,0 +1,83 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "modernizacoes",
+  "number": "7",
+  "title": "Modernizações e complementos atuais",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "O texto original desta referência segue de perto CS:APP e o livro de Lippman (1996). Desde então, toolchains passaram a combinar PIE, ASLR, proteções de fluxo de controle e novos recursos da linguagem. Esta seção atualiza o mapa sem transformar uma configuração comum em regra universal: flags, distribuição Linux, arquitetura e versão do compilador podem mudar o resultado."
+    },
+    {
+      "type": "mermaid",
+      "code": "flowchart TD\n    BIN(\"Binário compilado hoje\") --> ASLR(\"ASLR + PIE: bases de carregamento aleatórias\")\n    BIN --> CAN(\"Stack canary: detecta overflow antes do ret\")\n    BIN --> REL(\"RELRO: GOT marcado somente-leitura após o linking\")\n    BIN --> CET(\"Intel CET / ARM PAC: shadow stack + branch tracking em hardware\")",
+      "caption": "visão geral das mitigações modernas de memória",
+      "accent": "orange"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 5 (ELF) — PIE e ASLR"
+    },
+    {
+      "type": "paragraph",
+      "text": "Desde por volta de 2017, GCC e Clang geram executáveis **PIE** (*Position-Independent Executable*) por padrão na maioria das distribuições Linux. Isso significa que `.text`, `.rodata`, `.data` e `.bss` — todo aquele bloco fixo do mapa de endereços da Seção 5 — carrega em uma **base aleatória** a cada execução (parte do **ASLR**, *Address Space Layout Randomization*), junto com a base do heap e da stack. O antigo endereço fixo `0x400000` só aparece hoje em binários não-PIE."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 5.5 (Stack) — canário e Shadow Stack"
+    },
+    {
+      "type": "paragraph",
+      "text": "Compiladores modernos (com `-fstack-protector-strong`, padrão em várias distros) inserem um valor aleatório — o **canário de pilha** — entre as variáveis locais e o `%rbp`/endereço de retorno salvos. Antes do `ret`, o valor é conferido; se um *buffer overflow* o corrompeu, o programa aborta em vez de saltar para um endereço controlado pelo atacante. Em hardware recente, o **Intel CET** (desde a geração Tiger Lake) adiciona uma **Shadow Stack**: uma cópia dos endereços de retorno mantida pelo próprio processador, verificada em todo `ret` — mesma ideia do canário, mas aplicada em hardware. Em ARM64, **Pointer Authentication (PAC)** cumpre um papel equivalente, assinando criptograficamente o endereço de retorno."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 5.6 (Heap) — RELRO e a PLT/GOT"
+    },
+    {
+      "type": "paragraph",
+      "text": "A chamada `operator_new@PLT` da Seção 5.6 passa por duas tabelas: a **PLT** (*Procedure Linkage Table*, em `.text`) e a **GOT** (*Global Offset Table*, que guarda os endereços reais resolvidos pelo linker dinâmico). Com **RELRO** total (*RELocation Read-Only*, padrão em builds modernos), a GOT é marcada somente-leitura logo depois de resolvida — fechando uma classe inteira de ataques que sobrescreviam entradas da GOT para sequestrar chamadas de função."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 6.3 (Vtable) — CET/IBT contra sequestro de vtable"
+    },
+    {
+      "type": "paragraph",
+      "text": "A chamada indireta `call *%rax` usada no despacho virtual é justamente o tipo de instrução que ataques de *vtable hijacking* exploram (sobrescrever o *vptr* de um objeto para apontar para uma vtable forjada). O componente **IBT** (*Indirect Branch Tracking*) do Intel CET exige que todo alvo válido de `call`/`jmp` indireto comece com uma instrução especial (`ENDBR64`); qualquer outro destino gera uma falha de proteção — uma defesa de hardware específica para esse padrão de ataque."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 6.1/6.3 — layout de objeto e cache"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++17 introduziu `std::hardware_destructive_interference_size`, uma constante que expõe o tamanho típico de linha de cache do processador-alvo. Programadores de alto desempenho a usam para preencher (*pad*) o layout de uma classe deliberadamente, evitando que dois membros não-estáticos de threads diferentes caiam na mesma linha de cache (*false sharing*) — uma extensão direta da discussão de layout da Seção 6.1."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Sobre a Seção 6.5 (new/delete) — pmr e coroutines"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++17 trouxe `std::pmr` (*polymorphic memory resources*): uma forma padronizada de redirecionar onde `new` efetivamente aloca — por exemplo, um `std::pmr::monotonic_buffer_resource` sobre um buffer na stack — sem escrever *placement new* manualmente toda vez."
+    },
+    {
+      "type": "paragraph",
+      "text": "C++20 introduziu **coroutines**, que precisam de um \"quadro de coroutine\" guardando variáveis locais e o estado de suspensão entre retomadas. Por padrão, esse quadro é alocado no **heap** via `operator new` — um quadro de armazenamento associado à coroutine, mas não uma nova categoria de *storage duration*. Compiladores modernos podem aplicar **HALO** (*Heap Allocation eLision Optimization*): quando provam que o tempo de vida da coroutine está inteiramente contido no do chamador, o quadro pode ser colocado na *stack* do chamador — a alocação no heap simplesmente some, sem qualquer mudança no código-fonte."
+    },
+    {
+      "type": "callout",
+      "variant": "key",
+      "title": "Em síntese",
+      "text": "Esta seção atualizou, mitigação por mitigação, cada mecanismo apresentado nas Seções 3, 5 e 6: PIE/ASLR alteram o mapa fixo de endereços da Seção 5, o canário e a Shadow Stack protegem o quadro de pilha da Seção 5.5, RELRO protege a GOT/PLT do heap explicado na Seção 5.6, e o CET/IBT defende exatamente a chamada indireta da vtable vista na Seção 6.3. As novidades de linguagem (`pmr`, coroutines) mostram que até mecanismos modernos do C++20 continuam se apoiando na mesma distinção entre stack e heap ensinada desde a Seção 2 — a próxima seção fecha o livro com uma síntese intuitiva de todo esse percurso."
+    }
+  ]
+}

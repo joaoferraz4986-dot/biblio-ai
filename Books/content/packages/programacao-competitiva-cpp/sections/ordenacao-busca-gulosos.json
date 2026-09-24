@@ -1,0 +1,123 @@
+{
+  "schema": "books.section.v2",
+  "kind": "book-section",
+  "id": "ordenacao-busca-gulosos",
+  "number": "3",
+  "title": "Ordenação, busca e estratégias gulosas",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Ordenar revela estrutura. Muitas soluções começam organizando eventos, coordenadas ou candidatos para que uma decisão local seja segura. A técnica gulosa só funciona quando há uma prova de troca, uma propriedade de matroide, ou uma decomposição que torne escolhas locais globalmente ótimas.",
+      "lead": true
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Busca binária sobre resposta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Quando a pergunta “é possível atingir pelo menos X?” possui monotonicidade, transforme otimização em decisão. Mantenha um intervalo em que a resposta está e reduza-o até o primeiro valor viável."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "long long lo = 0, hi = 1e18;\nwhile (lo < hi) {\n    long long mid = lo + (hi - lo) / 2;\n    if (can(mid)) hi = mid;\n    else lo = mid + 1;\n}\ncout << lo << \"\\n\";",
+      "lineNumbers": true,
+      "title": "Primeiro valor viável"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Intervalos e eventos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Para selecionar o maior número de intervalos sem sobreposição, ordene pelo fim crescente e aceite o próximo compatível. Para problemas de cobertura, eventos ou salas, transforme começos e fins em eventos ordenados ou use uma fila de prioridades."
+    },
+    {
+      "type": "code",
+      "language": "cpp",
+      "code": "sort(intervals.begin(), intervals.end(), [](auto a, auto b) {\n    return a.second < b.second;\n});\nint last = numeric_limits<int>::min();\nint answer = 0;\nfor (auto [l, r] : intervals) {\n    if (l >= last) ++answer, last = r;\n}",
+      "lineNumbers": true,
+      "title": "Seleção de atividades"
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "text": "Contraexemplo é parte da prova: se você não consegue justificar a escolha local, tente construir uma instância pequena em que outra escolha pareça melhor. Se ela existir, a estratégia gulosa precisa ser abandonada ou refinada.",
+      "title": "Guloso sem prova é palpite"
+    },
+    {
+      "type": "subsection",
+      "id": "compressao-coordenadas",
+      "number": "3.1",
+      "title": "Compressão de coordenadas",
+      "tag": "TÉCNICA",
+      "accent": "cyan",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Quando os valores são grandes, mas só importam ordem e igualdade, ordene os valores distintos e substitua cada valor por sua posição. Isso converte coordenadas de até 10^18 em índices de `0..m-1`, abrindo espaço para Fenwick, segment tree e arrays."
+        },
+        {
+          "type": "code",
+          "language": "cpp",
+          "code": "vector<long long> xs = a;\nsort(xs.begin(), xs.end());\nxs.erase(unique(xs.begin(), xs.end()), xs.end());\nfor (auto& x : a) x = lower_bound(xs.begin(), xs.end(), x) - xs.begin();",
+          "lineNumbers": true
+        }
+      ]
+    },
+    {
+      "type": "subsection",
+      "id": "sort-estavel",
+      "number": "3.2",
+      "title": "Ordenação estável e comparadores",
+      "tag": "CORREÇÃO",
+      "accent": "red",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Um comparador deve ser uma ordem fraca estrita: não pode dizer que `a < b` e `b < a` ao mesmo tempo, nem depender de estado mutável. Se você ordenar por várias chaves, compare a primeira diferente; `stable_sort` preserva a ordem anterior quando as chaves empatam."
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Não subtraia inteiros no comparador: `return a.x - b.x < 0` pode estourar.",
+            "Use `tie(a.x, a.y) < tie(b.x, b.y)` ou comparações explícitas.",
+            "Depois de ordenar, use `equal_range` para obter o intervalo de iguais."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Exercícios fáceis — consolide o conteúdo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resolva sem consultar código pronto. Para cada exercício, anote a complexidade esperada e um caso de borda antes de implementar."
+    },
+    {
+      "type": "list",
+      "style": "number",
+      "items": [
+        "Verifique se duas listas possuem algum elemento em comum.",
+        "Encontre a primeira posição de um valor em um vetor ordenado.",
+        "Selecione o maior número de intervalos não sobrepostos.",
+        "Dado um limite de páginas, divida livros contíguos entre estudantes minimizando a maior soma."
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "tip",
+      "text": "Depois de resolver, escreva uma frase explicando por que a técnica escolhida é suficiente e qual hipótese faria essa técnica deixar de funcionar.",
+      "title": "Rotina de revisão"
+    }
+  ]
+}

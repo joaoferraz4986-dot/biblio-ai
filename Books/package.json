@@ -1,0 +1,20 @@
+{
+  "name": "books",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build:bundle": "python3 tools/build_bundle.py && cp Livros.html index.html && rm -rf .frontend && mkdir .frontend && cp index.html .frontend/ && cp -r assets content .frontend/",
+    "check": "find assets/js -name '*.js' -print0 | xargs -0 -n1 node --check && node tools/validate.js && node tools/test-themes.js",
+    "dev": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "dev:tauri": "npm run build:bundle && npm run dev",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "format:check": "git diff --check -- . ':!assets/vendor/*'"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,24 @@
+[package]
+name = "books"
+version = "0.1.0"
+description = "Biblioteca de livros técnicos"
+authors = ["Books"]
+edition = "2021"
+
+[lib]
+name = "books_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3" }
+
+[dependencies]
+base64 = "0.22.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2.11.6", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2.7.3"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

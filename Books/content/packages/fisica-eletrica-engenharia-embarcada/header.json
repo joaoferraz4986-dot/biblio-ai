@@ -1,0 +1,37 @@
+{
+  "schema": "books.header.v2",
+  "kind": "book-header",
+  "kicker": "física · elétrica · eletrônica · embarcados",
+  "title": "Física Elétrica: da Eletrostática à Engenharia de Sistemas Embarcados",
+  "subtitle": "Conceitos, leis, teoremas, modelos, aplicações e engenharia — do campo elétrico à aquisição, controle e segurança.",
+  "guideTitle": "Como usar este livro",
+  "guideText": "Estude a sequência de pré-requisitos, resolva os exercícios fáceis ao final de cada seção e use os projetos como laboratório conceitual. Toda fórmula deve ser lida junto das hipóteses, unidades e limites de validade.",
+  "cover": {
+    "src": "cover.svg",
+    "alt": "Capa abstrata com campos elétricos, circuito e microcontrolador",
+    "ratio": "16:9"
+  },
+  "legend": [
+    {
+      "label": "conceito",
+      "color": "blue"
+    },
+    {
+      "label": "equação",
+      "color": "teal"
+    },
+    {
+      "label": "atenção",
+      "color": "amber"
+    },
+    {
+      "label": "engenharia",
+      "color": "violet"
+    },
+    {
+      "label": "segurança",
+      "color": "red"
+    }
+  ],
+  "footer": "Material didático autoral sintetizado de referências acadêmicas e institucionais. Consulte normas e datasheets completos para projetos reais."
+}

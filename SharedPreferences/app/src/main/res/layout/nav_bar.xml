@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="15dp"
+    android:layout_marginBottom="15dp"
+    android:background="@drawable/nav_bar_floating_background"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:gravity="center_vertical">
+
+    <ImageButton
+        android:id="@+id/btnKanji"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_kanji"
+        android:contentDescription="Kanji" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/btnNavHome"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_home"
+        android:contentDescription="Home" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnNavLogin"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/nav_button_background"
+            android:backgroundTint="#89b4fa"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_login"
+            android:contentDescription="Login" />
+
+        <ImageButton
+            android:id="@+id/btnNavCadastro"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/nav_button_background"
+            android:backgroundTint="#a6e3a1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_register"
+            android:contentDescription="Cadastro" />
+
+        <ImageButton
+            android:id="@+id/btnNavLogout"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/nav_button_background"
+            android:backgroundTint="#f38ba8"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_logout"
+            android:visibility="gone"
+            android:contentDescription="Logout" />
+    </LinearLayout>
+
+</LinearLayout>

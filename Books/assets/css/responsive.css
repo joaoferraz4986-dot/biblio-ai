@@ -1,0 +1,16 @@
+/* Ajustes finos por tamanho de tela que não couberam naturalmente nos outros arquivos. */
+@media (max-width: 600px) {
+  .b-subsection__head, .b-subsection__body { padding-inline: var(--space-4); }
+  .b-diagram { padding: var(--space-4); }
+  .editor__body { padding: var(--space-4); }
+  .editor__head { padding: var(--space-4); }
+  .sections-layout { gap: var(--space-4); }
+}
+@media print {
+  .dock, .back-top, nav.toc, .toast, #libraryOverlay, #editorOverlay, #settingsOverlay { display: none !important; }
+  body { background: #fff; color: #000; }
+  .layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 1040px) {
+  .layout { max-width: none; }
+}
