@@ -18,7 +18,6 @@
               cargo-tauri
               clippy
               nodejs_22
-              npm
               pkg-config
               python3
               rust-analyzer
@@ -57,7 +56,6 @@
             nativeBuildInputs = with pkgs; [
               cargo-tauri.hook
               nodejs_22
-              npm
               python3
               pkg-config
               wrapGAppsHook4
