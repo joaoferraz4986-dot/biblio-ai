@@ -19,3 +19,10 @@
 .b-image img { width: 100%; height: auto; display: block; }
 .b-image__empty { padding: var(--space-8); text-align: center; color: var(--text-faint); font-size: .84rem; }
 .b-image figcaption { padding: var(--space-3) var(--space-4); color: var(--text-faint); font-size: .82rem; border-top: 1px solid var(--border-soft); }
+
+.b-media { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--panel); }
+.b-media iframe, .b-media video { display: block; width: 100%; border: 0; background: #000; }
+.b-media iframe { min-height: 180px; }
+.b-media video { max-height: min(70vh, 720px); }
+.b-media__caption { padding: var(--space-3) var(--space-4); color: var(--text-faint); font-size: .82rem; border-top: 1px solid var(--border-soft); }
+.b-media__error { padding: var(--space-5); color: var(--tone-bad); font-family: var(--font-mono); font-size: .8rem; }

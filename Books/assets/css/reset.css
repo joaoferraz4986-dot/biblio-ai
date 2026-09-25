@@ -21,3 +21,7 @@ body {
   overflow-x: hidden; /* nenhum bloco individual deveria empurrar a página, mas isso é a rede de segurança */
 }
 body.overlay-open { overflow: hidden; }
+
+/* Barras de rolagem sem estilo visível em todo o app (o scroll continua funcionando). */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }

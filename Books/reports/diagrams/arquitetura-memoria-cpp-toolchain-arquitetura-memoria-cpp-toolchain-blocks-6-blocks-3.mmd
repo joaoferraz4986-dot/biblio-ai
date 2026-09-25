@@ -1,0 +1,10 @@
+sequenceDiagram
+  participant K as kernel
+  participant D as dynamic linker
+  participant C as runtime C/C++
+  participant M as main
+  K->>K: execve e mapeia ELF
+  K->>D: PT_INTERP, se houver
+  D->>D: mapeia DT_NEEDED e aplica relocations
+  D->>C: executa inicializadores
+  C->>M: prepara e chama main

@@ -6,10 +6,6 @@
 <meta name="description" content="Biblioteca de livros técnicos com leitor, sumário navegável e editor visual de conteúdo." />
 <title>Biblioteca de livros técnicos</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
 <!-- CSS modular: tokens primeiro, depois reset, layout, componentes e blocos.
      Cada arquivo cobre uma responsabilidade só — ver docs/ARQUITETURA.md. -->
 <link rel="stylesheet" href="assets/css/tokens.css?v=2" />
@@ -19,10 +15,12 @@
 <link rel="stylesheet" href="assets/css/components/buttons.css?v=2" />
 <link rel="stylesheet" href="assets/css/components/dock.css?v=2" />
 <link rel="stylesheet" href="assets/css/components/toast.css" />
-  <link rel="stylesheet" href="assets/css/components/library.css?v=3" />
+<link rel="stylesheet" href="assets/css/components/library.css?v=3" />
+<link rel="stylesheet" href="assets/css/components/block-context.css" />
 <link rel="stylesheet" href="assets/css/components/settings.css?v=2" />
 <link rel="stylesheet" href="assets/css/components/background.css?v=2" />
 <link rel="stylesheet" href="assets/css/editor/editor.css?v=2" />
+<link rel="stylesheet" href="assets/css/editor/collection.css" />
 <link rel="stylesheet" href="assets/css/editor/fields.css" />
 <link rel="stylesheet" href="assets/css/blocks/text.css" />
 <link rel="stylesheet" href="assets/css/blocks/code.css" />
@@ -31,6 +29,7 @@
 <link rel="stylesheet" href="assets/css/blocks/data.css" />
 <link rel="stylesheet" href="assets/css/blocks/layout.css" />
 <link rel="stylesheet" href="assets/css/blocks/math.css" />
+<link rel="stylesheet" href="assets/css/blocks/exercise.css" />
 <link rel="stylesheet" href="assets/css/responsive.css" />
 </head>
 <body>
@@ -67,6 +66,7 @@
         </div>
         <div style="display:flex; gap:8px;">
           <button class="btn btn--primary btn--sm" id="libraryNew" type="button"><span data-icon="plus"></span><span>novo livro</span></button>
+          <button class="btn btn--ghost btn--sm" id="libraryNewSet" type="button"><span data-icon="layers"></span><span>novo conjunto</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryOpenSettings" type="button" aria-haspopup="dialog" aria-controls="settingsOverlay"><span data-icon="settings"></span><span>configurações</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
         </div>
@@ -139,13 +139,15 @@
     <div class="wrap"></div>
   </footer>
 
+  <!-- App desktop (Electron): I/O real de arquivos; no navegador não faz nada -->
+  <script src="assets/js/desktop/fs-shim.js"></script>
+
   <!-- Núcleo (sem DOM) -->
   <script src="assets/js/core/namespace.js"></script>
   <script src="assets/js/core/util.js"></script>
   <script src="assets/js/core/events.js"></script>
   <script src="assets/js/core/store.js"></script>
   <script src="assets/js/core/schema.js"></script>
-  <script src="assets/js/core/native.js"></script>
   <script src="assets/js/core/state.js"></script>
   <script src="assets/js/core/personalization.js?v=2"></script>
   <!-- Conteúdo: marcação inline, sanitização, realce, ícones -->
@@ -160,8 +162,10 @@
   <script src="assets/js/blocks/diagram.js"></script>
   <script src="assets/js/blocks/history.js"></script>
   <script src="assets/js/blocks/data.js"></script>
-  <script src="assets/js/blocks/layout.js"></script>
-  <script src="assets/js/blocks/math.js"></script>
+<script src="assets/js/blocks/layout.js"></script>
+<script src="assets/js/blocks/math.js"></script>
+<script src="assets/js/blocks/exercise.js"></script>
+<script src="assets/js/blocks/media.js"></script>
   <!-- Conteúdo: validação, migração, repositório (dependem dos blocos) -->
   <script src="assets/js/content/validate.js"></script>
   <script src="assets/js/content/migrate.js"></script>
@@ -174,10 +178,12 @@
   <script src="assets/js/render/book.js"></script>
   <!-- UI -->
   <script src="assets/js/ui/toast.js"></script>
+  <script src="assets/js/ui/confirm.js"></script>
   <script src="assets/js/ui/progress.js"></script>
   <script src="assets/js/ui/focus.js?v=2"></script>
   <script src="assets/js/ui/navigation.js?v=2"></script>
   <script src="assets/js/ui/library.js"></script>
+  <script src="assets/js/ui/block-context.js"></script>
   <script src="assets/js/ui/settings-panel.js?v=2"></script>
   <!-- Editor -->
   <script src="assets/js/editor/fields.js"></script>
@@ -187,6 +193,7 @@
   <script src="assets/js/editor/main.js?v=3"></script>
   <!-- App -->
   <script src="assets/js/app.js?v=2"></script>
+  <script>Books.blockContext.init();</script>
   <script>
     // Ícones do dock/topo (fora do fluxo de módulos porque rodam antes do boot completo).
     document.querySelectorAll('[data-icon]').forEach(function (el) {

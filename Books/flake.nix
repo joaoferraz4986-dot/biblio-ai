@@ -1,97 +1,64 @@
 {
-  description = "Books — biblioteca offline de livros técnicos em Tauri";
+  description = "Livros — leitor e editor de livros técnicos (app desktop Electron para NixOS)";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs = { self, nixpkgs }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
-      forEachSystem = nixpkgs.lib.genAttrs systems;
+      forAll = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     in {
-      devShells = forEachSystem (system:
+      packages = forAll (pkgs:
         let
-          pkgs = import nixpkgs { inherit system; };
-        in {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              cargo
-              cargo-tauri
-              clippy
-              nodejs_22
-              pkg-config
-              python3
-              rust-analyzer
-              rustc
-              rustfmt
-              webkitgtk_4_1
-              wrapGAppsHook4
-              openssl
-              glib-networking
-              librsvg
-            ];
-
-            buildInputs = with pkgs; [ webkitgtk_4_1 openssl glib-networking librsvg ];
-
-            shellHook = ''
-              export XDG_DATA_DIRS="''${GSETTINGS_SCHEMAS_PATH:-}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
-              export CARGO_TARGET_DIR="''${CARGO_TARGET_DIR:-$PWD/target}"
-              export npm_config_cache="''${npm_config_cache:-$PWD/.npm-cache}"
-            '';
+          electron = pkgs.electron;   # Electron do nixpkgs, já com o wrapper correto para NixOS
+          desktopItem = pkgs.makeDesktopItem {
+            name = "livros";
+            desktopName = "Livros";
+            comment = "Leitor e editor de livros técnicos";
+            exec = "livros %U";
+            icon = "accessories-dictionary";
+            categories = [ "Education" "Office" ];
           };
-        });
-
-      packages = forEachSystem (system:
-        let
-          pkgs = import nixpkgs { inherit system; };
         in {
-          default = pkgs.rustPlatform.buildRustPackage {
-            pname = "biblio-ai";
-            version = "0.1.0";
-            src = self;
-
-            cargoRoot = "src-tauri";
-            buildAndTestSubdir = "src-tauri";
-            cargoLock.lockFile = ./src-tauri/Cargo.lock;
-
-            nativeBuildInputs = with pkgs; [
-              cargo-tauri.hook
-              nodejs_22
-              python3
-              pkg-config
-              wrapGAppsHook4
-            ];
-
-            buildInputs = with pkgs; [
-              glib-networking
-              openssl
-              webkitgtk_4_1
-              librsvg
-            ];
-
-            meta = {
-              description = "Biblioteca offline de livros técnicos";
-              homepage = "https://github.com/joaoferraz4986-dot/biblio-ai";
-              license = pkgs.lib.licenses.mit;
-              mainProgram = "books";
-              platforms = pkgs.lib.platforms.linux;
+          default = pkgs.stdenvNoCC.mkDerivation {
+            pname = "livros";
+            version = "1.0.0";
+            src = pkgs.lib.cleanSourceWith {
+              src = ./.;
+              filter = path: type:
+                let b = baseNameOf path; in
+                !(builtins.elem b [ "node_modules" "electron-release" "dist" "result" ".git" "__pycache__" ]);
             };
+            nativeBuildInputs = [ pkgs.makeWrapper pkgs.copyDesktopItems ];
+            desktopItems = [ desktopItem ];
+            dontBuild = true;
+            installPhase = ''
+              runHook preInstall
+              mkdir -p $out/share/livros $out/bin
+              cp -r . $out/share/livros/
+              # Os livros ficam em ~/.config/Livros/Books (gravável); a cópia do /nix/store é só o modelo inicial.
+              # Para usar outra pasta: LIVROS_DIR=/caminho/para/Books livros
+              makeWrapper ${electron}/bin/electron $out/bin/livros \
+                --add-flags $out/share/livros \
+                --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
+              runHook postInstall
+            '';
+            meta.mainProgram = "livros";
           };
         });
 
-      checks = forEachSystem (system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in {
-          javascript = pkgs.runCommand "books-javascript-check" { nativeBuildInputs = [ pkgs.nodejs_22 pkgs.python3 ]; } ''
-            cp -r ${self} source
-            chmod -R u+w source
-            cd source
-            python3 tools/build_bundle.py
-            find assets/js -name '*.js' -print0 | xargs -0 -n1 node --check
-            node tools/validate.js
-            node tools/test-themes.js
-            touch $out
+      apps = forAll (pkgs: {
+        default = { type = "app"; program = "${self.packages.${pkgs.system}.default}/bin/livros"; };
+      });
+
+      devShells = forAll (pkgs: {
+        default = pkgs.mkShell {
+          packages = [ pkgs.electron pkgs.nodejs ];
+          shellHook = ''
+            echo "Rodar sem empacotar:  LIVROS_DIR=$PWD electron ."
+            echo "Validar conteúdo:     node tools/validate.js"
           '';
-        });
+        };
+      });
     };
 }

@@ -1,10 +1,5 @@
 node_modules/
-.npm-cache/
-.frontend/
-index.html
-target/
-src-tauri/target/
-src-tauri/gen/
-__pycache__/
+dist/
+electron-release/
+result/
 tools/__pycache__/
-.DS_Store

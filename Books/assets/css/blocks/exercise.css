@@ -1,0 +1,31 @@
+.b-exercise{width:100%;border:1px solid var(--border);border-left:3px solid var(--accent-violet);border-radius:var(--radius-lg);background:var(--panel);padding:var(--space-4);margin:var(--space-4) 0}
+.b-exercise__head{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2)}
+.b-exercise__num{font:700 .82rem var(--font-mono);color:var(--text-dim)}
+.b-exercise__difficulty{font:600 .68rem var(--font-mono);text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:var(--radius-pill);border:1px solid var(--border)}
+.b-exercise__difficulty--facil{color:var(--tone-ok);border-color:color-mix(in srgb, var(--tone-ok) 45%, var(--border))}
+.b-exercise__difficulty--medio{color:var(--tone-warn);border-color:color-mix(in srgb, var(--tone-warn) 45%, var(--border))}
+.b-exercise__difficulty--dificil{color:var(--tone-bad);border-color:color-mix(in srgb, var(--tone-bad) 45%, var(--border))}
+.b-exercise__prompt{color:var(--text);line-height:1.6}
+.b-exercise__hint{margin-top:var(--space-2);font-size:.86rem;color:var(--text-dim);background:var(--bg-elevated);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);outline:none}
+.b-exercise__hint-content{display:inline;filter:blur(5px);opacity:.58;transition:filter var(--dur-slow) var(--ease),opacity var(--dur-slow) var(--ease)}
+.b-exercise__hint:hover .b-exercise__hint-content,.b-exercise__hint:focus-visible .b-exercise__hint-content{filter:blur(0);opacity:1}
+.b-exercise__hint-label{font-weight:700;color:var(--text)}
+.b-exercise__toggle{display:inline-flex;align-items:center;gap:6px;margin-top:var(--space-3);min-height:var(--control-height-sm);padding:var(--control-pad-y-sm) var(--control-pad-x-sm);border:1px solid var(--border);border-radius:var(--control-radius);background:transparent;color:var(--accent-violet);font:600 .78rem/1.2 var(--font-mono);cursor:pointer;transition:border-color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease)}
+.b-exercise__toggle:hover{border-color:var(--accent-violet);background:color-mix(in srgb, var(--accent-violet) 10%, transparent)}
+.b-exercise__toggle:disabled{opacity:.6;cursor:wait}
+.b-exercise__toggle-icon{display:inline-flex;transition:transform var(--dur) var(--ease)}
+.b-exercise__toggle[aria-expanded="true"] .b-exercise__toggle-icon{transform:rotate(180deg)}
+.b-exercise__solution{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--dur-slow) var(--ease)}
+.b-exercise__solution.is-open{grid-template-rows:1fr}
+.b-exercise__solution-inner{overflow:hidden;min-height:0}
+.b-exercise__solution.is-open .b-exercise__solution-inner{padding-top:var(--space-4);margin-top:var(--space-4);border-top:1px dashed var(--border)}
+
+/* Diálogo de confirmação reutilizável (Books.confirm, assets/js/ui/confirm.js). */
+.confirm-overlay{position:fixed;inset:0;z-index:var(--z-menu);background:rgba(6,9,13,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:var(--space-5);opacity:0;transition:opacity var(--dur) var(--ease)}
+.confirm-overlay.is-visible{opacity:1}
+.confirm-dialog{width:min(360px,100%);background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:var(--space-5);transform:translateY(6px) scale(.98);transition:transform var(--dur) var(--ease)}
+.confirm-overlay.is-visible .confirm-dialog{transform:translateY(0) scale(1)}
+.confirm-dialog__title{margin:0 0 var(--space-2);font-family:var(--font-display);font-size:1.02rem;color:var(--text)}
+.confirm-dialog__message{margin:0;color:var(--text-dim);line-height:1.55;font-size:.9rem}
+.confirm-dialog__actions{display:flex;justify-content:flex-end;gap:var(--space-2);margin-top:var(--space-4)}
+@media(max-width:640px){.confirm-dialog{width:100%}}

@@ -5,16 +5,70 @@
  * render/math.js roda (carregamento preguiçoso) — até lá mostram o LaTeX cru,
  * discreto, para não "pular" feio na tela.
  */
-.math-inline { font-family: var(--font-mono); font-size: .92em; color: var(--text-dim); }
-.math-inline[data-rendered='1'] { font-family: inherit; color: inherit; }
-.math-inline.math-error { color: var(--tone-bad); font-size: .84em; }
+.math-inline {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--text-dim);
+}
+.math-inline[data-rendered="1"] {
+  font-family: inherit;
+  color: inherit;
+}
+.math-inline.math-error {
+  color: var(--tone-bad);
+  font-size: 0.84em;
+}
 
-.b-math { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--panel); padding: var(--space-5); }
-.b-math__scroll { width: 100%; max-width: 100%; overflow-x: auto; display: flex; justify-content: center; padding-block: var(--space-2); }
-.b-math__eq { font-family: var(--font-mono); color: var(--text-dim); font-size: .95rem; }
-.b-math__eq[data-rendered='1'] { font-family: inherit; color: var(--text); font-size: 1.15rem; }
-.b-math__eq.math-error { color: var(--tone-bad); font-family: var(--font-body); font-size: .84rem; text-align: left; }
-.b-math figcaption { margin-top: var(--space-3); text-align: center; color: var(--text-faint); font-size: .82rem; font-family: var(--font-mono); }
+.b-math {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  padding: var(--space-5);
+}
+.b-math__scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2);
+}
+.b-math__eq {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  font-size: 0.95rem;
+}
+.b-math__eq[data-rendered="1"] {
+  font-family: inherit;
+  color: var(--text);
+  font-size: 1.15rem;
+}
+.b-math__eq.math-error {
+  color: var(--tone-bad);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  text-align: left;
+}
+.b-math__reading {
+  margin: var(--space-3) auto 0;
+  max-width: 72ch;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  text-align: left;
+}
+.b-math__reading strong {
+  color: var(--text);
+  font-family: var(--font-display);
+}
+.b-math figcaption {
+  margin-top: var(--space-3);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
 
 /* KaTeX gera a maior parte do texto sem cor fixa (herda `currentColor`), mas alguns
    elementos de estrutura (raízes, frações) usam `border-color: currentColor` — então

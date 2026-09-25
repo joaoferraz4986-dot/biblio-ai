@@ -1,0 +1,8 @@
+flowchart LR
+  S("main.cpp") -->|"-E"| P("preprocessed.i")
+  P -->|"-S"| A("assembly.s")
+  A -->|"-c"| O("main.o ET_REL")
+  O --> L("linker")
+  L --> E("app ELF")
+  E --> K("kernel + dynamic linker")
+  K --> R("processo iniciado")

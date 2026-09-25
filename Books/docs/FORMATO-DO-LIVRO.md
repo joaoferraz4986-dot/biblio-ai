@@ -1,7 +1,7 @@
 # Formato de um livro
 
 Esta é a referência completa do formato. Ela é a mesma usada para gerar o prompt
-que o editor copia no botão **"copiar prompt para IA"** (aba *Importar / Exportar*),
+que o editor copia no botão **"copiar prompt para IA"** (aba _Importar / Exportar_),
 então pedir a uma IA para escrever um livro inteiro — ou uma seção — é
 só colar esse prompt em qualquer IA e colar a resposta de volta na mesma aba.
 
@@ -55,7 +55,7 @@ progresso de leitura inicial (o navegador também guarda progresso local).
 ```
 
 `cover.src` é relativo à pasta do livro; `ratio` é `16:9`, `3:4`, `1:1` ou `9:16`.
-`color` (na legenda, e em qualquer campo do tipo *accent*) é um dos nomes da
+`color` (na legenda, e em qualquer campo do tipo _accent_) é um dos nomes da
 paleta (veja abaixo) ou um `#hex`.
 
 ### Uma seção (`sections/*.json`)
@@ -67,7 +67,9 @@ paleta (veja abaixo) ou um `#hex`.
   "id": "visao-geral",
   "number": "1",
   "title": "Visão geral e arquitetura de memória em C++",
-  "blocks": [ /* … lista de blocos, ver abaixo … */ ]
+  "blocks": [
+    /* … lista de blocos, ver abaixo … */
+  ]
 }
 ```
 
@@ -80,20 +82,20 @@ hífen.
 Qualquer campo de texto (`line`, `text`, títulos, legendas…) aceita esta
 marcação — nunca HTML:
 
-| Marcação | Resultado |
-| --- | --- |
-| `**negrito**` | **negrito** |
-| `*itálico*` | *itálico* |
-| `~~riscado~~` | ~~riscado~~ |
-| `` `código` `` | `código` |
-| `[texto](https://…)` | link externo |
-| `[texto](#id-da-secao)` | link interno (rola até a âncora) |
-| `[[Alt]]` | tecla, estilo `<kbd>` |
-| `$E=mc^2$` | matemática em LaTeX, via KaTeX (vendorizado em `assets/vendor/`) — fecha no próximo `$` que não vem depois de espaço nem antes de dígito, então "$5 e $10" nunca vira fórmula por acidente |
-| `{ok|texto}` `{warn|texto}` `{bad|texto}` `{dim|texto}` | tons semânticos |
-| `{blue|texto}` (ou `teal`, `amber`, `violet`, `orange`, `pink`, `slate`, `gray`, `green`, `red`, `cyan`) | cor da paleta |
-| `\*`, `` \` ``, `\{`, `\[` | caractere literal |
-| quebra de linha | vira `<br>` |
+| Marcação                   | Resultado                                                                                                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ------------- | ------- | --------------- |
+| `**negrito**`              | **negrito**                                                                                                                                                                                |
+| `*itálico*`                | _itálico_                                                                                                                                                                                  |
+| `~~riscado~~`              | ~~riscado~~                                                                                                                                                                                |
+| `` `código` ``             | `código`                                                                                                                                                                                   |
+| `[texto](https://…)`       | link externo                                                                                                                                                                               |
+| `[texto](#id-da-secao)`    | link interno (rola até a âncora)                                                                                                                                                           |
+| `[[Alt]]`                  | tecla, estilo `<kbd>`                                                                                                                                                                      |
+| `$E=mc^2$`                 | matemática em LaTeX, via KaTeX (vendorizado em `assets/vendor/`) — fecha no próximo `$` que não vem depois de espaço nem antes de dígito, então "$5 e $10" nunca vira fórmula por acidente |
+| `{ok                       | texto}` `{warn                                                                                                                                                                             | texto}` `{bad | texto}` `{dim | texto}` | tons semânticos |
+| `{blue                     | texto}`(ou`teal`, `amber`, `violet`, `orange`, `pink`, `slate`, `gray`, `green`, `red`, `cyan`)                                                                                            | cor da paleta |
+| `\*`, `` \` ``, `\{`, `\[` | caractere literal                                                                                                                                                                          |
+| quebra de linha            | vira `<br>`                                                                                                                                                                                |
 
 ## Paleta de cores (`accent`)
 
@@ -164,10 +166,7 @@ Exemplo:
     "Primeiro item",
     {
       "text": "Item com sublista",
-      "items": [
-        "Filho A",
-        "Filho B"
-      ]
+      "items": ["Filho A", "Filho B"]
     }
   ]
 }
@@ -354,6 +353,56 @@ Exemplo:
 }
 ```
 
+#### `iframe` — Iframe seguro
+
+Conteúdo externo incorporado por HTTPS. O leitor aplica `sandbox`, `loading="lazy"`, `referrerPolicy="no-referrer"` e título acessível. O iframe continua remoto e, portanto, não transforma o livro em um pacote totalmente autocontido; use-o somente quando essa dependência estiver explícita.
+
+Campos:
+
+- `src` (obrigatório) — line; deve começar por `https://`
+- `title` (obrigatório) — line; nome acessível do conteúdo
+- `height` (obrigatório) — plain; altura limitada pelo leitor
+- `allowFullscreen` — bool
+- `caption` — line
+
+Exemplo:
+
+```json
+{
+  "type": "iframe",
+  "src": "https://example.com/documentacao",
+  "title": "Documentação externa",
+  "height": 480,
+  "allowFullscreen": false,
+  "caption": "Documentação do projeto"
+}
+```
+
+#### `video` — Vídeo MP4
+
+Vídeo com controles nativos. Para um pacote offline, use `media/<arquivo>.mp4` e inclua o arquivo no ZIP; o editor também aceita um MP4 escolhido localmente e o grava em `media/`. Uma URL HTTPS é permitida, mas deixa de ser uma dependência offline.
+
+Campos:
+
+- `src` (obrigatório) — video; `media/*.mp4`, `videos/*.mp4`, `data:video/*` ou URL `https://`
+- `title` (obrigatório) — line
+- `controls` — bool
+- `loop` — bool
+- `muted` — bool
+- `caption` — line
+
+Exemplo:
+
+```json
+{
+  "type": "video",
+  "src": "media/demonstracao.mp4",
+  "title": "Demonstração do experimento",
+  "controls": true,
+  "caption": "Vídeo 1 — execução observada"
+}
+```
+
 #### `math` — Fórmula (LaTeX)
 
 Equação matemática em destaque, escrita em LaTeX (a sintaxe do KaTeX — praticamente o LaTeX de matemática padrão: \frac, \sum, \int, letras gregas \alpha, expoentes x^2, índices x_i etc.). Para matemática dentro do meio de uma frase, use `$…$` diretamente no texto de qualquer bloco em vez deste bloco.
@@ -361,6 +410,7 @@ Equação matemática em destaque, escrita em LaTeX (a sintaxe do KaTeX — prat
 Campos:
 
 - `tex` (obrigatório) — code
+- `reading` (obrigatório) — text; leitura da expressão em português, exibida abaixo da fórmula
 - `caption` — line
 
 Exemplo:
@@ -369,6 +419,7 @@ Exemplo:
 {
   "type": "math",
   "tex": "E = mc^2",
+  "reading": "Lê-se: energia é igual à massa vezes a velocidade da luz ao quadrado.",
   "caption": "energia de repouso"
 }
 ```
@@ -390,22 +441,10 @@ Exemplo:
 {
   "type": "table",
   "caption": "Regiões",
-  "header": [
-    "Região",
-    "Guarda",
-    "Cresce"
-  ],
+  "header": ["Região", "Guarda", "Cresce"],
   "rows": [
-    [
-      "`.text`",
-      "código",
-      "{dim|não}"
-    ],
-    [
-      "stack",
-      "quadros de função",
-      "para baixo"
-    ]
+    ["`.text`", "código", "{dim|não}"],
+    ["stack", "quadros de função", "para baixo"]
   ]
 }
 ```
@@ -540,7 +579,10 @@ Exemplo:
   "name": "Carl Friedrich Gauss",
   "shortBio": "Matemático e físico alemão que trabalhou em teoria dos números e eletromagnetismo.",
   "insight": "A simetria permite transformar o cálculo do campo em um fluxo pela superfície.",
-  "image": { "src": "images/history-gauss.svg", "alt": "Ilustração tipográfica de Carl Friedrich Gauss" }
+  "image": {
+    "src": "images/history-gauss.svg",
+    "alt": "Ilustração tipográfica de Carl Friedrich Gauss"
+  }
 }
 ```
 

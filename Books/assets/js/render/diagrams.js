@@ -21,7 +21,6 @@
     if (window.mermaid) return Promise.resolve(window.mermaid);
     if (!loading) {
       loading = loadScript(new URL('assets/vendor/mermaid.min.js', document.baseURI).href)
-        .catch(function () { return loadScript('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'); })
         .then(function () {
           window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'dark', themeVariables: THEME, flowchart: { useMaxWidth: false, htmlLabels: true } });
           return window.mermaid;
@@ -39,8 +38,12 @@
       h('details', null, h('summary', null, 'ver código'), h('pre', null, source))));
   }
 
+  function normalizeSource(source) {
+    return String(source || '').replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+  }
+
   function renderCanvas(canvas) {
-    var source = canvas.dataset.source || '';
+    var source = normalizeSource(canvas.dataset.source || '');
     return ensureMermaid().then(function (mermaid) {
       return mermaid.render('mmd-' + (++counter), source).then(function (out) {
         var tpl = document.createElement('template');

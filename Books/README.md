@@ -1,40 +1,8 @@
 # Biblioteca de livros técnicos
 
-Leitor e editor de livros técnicos em HTML/CSS/JS modular. O projeto continua
-abrindo diretamente em `Livros.html` ou por HTTP, e agora também pode ser executado
-como aplicativo desktop Tauri 2, com persistência nativa compatível com NixOS.
-
-## Aplicativo desktop
-
-No NixOS, entre no ambiente declarativo e execute:
-
-```bash
-nix develop --no-update-lock-file
-npm install
-npm run check
-npm run tauri:dev
-```
-
-Para gerar a derivação instalável no NixOS, use `nix build .#default`. O flake
-usa o hook Tauri do Nixpkgs; comandos de desenvolvimento e integração com
-Home Manager estão em [`docs/NIXOS.md`](docs/NIXOS.md) e
-[`docs/INTEGRAR-NIX-CONF.md`](docs/INTEGRAR-NIX-CONF.md).
-
-Para criar o commit inicial e enviar para `joaoferraz4986-dot/biblio-ai`, execute
-`bash tools/publish-initial.sh`. O script inicializa o Git se necessário,
-configura a identidade local indicada, confere arquivos sensíveis e usa a
-autenticação Git já configurada no computador. Para só preparar o commit local,
-execute `bash tools/publish-initial.sh commit-only`.
-
-O procedimento para instalar declarativamente pelo Home Manager do `nix-conf`
-está em [`docs/INTEGRAR-NIX-CONF.md`](docs/INTEGRAR-NIX-CONF.md).
-
-No aplicativo, o botão **salvar** usa um seletor nativo de pasta e grava os mesmos
-arquivos do projeto (`content/`, o bundle e os assets). Na primeira gravação,
-o aplicativo solicita a pasta de destino; apenas essa raiz fica autorizada e
-persistida para acesso aos assets. A lógica de leitura,
-importação, exportação, personalização e progresso permanece compartilhada com a
-versão web.
+Leitor e editor de livros técnicos em HTML/CSS/JS puro — sem build, sem framework,
+sem servidor obrigatório. Abra `Livros.html` com duplo clique ou sirva a pasta por
+HTTP; funciona nos dois casos.
 
 ## Uso rápido
 
@@ -43,10 +11,7 @@ versão web.
   da seleção; o botão **livros** (canto superior direito) reabre essa tela a
   qualquer momento.
 - **Personalizar**: na biblioteca, o botão **configurações** abre o tema de
-  cores em famílias (GitHub, Solarized e Catppuccin) com variantes escolhidas
-  dentro da família — GitHub Dark/Dimmed/Light, Solarized Dark/Light e os quatro flavors Catppuccin. A intensidade
-  ajusta a profundidade das superfícies escuras, preservando a paleta original a 50%.
-  O painel também reúne o plano de fundo (grade, pontos, estrelas, textura granulada ou PNG/SVG)
+  cores, o plano de fundo (grade, pontos, estrelas, textura granulada ou PNG/SVG)
   e a fonte de leitura. Cada opção tem prévia, é aplicada na hora e pode viajar
   com o projeto quando salva; fontes podem ser adicionadas em ZIP contendo TTF,
   OTF, WOFF, WOFF2 ou TTC.
@@ -60,8 +25,7 @@ versão web.
   inclusive em ZIP quando a área de transferência oferece suporte. **Salvar**
   grava diretamente na pasta do projeto (Chrome/Edge, via seletor de pasta),
   incluindo o bundle, catálogo, progresso, configurações e assets; em navegadores
-  sem essa API, baixa um ZIP completo como fallback. No desktop, usa o seletor
-  nativo de pasta e os comandos Rust restritos à raiz autorizada.
+  sem essa API, baixa um ZIP completo como fallback.
 - **Matemática**: `$E=mc^2$` em qualquer texto vira fórmula inline; o bloco
   **Fórmula (LaTeX)** no editor é para equações em destaque. Renderizado com
   KaTeX, vendorizado em `assets/vendor/` (funciona offline/`file://`).
@@ -101,7 +65,6 @@ resposta de uma IA em um arquivo em vez de usar a aba "Importar / Exportar" do e
 
 - `docs/FORMATO-DO-LIVRO.md` — todo tipo de bloco, campos e exemplos.
 - `docs/ARQUITETURA.md` — como os módulos JS/CSS se organizam e por quê.
-- `docs/VALIDACAO-MIGRACAO.md` — testes, inspeção visual e limites de build da migração desktop.
 - `docs/PROMPT-IA.md` — como pedir a uma IA para escrever um livro completo
   (o editor tem um botão que copia esse prompt já preenchido com o formato
   atual, então normalmente você não precisa abrir este arquivo).

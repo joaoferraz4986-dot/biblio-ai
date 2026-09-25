@@ -1,0 +1,26 @@
+flowchart TD
+    K("Memória do kernel — invisível ao processo em modo usuário")
+    ST("Stack (pilha) — cresce para endereços menores ↓ · quadros de função, variáveis locais, %rsp/%rbp")
+    GAP("Região de mapeamento (mmap) — bibliotecas compartilhadas, ASLR insere aqui deslocamentos aleatórios")
+    HP("Heap (monte) — cresce para endereços maiores ↑ · alocações via new/malloc, ponteiro brk")
+    BSS(".bss — globais/estáticas não inicializadas, zero-fill on demand")
+    DATA(".data — globais/estáticas inicializadas com valor não-zero")
+    RODATA(".rodata — literais de string, jump tables, vtables (somente leitura)")
+    TEXT(".text — instruções de máquina (somente leitura e executável)")
+
+    K --- ST
+    ST --> GAP
+    GAP --> HP
+    HP --- BSS
+    BSS --- DATA
+    DATA --- RODATA
+    RODATA --- TEXT
+
+    style K fill:#5b6672,color:#fff,stroke:#333
+    style ST fill:#a78bfa,color:#1a1024,stroke:#333
+    style GAP fill:#cfd6dc,color:#20262c,stroke:#333,stroke-dasharray: 4 3
+    style HP fill:#f2704f,color:#2a0f06,stroke:#333
+    style BSS fill:#8b98a5,color:#0d1114,stroke:#333
+    style DATA fill:#e8a33d,color:#2a1a02,stroke:#333
+    style RODATA fill:#2dd4bf,color:#04201c,stroke:#333
+    style TEXT fill:#5b93ff,color:#04122e,stroke:#333

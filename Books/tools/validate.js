@@ -21,7 +21,7 @@ const contentDir = path.join(root, 'content');
 const MODULES = [
   'core/namespace.js', 'core/util.js', 'core/schema.js',
   'content/inline.js', 'content/sanitize.js', 'content/highlight.js', 'content/icons.js',
-  'blocks/registry.js', 'blocks/text.js', 'blocks/code.js', 'blocks/diagram.js', 'blocks/history.js', 'blocks/data.js', 'blocks/layout.js', 'blocks/math.js',
+  'blocks/registry.js', 'blocks/text.js', 'blocks/code.js', 'blocks/diagram.js', 'blocks/history.js', 'blocks/data.js', 'blocks/layout.js', 'blocks/math.js', 'blocks/exercise.js', 'blocks/media.js',
   'content/validate.js', 'content/migrate.js'
 ];
 

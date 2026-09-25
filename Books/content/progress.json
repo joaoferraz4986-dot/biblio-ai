@@ -2,11 +2,5 @@
   "schema": "books.progress.v2",
   "kind": "book-progress",
   "version": 2,
-  "progress": {
-    "arquitetura-memoria-cpp": {
-      "percent": 0,
-      "top": 0,
-      "section": ""
-    }
-  }
+  "progress": {}
 }

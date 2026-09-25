@@ -32,18 +32,39 @@
     if (!loading) {
       loadStyle(new URL('assets/vendor/katex.min.css', document.baseURI).href);
       loading = loadScript(new URL('assets/vendor/katex.min.js', document.baseURI).href)
-        .catch(function () { return loadScript('https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.js'); })
         .then(function () { return window.katex; });
       loading.catch(function () { loading = null; });
     }
     return loading;
   }
 
+  function normalizeTex(tex) {
+    return String(tex || '')
+      .replace(/\\\s+(?=[A-Za-z])/g, '\\')
+      .replace(/\\rac\b/g, '\\frac')
+      .replace(/\\ange\b/g, '\\rangle')
+      .replace(/\\langle\s*([^|]+)\|/g, '\\langle $1 \\mid');
+  }
+
   function renderInto(el, katex) {
-    var tex = el.dataset.math || '';
+    var tex = normalizeTex(el.dataset.math || '');
     var display = el.dataset.display === '1';
     try {
-      katex.render(tex, el, { displayMode: display, throwOnError: true, strict: 'ignore', trust: false });
+      katex.render(tex, el, {
+        displayMode: display,
+        throwOnError: true,
+        strict: 'ignore',
+        trust: false,
+        macros: {
+          '\\ket': '\\left|#1\\right\\rangle',
+          '\\bra': '\\left\\langle#1\\right|',
+          '\\braket': '\\left\\langle#1\\middle|#2\\right\\rangle',
+          '\\abs': '\\left|#1\\right|',
+          '\\norm': '\\left\\lVert#1\\right\\rVert',
+          '\\R': '\\mathbb{R}',
+          '\\C': '\\mathbb{C}'
+        }
+      });
       el.dataset.rendered = '1';
     } catch (e) {
       el.textContent = '';

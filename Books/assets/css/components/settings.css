@@ -19,7 +19,6 @@
 .theme-card__preview span { flex: 1; }
 .theme-card__label { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: .78rem; font-weight: 600; }
 .theme-card__label .icon { color: var(--accent); flex: none; }
-.theme-card__variants { color: var(--text-faint); font-size: .66rem; line-height: 1.4; }
 .theme-card--add, .bg-card--add { align-items: center; justify-content: center; color: var(--text-faint); border-style: dashed; gap: 6px; flex-direction: row; min-height: 88px; padding: 0; display: flex; width: 100%; }
 .theme-card--add .icon, .bg-card--add .icon { width: 28px; height: 28px; }
 .theme-card--add:hover, .bg-card--add:hover { color: var(--accent); }
@@ -75,4 +74,3 @@
 .theme-choice h3 { margin: 0 0 var(--space-3); font-family: var(--font-display); }
 .theme-choice input[type='range'] { width: 100%; }
 .theme-choice output { font-family: var(--font-mono); color: var(--accent); }
-.theme-choice__hint { margin: 0 0 var(--space-2); }

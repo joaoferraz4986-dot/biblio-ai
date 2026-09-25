@@ -8,7 +8,7 @@ A aba **Importar / Exportar** do editor oferece dois botões para preparar conte
 2. Abra a aba **Importar / Exportar**.
 3. Clique em **copiar prompt para IA** ou **copiar prompt em ZIP**. O segundo formato depende do suporte do navegador à API de área de transferência de arquivos; quando ela não existe, o editor copia o prompt em texto e informa o fallback.
 4. Cole o prompt em uma IA e acrescente, no final, o pedido de conteúdo: assunto, público, profundidade, quantidade de seções, linguagem, exemplos, exercícios e referências desejadas.
-5. Peça à IA para gerar um ZIP real, autocontido e importável. O ZIP deve conter `content/catalog.json`, `content/packages/<id>/manifest.json`, `header.json`, `sections/*.json` e todos os arquivos de imagem referenciados.
+5. Peça à IA para gerar um ZIP real, autocontido e importável. O ZIP deve conter `content/catalog.json`, `content/packages/<id>/manifest.json`, `header.json`, `sections/*.json` e todos os arquivos de imagem e vídeo local referenciados. Um ZIP pode conter vários diretórios `packages/<id>/`; ao salvar, um ID igual substitui o pacote existente.
 6. Volte ao editor, clique em **importar .zip**, selecione o arquivo e revise a validação. O editor transforma imagens do ZIP em referências locais seguras na memória.
 7. Clique em **salvar** para gravar diretamente na pasta do projeto quando o navegador oferecer a File System Access API. Em navegadores sem essa API, o botão salvar baixa um ZIP completo como fallback.
 
@@ -20,12 +20,13 @@ content/
   packages/<id>/
     manifest.json
     header.json
-    cover.png ou cover.jpg ou cover.svg
+    cover.png ou cover.jpg ou cover.svg (preferencialmente horizontal, por exemplo 16:9)
     sections/01-fundamentos.json
     images/diagrama.png
+    media/demonstracao.mp4
 ```
 
-O manifest deve usar `books.package.v2`, apontar para `header.json` e listar as seções na ordem de leitura. Cada seção deve usar `books.section.v2`, possuir um `id` único e conter a lista `blocks`. Capas raster e imagens de blocos devem ser arquivos reais dentro do ZIP; SVG também pode ser embutido como dados ou usado no bloco `svg`. Caminhos absolutos, `..`, scripts, HTML executável e URLs externas não devem ser usados.
+O manifest deve usar `books.package.v2`, apontar para `header.json` e listar as seções na ordem de leitura. Cada seção deve usar `books.section.v2`, possuir um `id` único e conter a lista `blocks`. Capas raster e imagens de blocos devem ser arquivos reais dentro do ZIP; SVG também pode ser embutido como dados ou usado no bloco `svg`. O bloco `video` local usa `media/*.mp4`; o bloco `iframe` é reservado para uma URL HTTPS com título acessível e deve declarar explicitamente a dependência externa. Caminhos absolutos, `..`, scripts, HTML executável e URLs externas em imagens ou vídeos locais não devem ser usados.
 
 ## Estrutura do prompt gerado
 
@@ -35,6 +36,12 @@ O prompt inclui o contrato de arquivos, o formato exato de `manifest`, `header` 
 - um exemplo rico com código, tabela, Mermaid e imagem;
 - orientações de planejamento didático e progressão de capítulos;
 - instruções para capas, imagens, SVG, diagramas e acessibilidade;
+- instruções para iframes HTTPS seguros e vídeos MP4 locais sem misturá-los com capas ou imagens;
+- exigência de explicações por mecanismo, hipóteses, exemplos trabalhados, limites, exercícios expansíveis com solução e referências por subseção, evitando resumos telegráficos;
+- exigência de profundidade não repetitiva: definição, mecanismo, exemplo, hipóteses, limites, erros comuns, aplicação e fonte em cada subseção relevante;
+- ao menos um bloco `history` por seção com contexto histórico/biográfico real, `shortBio`, `insight`, alt text e imagem existente, sem autoria inventada;
+- dicas de exercícios que orientam sem revelar a solução, enquanto `solutionBlocks` documenta prova, verificação, caso-limite e complexidade;
+- verificação final de imagens aninhadas em `history`, imagens comuns, capas, SVG, Mermaid, KaTeX, links internos, tabelas, exemplos de código e caminhos locais;
 - um checklist para links, IDs, tabelas, campos obrigatórios e caminhos do ZIP;
 - uma regra explícita para criar o ZIP, em vez de responder somente com Markdown.
 

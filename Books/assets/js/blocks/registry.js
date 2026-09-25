@@ -30,7 +30,7 @@
 
   var GROUPS = [
     ['texto', 'Texto'], ['codigo', 'Código'], ['diagrama', 'Diagramas e mídia'],
-    ['dados', 'Dados'], ['estrutura', 'Estrutura'], ['avancado', 'Avançado']
+    ['midia', 'Mídia incorporada'], ['dados', 'Dados'], ['estrutura', 'Estrutura'], ['avancado', 'Avançado']
   ];
 
   function register(def) {
@@ -85,6 +85,8 @@
     var el;
     try { el = def.render(block, ctx || {}); } catch (e) { console.error('[blocks]', block.type, e); return errorBox(block, e); }
     el.dataset.block = block.type;
+    if (Books.blockContext && Books.blockContext.bind) Books.blockContext.bind(el, block);
+    try { el.dataset.blockJson = JSON.stringify(block); } catch (e) { /* bloco não serializável: continua renderizando */ }
     if (block.id && !el.id) el.id = block.id;
     return el;
   }

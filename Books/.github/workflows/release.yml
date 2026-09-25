@@ -1,0 +1,77 @@
+name: Release desktop builds
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux
+            artifact: Livros-*-linux-*.AppImage
+          - os: windows-latest
+            target: windows
+            artifact: Livros-*-win-*.exe
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Validate content
+        run: npm run validate
+      - name: Rebuild embedded bundle
+        run: python tools/build_bundle.py
+      - name: Build AppImage
+        if: matrix.target == 'linux'
+        run: npx electron-builder --linux AppImage --publish never
+      - name: Build Windows installer
+        if: matrix.target == 'windows'
+        run: npx electron-builder --win nsis --publish never
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Livros-${{ matrix.target }}
+          path: dist/${{ matrix.artifact }}
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Livros-linux
+          path: release
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Livros-windows
+          path: release
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: release/*

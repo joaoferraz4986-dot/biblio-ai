@@ -45,6 +45,7 @@ blocks/       um tipo de bloco por arquivo, todos via Books.blocks.register()
   text.js        heading, paragraph, list, quote, callout, steps, divider
   code.js        code (realce de sintaxe)
   diagram.js     mermaid, ai-diagram, svg, image
+  media.js       iframe HTTPS seguro e video MP4 local/HTTPS
   data.js        table
   layout.js      subsection, details, columns, html
   math.js        math — equação LaTeX em destaque (matemática inline vive em
@@ -72,21 +73,6 @@ editor/       o editor visual — só carrega o que o leitor não precisa
 
 app.js        bootstrap: carrega catálogo, abre a seleção inicial, liga o dock
 ```
-
-## Aplicativo desktop
-
-O mesmo `Livros.html` é carregado pelo Tauri 2. `core/native.js` detecta o runtime
-desktop sem interferir na versão web e encaminha leitura, gravação, remoção e
-listagem de arquivos para `src-tauri/src/lib.rs`. O leitor continua usando os
-mesmos módulos e dados; apenas `repository.js`, a exportação e os assets
-personalizados trocam File System Access API/downloads por I/O nativo quando o
-runtime está disponível.
-
-O `flake.nix` fornece o ambiente declarativo com Rust, `cargo-tauri`, Node.js,
-WebKitGTK 4.1, OpenSSL, GLib networking, librsvg e `pkg-config`. A pasta escolhida
-é a única raiz recebida pelos comandos de projeto e o único diretório autorizado
-dinamicamente no asset protocol; a escolha fica persistida na configuração do
-aplicativo. Caminhos absolutos, traversal e links simbólicos são rejeitados.
 
 ## Um bloco = uma fonte de verdade
 
@@ -150,10 +136,23 @@ em `images/` dentro da pasta do livro. Ao salvar, `content/repository.js`
 depende de um arquivo fora do projeto — e apaga da pasta qualquer imagem que
 deixou de ser referenciada (bloco removido, capa trocada/removida, imagem
 removida de um bloco). SVG é a exceção: fica embutido no JSON em vez de virar
-arquivo, já que o bloco dedicado `svg` cobre vetores.
+arquivo, já que o bloco dedicado `svg` cobre vetores. Blocos `video` locais
+ficam em `media/`; o bloco `iframe` aceita somente HTTPS e permanece
+explicitamente remoto.
 
 Mermaid (`assets/vendor/mermaid.min.js`) e KaTeX (`assets/vendor/katex.min.js` +
-`katex.min.css` + `assets/vendor/fonts/*.woff2`) seguem a mesma lógica: vendorizados
+katex.min.css + `assets/vendor/fonts/*.woff2`) seguem a mesma lógica: vendorizados
 localmente e carregados sob demanda (só quando a seção que está na tela realmente
-tem um diagrama ou uma fórmula), com um fallback para CDN caso o arquivo local
-falhe — nenhum dos dois é necessário para abrir e ler um livro que não os usa.
+ tem um diagrama ou uma fórmula), sem fallback para CDN. Isso mantém a leitura
+100% offline e faz uma falha de asset local aparecer como erro explícito, em vez
+de introduzir uma dependência de rede.
+
+## Persistência e precedência de conteúdo
+
+O projeto possui três representações do conteúdo. Os arquivos em `content/` são a fonte editável. `assets/js/embedded-bundle.js` é um snapshot gerado para execução offline e para o aplicativo Electron. O IndexedDB do navegador guarda rascunhos locais quando o seletor de pasta não está disponível.
+
+Um rascunho offline só é aplicado quando o fingerprint da base existente no momento do salvamento coincide com o fingerprint do conteúdo carregado. Se um JSON ou o bundle foi atualizado, o rascunho antigo não vence a fonte nova. Registros antigos que não têm o formato `offline-snapshot` são ignorados.
+
+Cada snapshot contém `kind`, `key`, `savedAt`, `baseFingerprint` e `value`. A aba **Importar / Exportar** oferece **descartar rascunho local**, que remove o snapshot do livro, limpa o cache e recarrega a fonte do projeto.
+
+Ao salvar em uma pasta, o editor grava o pacote, as seções, os assets, o catálogo, o progresso, as configurações e o bundle. O snapshot do livro é removido somente depois que o bundle foi escrito. Os livros irmãos usados no rebundle são carregados com `ignoreOffline`, para que um rascunho antigo de outro livro não seja incorporado ao bundle compartilhado.

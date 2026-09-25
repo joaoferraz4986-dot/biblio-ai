@@ -52,14 +52,12 @@
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
   function download(name, text, type) {
-    if (Books.native && Books.native.isAvailable()) return Books.native.saveBinary(name, text, type).then(function (path) { return !!path; });
     var blob = new Blob([text], { type: type || 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = name;
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    return Promise.resolve(true);
   }
   function readFileAsDataUrl(file) {
     return new Promise(function (resolve, reject) {

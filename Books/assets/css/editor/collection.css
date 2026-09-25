@@ -1,0 +1,71 @@
+/*
+ * Painel de conjunto de livros (importar/exportar).
+ * Cartões com tamanho padronizado e alinhamento em grade uniforme.
+ */
+.editor-collection {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-teal);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+}
+.editor-collection__head { display: flex; justify-content: space-between; gap: var(--space-4); align-items: flex-start; }
+.editor-collection__head h3 { margin: 0; }
+.editor-collection__count { font: 700 .75rem var(--font-mono); color: var(--accent-teal); white-space: nowrap; }
+
+.editor-collection__books {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: stretch;
+  align-content: start;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 var(--space-4);
+}
+.editor-collection__book-wrap { display: grid; grid-template-rows: 1fr auto; gap: 6px; align-content: start; }
+.editor-collection__book {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 6px;
+  min-height: 104px;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.editor-collection__book > strong {
+  align-self: start;
+  font-size: .92rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.editor-collection__book small { align-self: end; color: var(--text-dim); font: 600 .7rem var(--font-mono); }
+.editor-collection__book:hover, .editor-collection__book.is-active { border-color: var(--accent-teal); }
+.editor-collection__book.is-active { background: var(--panel-2); }
+.editor-collection__book.is-edited { border-color: var(--accent-orange); box-shadow: inset 3px 0 0 var(--accent-orange); }
+.editor-collection__book.is-edited > small { color: var(--accent-orange); }
+.editor-collection__check { font: 700 .7rem var(--font-mono); color: var(--accent-teal); }
+.editor-collection__book.is-edited .editor-collection__check { color: var(--accent-orange); }
+.editor-collection__edit { justify-self: stretch; text-align: center; }
+.editor-collection__confirm { max-width: 760px; width: min(92vw, 760px); }
+.editor-collection__diff {
+  max-height: 340px;
+  overflow: auto;
+  margin: 0;
+  padding: var(--space-3);
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font: .74rem/1.6 var(--font-mono);
+}

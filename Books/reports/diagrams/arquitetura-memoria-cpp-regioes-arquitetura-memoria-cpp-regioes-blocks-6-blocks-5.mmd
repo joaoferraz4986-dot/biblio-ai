@@ -1,0 +1,6 @@
+flowchart TD
+    C1("Chamada de função (call)") --> P1("Empilha endereço de retorno + salva %rbp antigo")
+    P1 --> L1("Reserva espaço para variáveis locais (sub %rsp)")
+    L1 --> R1("Corpo da função executa")
+    R1 --> E1("leave / pop: desfaz o quadro")
+    E1 --> RT1("ret: volta ao chamador")

@@ -1,0 +1,8 @@
+flowchart LR
+  CFG["config.toml: N, u, s, seed"] --> SIM["simulador determinístico"]
+  SIM --> POP["população + linhagens"]
+  POP --> SEL["seleção e amostragem"]
+  SEL --> MUT["mutação e recombinação"]
+  MUT --> POP
+  POP --> MET["CSV: frequências, fitness, diversidade"]
+  MET --> TEST["testes e análise estatística"]

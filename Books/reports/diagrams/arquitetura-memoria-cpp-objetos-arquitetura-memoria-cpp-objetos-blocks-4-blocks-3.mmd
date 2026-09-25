@@ -1,0 +1,6 @@
+flowchart TD
+    ST("antes de main()") --> IA("runtime percorre .init_array")
+    IA --> CT("construtores dos objetos globais executam")
+    CT --> MN("main() executa")
+    MN --> FA("ao sair: runtime percorre .fini_array")
+    FA --> DT("destrutores dos objetos globais executam")

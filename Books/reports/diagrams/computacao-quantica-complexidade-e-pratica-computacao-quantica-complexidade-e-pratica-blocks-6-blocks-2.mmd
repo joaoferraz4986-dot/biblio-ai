@@ -1,0 +1,10 @@
+flowchart TD
+  S["especificação"] --> C["circuito ideal"]
+  C --> A["predição analítica"]
+  C --> E["simulador exato"]
+  C --> N["canal de ruído"]
+  N --> H["shots do backend"]
+  A --> V["intervalo e teste"]
+  E --> V
+  H --> V
+  V --> B["baseline clássico"]

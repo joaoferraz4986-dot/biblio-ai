@@ -1,20 +1,65 @@
 {
-  "name": "books",
-  "version": "0.1.0",
+  "name": "livros",
+  "productName": "Livros",
+  "desktopName": "com.joaoferraz4986dot.livros",
+  "version": "1.0.0",
+  "description": "Leitor e editor de livros técnicos — app desktop (Electron)",
+  "author": "joaoferraz4986-dot <joaoferraz4986@gmail.com>",
+  "main": "desktop/main.cjs",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build:bundle": "python3 tools/build_bundle.py && cp Livros.html index.html && rm -rf .frontend && mkdir .frontend && cp index.html .frontend/ && cp -r assets content .frontend/",
-    "check": "find assets/js -name '*.js' -print0 | xargs -0 -n1 node --check && node tools/validate.js && node tools/test-themes.js",
-    "dev": "python3 -m http.server 8000 --bind 127.0.0.1",
-    "dev:tauri": "npm run build:bundle && npm run dev",
-    "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build",
-    "format:check": "git diff --check -- . ':!assets/vendor/*'"
+    "start": "electron .",
+    "validate": "node tools/validate.js",
+    "build:bundle": "python tools/build_bundle.py",
+    "package:linux": "electron-packager . Livros --platform=linux --arch=x64 --out=electron-release --overwrite --ignore=^/electron-release --ignore=^/result --ignore=^/tools/__pycache__",
+    "dist:linux": "npm run validate && npm run build:bundle && electron-builder --linux AppImage",
+    "dist:windows": "npm run validate && npm run build:bundle && electron-builder --win nsis"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "2.11.5"
+    "@electron/packager": "^18.3.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^26.0.12"
   },
-  "engines": {
-    "node": ">=20"
+  "build": {
+    "appId": "com.joaoferraz4986dot.livros",
+    "productName": "Livros",
+    "artifactName": "Livros-${version}-${os}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "Livros.html",
+      "assets/**/*",
+      "content/**/*",
+      "desktop/**/*",
+      "package.json",
+      "!build{,/**}",
+      "!docs{,/**}",
+      "!tools{,/**}",
+      "!flake.nix",
+      "!flake.lock",
+      "!result{,/**}",
+      "!electron-release{,/**}"
+    ],
+    "linux": {
+      "target": ["AppImage"],
+      "category": "Education",
+      "icon": "build/icons/livros.png",
+      "syncDesktopName": true,
+      "synopsis": "Leitor e editor de livros técnicos"
+    },
+    "win": {
+      "target": ["nsis"],
+      "icon": "build/icons/livros.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Livros"
+    }
   }
 }

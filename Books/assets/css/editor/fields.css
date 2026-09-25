@@ -16,6 +16,8 @@
 /* aspect-ratio é definido inline por JS a partir do campo "Proporção" (16:9 é o valor padrão) */
 .image-picker__preview { width: 100%; max-width: 320px; aspect-ratio: 16/9; background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-faint); font-size: .8rem; margin-bottom: 6px; }
 .image-picker__preview img { width: 100%; height: 100%; object-fit: cover; }
+.media-picker__preview { width: 100%; max-width: 520px; aspect-ratio: 16/9; background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-faint); font-size: .8rem; margin-bottom: 6px; }
+.media-picker__preview video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 .image-picker__row { display: flex; gap: 6px; align-items: center; }
 .image-picker__file { display: none; }
 

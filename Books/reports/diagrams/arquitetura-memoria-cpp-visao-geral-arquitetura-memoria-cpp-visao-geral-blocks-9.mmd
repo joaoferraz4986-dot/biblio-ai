@@ -1,0 +1,9 @@
+flowchart LR
+    C("CPU: registradores + instrução load") --> V("endereço virtual")
+    V --> T("TLB: tradução em cache")
+    T -->|"hit"| P("permissões + frame físico")
+    T -->|"miss"| PT("page tables / page walk")
+    PT -->|"presente"| P
+    PT -->|"ausente ou proibido"| PF("page fault → kernel")
+    P --> L1("L1 → L2 → LLC/L3")
+    L1 --> D("DRAM / memória mapeada")

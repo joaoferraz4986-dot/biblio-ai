@@ -20,6 +20,11 @@
     el.addEventListener('input', function () { onChange(el.value); });
     return el;
   }
+  function numberInput(value, onChange, opts) {
+    var el = h('input', Object.assign({ type: 'number', value: value == null ? '' : value }, opts || {}));
+    el.addEventListener('input', function () { onChange(el.value === '' ? '' : Number(el.value)); });
+    return el;
+  }
   function textArea(value, onChange, rows) {
     var el = h('textarea', { rows: rows || 4 }, value || '');
     el.value = value || '';
@@ -96,6 +101,35 @@
     wrap.appendChild(h('div', { class: 'image-picker__row' }, urlInput, pick, file));
     // exposto para quem tiver um campo de proporção irmão (ex.: capa do livro) atualizar a prévia ao vivo.
     wrap.updatePreviewRatio = function (ratio) { preview.style.setProperty('aspect-ratio', Books.util.aspectRatioCss(ratio)); };
+    return wrap;
+  }
+
+  function videoPicker(obj, key, onChange, resolveAsset) {
+    var value = obj[key];
+    var wrap = h('div', { class: 'media-picker' });
+    var preview = h('div', { class: 'media-picker__preview' });
+    function renderPreview() {
+      Books.util.clear(preview);
+      var src = Books.util.safeUrl(value);
+      if (src && resolveAsset) src = resolveAsset(src);
+      if (!src) { preview.appendChild(h('span', null, 'sem vídeo')); return; }
+      var video = h('video', { src: src, controls: true, preload: 'metadata' });
+      video.addEventListener('error', function () { Books.util.clear(preview); preview.appendChild(h('span', null, 'vídeo indisponível')); }, { once: true });
+      preview.appendChild(video);
+    }
+    var urlInput = textInput(value, function (v) { value = v; onChange(v); renderPreview(); }, { placeholder: 'media/nome.mp4, URL https:// ou envie um MP4' });
+    var file = h('input', { type: 'file', accept: 'video/mp4,video/*', class: 'image-picker__file' });
+    file.addEventListener('change', function () {
+      var f = file.files[0];
+      if (!f) return;
+      if (f.type && f.type !== 'video/mp4') { Books.toast.show('Selecione um vídeo MP4.', { tone: 'error' }); return; }
+      Books.util.readFileAsDataUrl(f).then(function (dataUrl) { value = dataUrl; urlInput.value = dataUrl; onChange(dataUrl); renderPreview(); });
+    });
+    var pick = h('button', { type: 'button', class: 'btn btn--ghost' }, Books.icons.get('upload', 14), h('span', null, 'enviar MP4'));
+    pick.addEventListener('click', function () { file.click(); });
+    renderPreview();
+    wrap.appendChild(preview);
+    wrap.appendChild(h('div', { class: 'image-picker__row' }, urlInput, pick, file));
     return wrap;
   }
 
@@ -226,6 +260,7 @@
     switch (field.kind) {
       case 'line': return textInput(value, set, { placeholder: field.placeholder || '' });
       case 'plain': return textInput(value, set, { placeholder: field.placeholder || '' });
+      case 'number': return numberInput(value, set, { min: field.min, max: field.max, step: field.step || 1 });
       case 'lines': return textInput(value, set, { placeholder: 'ex.: 2,4-6' });
       case 'text': return textArea(value, set, field.rows);
       case 'code': return monoArea(value, set, field.rows);
@@ -236,6 +271,7 @@
       });
       case 'accent': return accentPicker(value, set);
       case 'image': return imagePicker(obj, key, set, resolveAsset);
+      case 'video': return videoPicker(obj, key, set, resolveAsset);
       case 'history-image': return historyImagePicker(obj, key, set, resolveAsset);
       case 'items': return textArea(itemsToText(value), function (t) { set(textToItems(t)); }, 5);
       default: return textInput(String(value == null ? '' : value), set);
@@ -243,5 +279,5 @@
   }
 
   Books.editorFields = { row: row, buildControl: buildControl, tableEditor: tableEditor, groupListEditor: groupListEditor,
-    itemsToText: itemsToText, textToItems: textToItems, textInput: textInput, textArea: textArea, monoArea: monoArea };
+    itemsToText: itemsToText, textToItems: textToItems, textInput: textInput, numberInput: numberInput, textArea: textArea, monoArea: monoArea };
 })();
