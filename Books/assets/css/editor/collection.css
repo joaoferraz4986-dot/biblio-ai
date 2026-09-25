@@ -55,7 +55,6 @@
 .editor-collection__check { font: 700 .7rem var(--font-mono); color: var(--accent-teal); }
 .editor-collection__book.is-edited .editor-collection__check { color: var(--accent-orange); }
 .editor-collection__edit { justify-self: stretch; text-align: center; }
-.editor-collection__confirm { max-width: 760px; width: min(92vw, 760px); }
 .editor-collection__diff {
   max-height: 340px;
   overflow: auto;

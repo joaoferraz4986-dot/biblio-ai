@@ -63,9 +63,11 @@
     var report = Books.validate.package(pkg);
     var box = els.validation;
     Books.util.clear(box);
+    els.saveBtn.disabled = report.errors.length > 0;
+    if (els.loadSetBtn) els.loadSetBtn.disabled = report.errors.length > 0;
     if (!report.errors.length && !report.warnings.length) {
       box.hidden = true;
-      return;
+      return report;
     }
     box.hidden = false;
     report.errors.forEach(function (e) {
@@ -91,6 +93,7 @@
       );
     });
     els.saveBtn.disabled = report.errors.length > 0;
+    if (els.loadSetBtn) els.loadSetBtn.disabled = report.errors.length > 0;
     document
       .querySelectorAll("[data-editor-export]")
       .forEach(function (button) {
@@ -495,12 +498,13 @@
       }[ext] || "application/octet-stream"
     );
   }
-  function importZip(file) {
+  /* Lê todos os livros de UM zip (detecta cada manifest.json automaticamente). */
+  function readZipPackages(file) {
     return Books.zip.read(file).then(function (entries) {
       var byName = {};
       entries.forEach(function (entry) { byName[entry.name.replace(/^\.\//, "")] = entry; });
       var manifestEntries = entries.filter(function (entry) { return /(^|\/)manifest\.json$/i.test(entry.name); });
-      if (!manifestEntries.length) throw new Error("O ZIP precisa conter ao menos um manifest.json.");
+      if (!manifestEntries.length) throw new Error("nenhum manifest.json encontrado neste .zip.");
       function readPackage(manifestEntry) {
         var manifest = JSON.parse(manifestEntry.text());
         var parts = manifestEntry.name.split("/");
@@ -511,11 +515,11 @@
           return byName[root + clean] || byName[clean];
         }
         var headerEntry = entryFor(manifest.header || "header.json");
-        if (!headerEntry) throw new Error("O ZIP não contém o header.json do livro " + (manifest.id || "sem-id") + ".");
+        if (!headerEntry) throw new Error("falta o header.json do livro " + (manifest.id || "sem-id") + ".");
         var header = JSON.parse(headerEntry.text());
         var sections = (manifest.sections || []).map(function (sectionPath) {
           var entry = entryFor(sectionPath);
-          if (!entry) throw new Error("Seção não encontrada no ZIP: " + sectionPath);
+          if (!entry) throw new Error("seção não encontrada: " + sectionPath);
           return JSON.parse(entry.text());
         });
         function localizeAssetRef(src) {
@@ -532,18 +536,43 @@
         });
         var normalized = Books.migrate.normalizePackage({ manifest: manifest, header: header, sections: sections });
         var report = Books.validate.package(normalized);
-        if (!report.ok()) throw new Error("Livro " + (manifest.id || "sem-id") + " inválido: " + report.format().split("\n").slice(0, 3).join("; "));
+        if (!report.ok()) throw new Error("livro " + (manifest.id || "sem-id") + " inválido: " + report.format().split("\n").slice(0, 3).join("; "));
         return normalized;
       }
-      var packages = manifestEntries.map(readPackage);
-      var selected = packages.find(function (item) { return item.manifest.id === (pkg && pkg.manifest.id); }) || packages[0];
-      pendingPackages = packages;
-      collectionMode = true;
-      pkg = selected;
-      activeSection = pkg.sections[0] || null;
-      Books.state.dirty = true;
-      return { pkg: pkg, packages: packages };
+      return manifestEntries.map(readPackage);
     });
+  }
+  /* Importa vários .zip de uma vez; cada arquivo pode conter vários livros/conjuntos. */
+  function importZips(fileList) {
+    var files = Array.prototype.slice.call(fileList || []);
+    if (!files.length) return Promise.reject(new Error("Selecione ao menos um arquivo .zip."));
+    return files
+      .reduce(function (chain, file) {
+        return chain.then(function (acc) {
+          return readZipPackages(file)
+            .then(function (list) { return acc.concat(list); })
+            .catch(function (e) { throw new Error(file.name + ": " + e.message); });
+        });
+      }, Promise.resolve([]))
+      .then(function (all) {
+        var index = {}, ordered = [];
+        all.forEach(function (item) {
+          var id = item.manifest.id;
+          if (typeof index[id] === "number") { ordered[index[id]] = item; return; }
+          index[id] = ordered.length;
+          ordered.push(item);
+        });
+        if (!ordered.length) throw new Error("Nenhum livro encontrado nos arquivos selecionados.");
+        var keepId = pkg && pkg.manifest && pkg.manifest.id;
+        var selected = ordered.filter(function (item) { return item.manifest.id === keepId; })[0] || ordered[0];
+        pendingPackages = ordered;
+        collectionMode = true;
+        collectionExportMode = false;
+        pkg = selected;
+        activeSection = pkg.sections[0] || null;
+        Books.state.dirty = true;
+        return { pkg: pkg, packages: ordered, files: files.length };
+      });
   }
   function copyPromptZip(book) {
     var prompt = Books.aiPrompt.build(book);
@@ -631,18 +660,17 @@
     }
   }
 
-  function applyImportedPackages(selected) {
-    if (!selected || !selected.length) return;
-    pendingPackages = selected;
-    pkg = selected[0];
-    activeSection = pkg.sections[0] || null;
-    collectionMode = true;
-    collectionExportMode = false;
-    activeTab = "import";
-    Books.state.dirty = true;
-    renderShell();
-    Books.toast.show(selected.length + (selected.length === 1 ? " livro carregado" : " livros carregados") + " para revisão. Salve para gravar no dispositivo.", { tone: "ok", duration: 5000 });
+  /* Mensagem única após importar um ou vários .zip. */
+  function announceImported(result) {
+    var n = result.packages.length;
+    Books.toast.show(
+      n + (n === 1 ? " livro detectado" : " livros detectados") +
+        (result.files > 1 ? " em " + result.files + " arquivos" : "") +
+        ". Revise e use “carregar conjunto” no topo para gravar no dispositivo.",
+      { tone: "ok", duration: 5000 },
+    );
   }
+
 
   function plainText(value) {
     return Books.inline ? Books.inline.toPlain(String(value || "")) : String(value || "");
@@ -837,13 +865,7 @@
     panel.appendChild(list);
     panel.appendChild(h("h4", null, "Alterações da versão importada"));
     panel.appendChild(diff);
-    var load = h("button", { type: "button", class: "btn btn--primary btn--sm" }, Books.icons.get("check", 13), h("span", null, "carregar conjunto"));
-    load.addEventListener("click", function () {
-      confirmImportedPackages(pendingPackages, function (selected) {
-        applyImportedPackages(selected);
-      });
-    });
-    panel.appendChild(h("div", { class: "editor-import__actions" }, load));
+    /* O botão “carregar conjunto” vive no topo do editor (ver renderShell). */
   }
   function renderCollectionPanel() {
     var count = collectionExportMode ? deviceBookList().length : pendingPackages.length;
@@ -859,17 +881,16 @@
       )
     );
     var actions = h("div", { class: "editor-import__actions" });
-    var importInput = h("input", { type: "file", accept: "application/zip,.zip", class: "editor__file-input" });
+    var importInput = h("input", { type: "file", accept: "application/zip,.zip", multiple: true, class: "editor__file-input" });
     var importButton = h("button", { type: "button", class: "btn btn--primary btn--sm" }, Books.icons.get("upload", 13), h("span", null, "importar .zip"));
     importButton.addEventListener("click", function () { importInput.click(); });
     importInput.addEventListener("change", function () {
-      var file = importInput.files && importInput.files[0];
-      if (!file) return;
-      importZip(file).then(function () {
-        collectionMode = true;
-        collectionExportMode = false;
+      if (!importInput.files || !importInput.files.length) return;
+      importZips(importInput.files).then(function (result) {
         activeTab = "import";
         renderShell();
+        announceImported(result);
+        importInput.value = "";
       }).catch(function (e) { Books.toast.show("Não foi possível importar o conjunto: " + e.message, { tone: "error" }); });
     });
     var exportButton = h("button", { type: "button", class: "btn btn--ghost btn--sm" }, Books.icons.get("download", 13), h("span", null, collectionExportMode ? "exportar conjunto agora" : "exportar conjunto"));
@@ -899,33 +920,9 @@
     return panel;
   }
 
-  function confirmImportedPackages(packages, done) {
-    var chosen = {};
-    packages.forEach(function (item) { chosen[item.manifest.id] = true; });
-    var overlay = h("div", { class: "block-context__dialog", role: "dialog", "aria-modal": "true" });
-    var list = h("div", { class: "editor-collection__books" });
-    packages.forEach(function (item) {
-      var existing = (Books.state.catalog.packages || []).some(function (entry) { return entry.id === item.manifest.id; });
-      var card = h("button", { type: "button", class: "editor-collection__book" + (existing ? " is-edited" : "") }, h("strong", null, item.manifest.title || item.manifest.id), h("small", null, (existing ? "editado · " : "novo · ") + item.manifest.id));
-      card.addEventListener("click", function () { chosen[item.manifest.id] = !chosen[item.manifest.id]; card.classList.toggle("is-active", chosen[item.manifest.id]); });
-      card.classList.add("is-active"); list.appendChild(card);
-    });
-    var cancel = h("button", { type: "button", class: "btn btn--ghost btn--sm" }, "cancelar");
-    var load = h("button", { type: "button", class: "btn btn--primary btn--sm" }, "carregar selecionados");
-    var close = function () { overlay.remove(); };
-    cancel.addEventListener("click", close);
-    load.addEventListener("click", function () {
-      var selected = packages.filter(function (item) { return chosen[item.manifest.id]; });
-      if (!selected.length) return;
-      close(); done(selected);
-    });
-    overlay.appendChild(h("div", { class: "block-context__dialog-card editor-collection__confirm" }, h("h3", null, "Confirmar carregamento do conjunto"), h("p", { class: "hint" }, "Livros editados aparecem em laranja. Selecione ou deselecione antes de carregar."), list, h("div", { class: "block-context__dialog-actions" }, cancel, load)));
-    document.body.appendChild(overlay);
-  }
-
   function renderImport() {
     var wrap = h("div", { class: "editor-panel" });
-    if (collectionMode || pendingPackages.length > 1) wrap.appendChild(renderCollectionPanel());
+    if (collectionMode) wrap.appendChild(renderCollectionPanel());
     var exportActions = h("div", { class: "editor-import__actions" });
     var exportBtn = h(
       "button",
@@ -995,6 +992,7 @@
     var zipInput = h("input", {
       type: "file",
       accept: "application/zip,.zip",
+      multiple: true,
       class: "editor__file-input",
     });
     var zipButton = h(
@@ -1008,20 +1006,15 @@
       zipInput.click();
     });
     zipInput.addEventListener("change", function () {
-      var file = zipInput.files[0];
-      if (!file) return;
-      importZip(file)
+      if (!zipInput.files || !zipInput.files.length) return;
+      importZips(zipInput.files)
         .then(function (result) {
-          confirmImportedPackages(result.packages, function (selected) {
-            pendingPackages = selected;
-            pkg = selected[0];
-            activeSection = pkg.sections[0] || null;
-            collectionMode = true;
-            Books.state.dirty = true;
-            zipMsg.textContent = selected.length + " livro(s) carregado(s) para revisão.";
-            zipMsg.className = "hint is-ok";
-            renderShell();
-          });
+          activeTab = "import";
+          zipMsg.textContent = result.packages.length + " livro(s) detectado(s) para revisão.";
+          zipMsg.className = "hint is-ok";
+          renderShell();
+          announceImported(result);
+          zipInput.value = "";
         })
         .catch(function (e) {
           zipMsg.textContent = "Não foi possível importar o ZIP: " + e.message;
@@ -1221,13 +1214,25 @@
     });
   }
   function renderShell() {
-    els.title.textContent = (pkg.manifest.title || "Novo livro") + " — edição";
+    els.title.textContent = collectionMode
+      ? "Conjunto de livros — revisão"
+      : (pkg.manifest.title || "Novo livro") + " — edição";
+    /* No modo conjunto, “carregar conjunto” ocupa o lugar de “salvar”. */
+    if (els.loadSetBtn) els.loadSetBtn.hidden = !collectionMode;
+    if (els.saveBtn) els.saveBtn.hidden = collectionMode;
     renderTabs();
     renderTab();
     refreshValidation();
   }
 
-  async function saveOfflineFallback() {
+  function resetCollectionState() {
+    pendingPackages = [];
+    collectionMode = false;
+    collectionExportMode = false;
+    selectedCollectionIds = {};
+  }
+
+  async function saveOfflineFallback(okMessage) {
     var offline = await Books.repo.saveOffline({
       pkg: pkg,
       packages: pendingPackages.length ? pendingPackages : [pkg],
@@ -1238,36 +1243,36 @@
     Books.repo.bumpAssetVersion();
     Books.state.pkg = Books.util.clone(offline.pkg);
     pkg = Books.util.clone(offline.pkg);
-    pendingPackages = [];
-    collectionMode = false;
-    collectionExportMode = false;
-    selectedCollectionIds = {};
+    resetCollectionState();
     Books.state.dirty = false;
     Books.events.emit("catalog:changed", Books.state.pkg);
-    Books.toast.show(
-      "Salvo neste navegador. As alterações serão carregadas novamente ao abrir o projeto neste navegador.",
-      { tone: "ok", duration: 6000 },
-    );
+    Books.toast.show(okMessage || "Salvo neste navegador.", {
+      tone: "ok",
+      duration: 6000,
+    });
   }
 
-  async function saveToFolder() {
+  /* Grava o livro (ou todo o conjunto em revisão) e devolve true quando gravou. */
+  async function persist(messages) {
     var report = refreshValidation();
     if (report && !report.ok()) {
-      Books.toast.show("Corrija os erros antes de salvar.", { tone: "error" });
-      return;
+      Books.toast.show(messages.invalid, { tone: "error" });
+      return false;
     }
-    if (!window.showDirectoryPicker) {
+    async function offline() {
       try {
-        await saveOfflineFallback();
+        await saveOfflineFallback(messages.offline);
+        return true;
       } catch (e) {
         console.error("[editor] fallback offline:", e);
         Books.toast.show(
           "Não foi possível salvar localmente neste navegador: " + e.message,
           { tone: "error", duration: 6500 },
         );
+        return false;
       }
-      return;
     }
+    if (!window.showDirectoryPicker) return offline();
     var handle;
     try {
       handle =
@@ -1277,22 +1282,9 @@
           mode: "readwrite",
         }));
     } catch (e) {
-      if (e && e.name === "AbortError") return; // usuário cancelou o seletor de pasta — nada a fazer
-      console.warn(
-        "[editor] seletor de pasta indisponível; usando armazenamento offline:",
-        e,
-      );
-      try {
-        await saveOfflineFallback();
-      } catch (offlineError) {
-        console.error("[editor] fallback offline:", offlineError);
-        Books.toast.show(
-          "Não foi possível salvar localmente neste navegador: " +
-            offlineError.message,
-          { tone: "error", duration: 6500 },
-        );
-      }
-      return;
+      if (e && e.name === "AbortError") return false; // usuário cancelou o seletor de pasta
+      console.warn("[editor] seletor de pasta indisponível; usando armazenamento offline:", e);
+      return offline();
     }
     try {
       dirHandle = handle;
@@ -1318,17 +1310,43 @@
       Books.repo.bumpAssetVersion();
       Books.state.pkg = Books.util.clone(result.pkg || pkg);
       pkg = Books.util.clone(result.pkg || pkg);
-      pendingPackages = [];
-      collectionMode = false;
+      resetCollectionState();
       Books.state.dirty = false;
       Books.events.emit("catalog:changed", Books.state.pkg);
-      Books.toast.show("Salvo na pasta do projeto.", { tone: "ok" });
+      Books.toast.show(messages.folder, { tone: "ok" });
+      return true;
     } catch (e) {
       console.error(e);
-      Books.toast.show("Não foi possível salvar na pasta: " + e.message, {
-        tone: "error",
-      });
+      Books.toast.show(messages.error + e.message, { tone: "error" });
+      return false;
     }
+  }
+
+  /* Salvar (livro único): grava e fecha o popup. */
+  async function saveToFolder() {
+    var done = await persist({
+      invalid: "Corrija os erros antes de salvar.",
+      offline: "Salvo neste navegador. As alterações voltam ao abrir o projeto aqui.",
+      folder: "Salvo na pasta do projeto.",
+      error: "Não foi possível salvar na pasta: ",
+    });
+    if (done) finish();
+  }
+
+  /* Carregar conjunto: grava todos os livros em revisão na biblioteca e fecha. */
+  async function loadCollection() {
+    if (!pendingPackages.length) {
+      Books.toast.show("Importe ou selecione um conjunto antes de carregar.", { tone: "error" });
+      return;
+    }
+    var total = pendingPackages.length;
+    var done = await persist({
+      invalid: "Corrija os erros do livro em revisão antes de carregar o conjunto.",
+      offline: total + (total === 1 ? " livro carregado" : " livros carregados") + " na biblioteca deste navegador.",
+      folder: total + (total === 1 ? " livro carregado" : " livros carregados") + " na pasta do projeto.",
+      error: "Não foi possível carregar o conjunto: ",
+    });
+    if (done) finish();
   }
   async function exportZip(saveFallback, collection, chosenPackages) {
     var report = refreshValidation();
@@ -1413,12 +1431,11 @@
 
   function exportCollectionZip() { return exportZip(false, true); }
 
+  /* Novo livro / editar livro: fluxo de UM livro, sem nada de conjunto. */
   function open(id) {
     activeSection = null;
-    pendingPackages = [];
-    collectionMode = false;
-    collectionExportMode = false;
-    selectedCollectionIds = {};
+    resetCollectionState();
+    activeTab = "info";
     var entry =
       id &&
       Books.state.catalog.packages.find(function (p) {
@@ -1442,8 +1459,10 @@
       });
   }
 
+  /* Conjunto: revisão de vários livros de uma vez. */
   function openCollection() {
     activeSection = null;
+    resetCollectionState();
     collectionMode = true;
     activeTab = "import";
     var entries = Books.state.catalog.packages || [];
@@ -1461,14 +1480,21 @@
       .catch(function (e) { Books.toast.show("Não foi possível abrir o conjunto: " + e.message, { tone: "error" }); });
   }
 
-  function openCollectionImport(file) {
-    importZip(file).then(function (result) {
-      confirmImportedPackages(result.packages, function (selected) {
-        pendingPackages = selected; pkg = selected[0]; collectionMode = true; activeTab = "import";
-        els.root.hidden = false; document.body.classList.add("overlay-open", "editor-open"); renderShell();
-        Books.toast.show(selected.length + " livros carregados para revisão e diff.", { tone: "ok", duration: 5000 });
+  /* Importar conjunto direto da biblioteca: aceita vários .zip com vários livros. */
+  function openCollectionImport(files) {
+    resetCollectionState();
+    importZips(files)
+      .then(function (result) {
+        activeTab = "import";
+        els.root.hidden = false;
+        document.body.classList.add("overlay-open", "editor-open");
+        renderShell();
+        announceImported(result);
+      })
+      .catch(function (e) {
+        Books.toast.show("Não foi possível importar o conjunto: " + e.message, { tone: "error" });
+        if (!Books.state.pkg) Books.library.open();
       });
-    }).catch(function (e) { Books.toast.show("Não foi possível importar o conjunto: " + e.message, { tone: "error" }); });
   }
   function promptNewId() {
     var n = 1,
@@ -1483,19 +1509,25 @@
     );
     return id;
   }
+  /* Fecha o popup e volta para a biblioteca quando nenhum livro está aberto. */
+  function finish() {
+    Books.state.dirty = false;
+    resetCollectionState();
+    els.root.hidden = true;
+    document.body.classList.remove("overlay-open", "editor-open");
+    if (!Books.state.pkg) Books.library.open();
+  }
   function close() {
     if (
       Books.state.dirty &&
-      !confirm("Sair sem salvar? As alterações deste livro serão perdidas.")
+      !confirm(
+        collectionMode
+          ? "Sair sem carregar? O conjunto em revisão será descartado."
+          : "Sair sem salvar? As alterações deste livro serão perdidas.",
+      )
     )
       return;
-    Books.state.dirty = false;
-    pendingPackages = [];
-    collectionMode = false;
-    collectionExportMode = false;
-    selectedCollectionIds = {};
-    els.root.hidden = true;
-    document.body.classList.remove("overlay-open", "editor-open");
+    finish();
   }
 
   function init() {
@@ -1505,9 +1537,11 @@
     els.body = document.getElementById("editorBody");
     els.validation = document.getElementById("editorValidation");
     els.saveBtn = document.getElementById("editorSave");
+    els.loadSetBtn = document.getElementById("editorLoadSet");
     els.closeBtn = document.getElementById("editorClose");
     els.closeBtn.addEventListener("click", close);
     els.saveBtn.addEventListener("click", saveToFolder);
+    els.loadSetBtn.addEventListener("click", loadCollection);
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && document.body.classList.contains("editor-open"))
         close();
@@ -1520,9 +1554,9 @@
       Books.library.close();
       openCollection();
     });
-    Books.events.on("library:import-set", function (file) {
+    Books.events.on("library:import-set", function (files) {
       Books.library.close();
-      openCollectionImport(file);
+      openCollectionImport(files);
     });
     Books.events.on("editor:open", function (id) {
       open(id);

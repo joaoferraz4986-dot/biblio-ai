@@ -17,7 +17,7 @@
 .editor-panel h3:first-child { margin-top: 0; }
 .editor-import__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--border-soft); }
 .editor-import__head h3 { margin-top: 0; }
-.editor-import__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; }
+.editor-import__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; margin-top: var(--space-4); }
 .editor-import__zip { display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start; }
 .editor-import__zip .btn { min-width: 132px; justify-content: center; }
 .editor__file-input { display: none; }

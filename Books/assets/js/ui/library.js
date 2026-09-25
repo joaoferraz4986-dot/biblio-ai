@@ -155,6 +155,8 @@
     els.close = document.getElementById("libraryClose");
     els.new = document.getElementById("libraryNew");
     els.newSet = document.getElementById("libraryNewSet");
+    els.importSet = document.getElementById("libraryImportSet");
+    els.importSetInput = document.getElementById("libraryImportSetInput");
     els.settings = document.getElementById("libraryOpenSettings");
     els.close.addEventListener("click", close);
     els.root.addEventListener("click", function (e) {
@@ -172,6 +174,16 @@
     });
     els.newSet.addEventListener("click", function () {
       Books.events.emit("library:new-set");
+    });
+    /* Importar conjunto: vários .zip de uma vez, cada um com um ou vários livros. */
+    els.importSet.addEventListener("click", function () {
+      els.importSetInput.click();
+    });
+    els.importSetInput.addEventListener("change", function () {
+      var files = els.importSetInput.files;
+      if (!files || !files.length) return;
+      Books.events.emit("library:import-set", files);
+      els.importSetInput.value = "";
     });
     els.settings.addEventListener("click", function () {
       Books.events.emit("settings:open");

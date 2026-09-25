@@ -67,6 +67,8 @@
         <div style="display:flex; gap:8px;">
           <button class="btn btn--primary btn--sm" id="libraryNew" type="button"><span data-icon="plus"></span><span>novo livro</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryNewSet" type="button"><span data-icon="layers"></span><span>novo conjunto</span></button>
+          <button class="btn btn--ghost btn--sm" id="libraryImportSet" type="button" title="Selecione um ou vários .zip; cada um pode conter vários livros"><span data-icon="upload"></span><span>importar conjunto</span></button>
+          <input type="file" id="libraryImportSetInput" accept="application/zip,.zip" multiple hidden />
           <button class="btn btn--ghost btn--sm" id="libraryOpenSettings" type="button" aria-haspopup="dialog" aria-controls="settingsOverlay"><span data-icon="settings"></span><span>configurações</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
         </div>
@@ -87,6 +89,7 @@
         <h2 id="editorTitle">Editor</h2>
         <div class="editor__head-actions">
           <button class="btn btn--primary btn--sm" id="editorSave" type="button" title="Grava diretamente os arquivos do projeto"><span data-icon="folder"></span><span>salvar</span></button>
+          <button class="btn btn--primary btn--sm" id="editorLoadSet" type="button" title="Grava todos os livros do conjunto em revisão" hidden><span data-icon="check"></span><span>carregar conjunto</span></button>
           <button class="btn btn--ghost btn--sm" id="editorClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
         </div>
       </div>
