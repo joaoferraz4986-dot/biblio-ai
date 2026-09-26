@@ -20,9 +20,9 @@ class TaylorApproximation(Scene):
         self.camera.background_color = '#101820'
         title = Text('Taylor: aproximação local por polinômios', font_size=32).to_edge(UP)
         axes = Axes(x_range=[-3, 3, 1], y_range=[-1, 8, 1], x_length=8, y_length=5, axis_config={'color': '#8fa6b8'}).shift(DOWN * 0.25)
-        f = axes.plot(lambda x: 2.3 * (x + 1) ** 2 + 1, x_range=[-2.5, 2], color='#61d0c4')
-        p2 = axes.plot(lambda x: 2.3 * (x + 1) ** 2 + 1, x_range=[-2.5, 2], color='#ffd166')
-        p1 = axes.plot(lambda x: 4.6 * (x + 1) + 1, x_range=[-2.5, 2], color='#ff8c69')
+        f = axes.plot(lambda x: 2.3 * (x + 1) ** 2 + 1, x_range=[-1.2, 0.25], color='#61d0c4')
+        p2 = axes.plot(lambda x: 2.3 * (x + 1) ** 2 + 1, x_range=[-1.2, 0.25], color='#ffd166')
+        p1 = axes.plot(lambda x: 4.6 * (x + 1) + 1, x_range=[-1.2, 0.25], color='#ff8c69')
         labels = VGroup(Text('f(x)', font_size=22, color='#61d0c4'), Text('P₁(x)', font_size=22, color='#ff8c69'), Text('P₂(x)', font_size=22, color='#ffd166')).arrange(DOWN, aligned_edge=LEFT, buff=0.08).to_corner(UR)
         formula = Text('mais termos  →  melhor aproximação perto de a', font_size=21).to_edge(DOWN)
         self.play(Write(title), Create(axes), Create(f), Create(p1), Create(p2), Write(labels), Write(formula))

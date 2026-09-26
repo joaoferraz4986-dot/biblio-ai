@@ -62,9 +62,10 @@ class DijkstraReferencia(Scene):
         for node, value, line_key, text in [(p['A'], '2', ('S','A'), 'fila: (2,A),(5,C)'), (p['C'], '3', ('A','C'), 'fila: (3,C),(4,B)'), (p['B'], '4', ('A','B'), 'fila: (4,B),(5,C)'), (p['D'], '5', ('B','D'), 'fila: (5,D)')]:
             line = edge_map[line_key]
             pulse = line.copy().set_color('#5ec6b0').set_stroke(width=8)
-            newd = Text(value, font_size=19, color='#9fe3c7').next_to(Circle(radius=0.36).move_to(node), DOWN, buff=0.12)
+            newd = Text(value, font_size=19, color='#9fe3c7').next_to(Circle(radius=0.36).move_to(node), UP, buff=0.14)
             self.play(Create(pulse), Indicate(weights[edge_specs.index(next(x for x in edge_specs if x[0]==line_key[0] and x[1]==line_key[1]))], color='#ffd166'), run_time=0.6)
             self.play(Transform(dist[line_key[1]], newd), Transform(queue, Text(text, font_size=20, color='#d8e6ef').to_edge(DOWN)), FadeOut(pulse), run_time=0.7)
         final = Text('quando a menor distância sai da fila, ela fica definitiva', font_size=20, color='#9fe3c7').to_edge(DOWN)
-        self.play(Transform(queue, final), Indicate(nodes[1], color='#5ec6b0'), Indicate(nodes[2], color='#5ec6b0'))
-        self.wait(1)
+        self.play(Transform(queue, final), FadeOut(VGroup(panel, panel_title, panel_text)), Indicate(nodes[1], color='#5ec6b0'), Indicate(nodes[2], color='#5ec6b0'))
+        self.wait(3)
+        self.play(FadeOut(VGroup(title, subtitle, edges, weights, nodes, labels, *dist.values(), queue)), run_time=0.8)
