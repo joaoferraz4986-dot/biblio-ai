@@ -21,7 +21,7 @@ class BellStatePortadoPT(Scene):
 class BlochPortadoPT(ThreeDScene):
     def construct(self):
         self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
-        title = Text('Esfera de Bloch: rotação do estado', font_size=30).to_corner(UL)
+        title = Text('Esfera de Bloch: rotação do estado', font_size=25).to_corner(UL).shift(DOWN * 0.12)
         self.add_fixed_in_frame_mobjects(title)
         bloch = BlochSphere.basis_state('0', radius=2, arrow_thickness=0.04)
         bloch.add_labels_to_scene(self)
