@@ -11,8 +11,8 @@
 .b-diagram__prompt summary { cursor: pointer; }
 .b-diagram--mermaid { --accent-line: var(--accent, var(--accent-blue)); border-top: 3px solid var(--accent-line); }
 .b-diagram--ai { border-top: 3px solid var(--accent, var(--accent-violet)); }
-.svg-frame { width: 100%; }
-.svg-frame svg { width: 100%; height: auto; }
+.svg-frame { width: 100%; padding: var(--space-5) var(--space-6); box-sizing: border-box; }
+.svg-frame svg { display: block; width: 100%; height: auto; }
 
 .b-image { width: 100%; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); background: var(--panel); }
 .b-image img { width: 100%; height: auto; display: block; }
