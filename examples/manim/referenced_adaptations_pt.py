@@ -32,15 +32,24 @@ class BlochPortadoPT(ThreeDScene):
 
 class DNAStoragePortadoPT(Scene):
     def construct(self):
-        title = Text('Armazenamento em DNA: codificar, guardar e ler', font_size=30).to_edge(UP)
-        source = Text('mensagem: BIBLIO', font_size=28, color='#61d0c4').shift(LEFT * 4 + UP * 1.2)
-        dna = Text('ACGTACGTTGCA', font_size=28, color='#ffd166').shift(RIGHT * 0.2 + UP * 1.2)
-        decoded = Text('mensagem recuperada: BIBLIO', font_size=25, color='#9fe3c7').shift(DOWN * 1.35)
-        arrows = VGroup(Arrow(source.get_right(), dna.get_left(), buff=0.25, color='#ff8c69'), Arrow(dna.get_bottom(), decoded.get_top(), buff=0.25, color='#ff8c69'))
-        labels = VGroup(Text('codificação', font_size=20).next_to(arrows[0], UP, buff=0.08), Text('sequenciamento e decodificação', font_size=20).next_to(arrows[1], RIGHT, buff=0.08))
-        box = SurroundingRectangle(dna, color='#ffd166', buff=0.18)
-        note = Text('redundância ajuda a recuperar a mensagem após erros de leitura', font_size=19, color='#d8e6ef').to_edge(DOWN)
-        self.play(Write(title), Write(source), Create(arrows[0]), Write(labels[0]), Create(box), Write(dna), Create(arrows[1]), Write(labels[1]), Write(decoded), Write(note), run_time=2.5)
+        title = Text('Armazenamento em DNA', font_size=34).to_edge(UP, buff=0.28)
+        subtitle = Text('da mensagem digital à recuperação molecular', font_size=21, color='#b7c9d6').next_to(title, DOWN, buff=0.12)
+        message_box = RoundedRectangle(width=3.25, height=2.05, corner_radius=0.16, stroke_color='#61d0c4', fill_color='#142b32', fill_opacity=1).move_to(LEFT * 4.35 + UP * 0.25)
+        bases_box = RoundedRectangle(width=3.25, height=2.05, corner_radius=0.16, stroke_color='#ffd166', fill_color='#302914', fill_opacity=1).move_to(ORIGIN + UP * 0.25)
+        read_box = RoundedRectangle(width=3.25, height=2.05, corner_radius=0.16, stroke_color='#b58cff', fill_color='#241d35', fill_opacity=1).move_to(RIGHT * 4.35 + UP * 0.25)
+        message_label = Text('1. Mensagem digital', font_size=21, color='#61d0c4').next_to(message_box, UP, buff=0.16)
+        bases_label = Text('2. Sequência de bases', font_size=21, color='#ffd166').next_to(bases_box, UP, buff=0.16)
+        read_label = Text('3. Leitura e consenso', font_size=21, color='#b58cff').next_to(read_box, UP, buff=0.16)
+        message = Text('BIBLIO', font_size=32, color='#e7fffb').move_to(message_box.get_center())
+        bases = Text('ACGTACGTTGCA', font_size=27, color='#fff0b3').move_to(bases_box.get_center())
+        recovered = Text('BIBLIO', font_size=32, color='#eee4ff').move_to(read_box.get_center())
+        arrow_one = Arrow(message_box.get_right(), bases_box.get_left(), buff=0.2, stroke_width=7, max_tip_length_to_length_ratio=0.18, color='#ff8c69')
+        arrow_two = Arrow(bases_box.get_right(), read_box.get_left(), buff=0.2, stroke_width=7, max_tip_length_to_length_ratio=0.18, color='#ff8c69')
+        note = Text('índices e redundância ajudam a recuperar fragmentos com erros', font_size=20, color='#d8e6ef').to_edge(DOWN, buff=0.3)
+        self.play(Write(title), FadeIn(subtitle), FadeIn(message_box), Write(message_label), Write(message), run_time=1.1)
+        self.play(Create(arrow_one), FadeIn(bases_box), Write(bases_label), Write(bases), run_time=1.1)
+        self.play(Create(arrow_two), FadeIn(read_box), Write(read_label), Write(recovered), run_time=1.1)
+        self.play(Write(note), run_time=0.7)
         self.wait(2)
 
 class EstruturasPortadasPT(Scene):
