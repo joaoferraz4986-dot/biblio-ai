@@ -12,7 +12,7 @@ class SecanteTangente(Scene):
         secant = always_redraw(lambda: Line(a.get_center(), b.get_center(), color='#ffd166', stroke_width=4))
         tangent = always_redraw(lambda: Line(axes.c2p(-0.15, 1.0), axes.c2p(2.15, 5.6), color='#ff8c69', stroke_width=4))
         formula = Text("f'(a) = limite de [f(a+h)-f(a)] / h", font_size=22, color='#ffffff').to_edge(DOWN)
-        label = always_redraw(lambda: Text(f'h = {x0.get_value() - 1:.2f}', font_size=22, color='#ffd166').next_to(b, UR, buff=0.1))
+        label = always_redraw(lambda: Text(f'h = {x0.get_value() - 1:.2f}', font_size=22, color='#ffd166').next_to(b, RIGHT, buff=0.45))
         self.play(Write(title), Create(axes), Create(curve), FadeIn(a), FadeIn(b), Create(secant), Write(formula), FadeIn(label))
         self.play(x0.animate.set_value(1.5), run_time=1.3)
         self.play(x0.animate.set_value(1.08), run_time=1.6)
@@ -24,7 +24,7 @@ class TransformacaoLinear(Scene):
         self.camera.background_color = '#101820'
         title = Text('Álgebra Linear: uma matriz transforma a grade', font_size=32).to_edge(UP)
         plane = NumberPlane(x_range=[-4, 4, 1], y_range=[-3, 3, 1], background_line_style={'stroke_color': '#355268', 'stroke_opacity': 0.7}).shift(DOWN * 0.15)
-        matrix = Text('A = [[2, 1], [1, 1]]', font_size=22, color='#ffd166').to_corner(UR)
+        matrix = Text('A = [[2, 1], [1, 1]]', font_size=22, color='#ffd166').to_corner(DL)
         e1 = Arrow(ORIGIN, RIGHT, buff=0, color='#5ec6b0').shift(DOWN * 0.15)
         e2 = Arrow(ORIGIN, UP, buff=0, color='#ff8c69').shift(DOWN * 0.15)
         v = Arrow(ORIGIN, 1.4 * RIGHT + 1.0 * UP, buff=0, color='#ffffff').shift(DOWN * 0.15)
@@ -52,7 +52,7 @@ class DijkstraReferencia(Scene):
         for name, pos in p.items():
             node = Circle(radius=0.36, stroke_width=4, stroke_color='#5ec6b0', fill_color='#173545', fill_opacity=1).move_to(pos)
             lab = Text(name, font_size=24).move_to(pos)
-            d = Text('∞' if name != 'S' else '0', font_size=19, color='#b7d2df').next_to(node, DOWN, buff=0.12)
+            d = Text('∞' if name != 'S' else '0', font_size=19, color='#b7d2df').next_to(node, UP, buff=0.14)
             nodes.add(node); labels.add(lab); dist[name] = d
         panel = RoundedRectangle(corner_radius=0.14, width=3.1, height=1.48, stroke_color='#6e8da1', fill_color='#142532', fill_opacity=1).to_corner(DL)
         panel_title = Text('Legenda', font_size=20, color='#ffd166').next_to(panel.get_top(), DOWN, buff=0.12)
