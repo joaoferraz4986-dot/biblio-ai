@@ -1,7 +1,3 @@
-/*
- * ZIP sem dependências externas: empacotamento "store" para exportações rápidas e
- * leitura dos métodos store/deflate para importar livros e fontes criados por outras ferramentas.
- */
 (function () {
   'use strict';
   var CRC_TABLE = (function () {
@@ -9,7 +5,6 @@
     for (var n = 0; n < 256; n++) {
       var c = n;
       for (var k = 0; k < 8; k++) c = c & 1 ? (0xEDB88320 ^ (c >>> 1)) ^ (c >>> 1) : (c >>> 1);
-      // A expressão acima é mantida explícita abaixo para evitar qualquer ambiguidade de precedência.
       c = n;
       for (var j = 0; j < 8; j++) c = c & 1 ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
       table[n] = c >>> 0;
@@ -36,7 +31,6 @@
   function text(bytes) { return new TextDecoder('utf-8').decode(bytes); }
   function safeName(name) { return name && name.length <= 255 && name.indexOf('\u0000') === -1 && name.indexOf('\\') === -1 && name.split('/').indexOf('..') === -1 && name.charAt(0) !== '/' && !/^[A-Za-z]:/.test(name); }
 
-  /** files: [{ name: 'content/catalog.json', data: string|Uint8Array }]. Devolve um Blob. */
   function build(files) {
     if (!Array.isArray(files) || files.length > MAX_ENTRIES) throw new Error('ZIP excede o limite de ' + MAX_ENTRIES + ' entradas.');
     var chunks = [], central = [], offset = 0;
@@ -77,10 +71,6 @@
     }
   }
 
-  /**
-   * Lê ZIPs com entradas UTF-8 e métodos 0 (store) ou 8 (deflate).
-   * Devolve uma lista [{name, data, text()}], ignorando diretórios.
-   */
   function read(blob) {
     return blob.arrayBuffer().then(function (buffer) {
       var bytes = new Uint8Array(buffer);

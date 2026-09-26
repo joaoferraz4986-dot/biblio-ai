@@ -1,5 +1,5 @@
 {
-  description = "Livros — leitor e editor de livros técnicos (app desktop Electron para NixOS)";
+  description = "Biblio Ai — leitor e editor de livros técnicos (app desktop Electron para NixOS)";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -10,19 +10,19 @@
     in {
       packages = forAll (pkgs:
         let
-          electron = pkgs.electron;   # Electron do nixpkgs, já com o wrapper correto para NixOS
+          electron = pkgs.electron;
           desktopItem = pkgs.makeDesktopItem {
-            name = "livros";
-            desktopName = "Livros";
-            comment = "Leitor e editor de livros técnicos";
-            exec = "livros %U";
-            icon = "accessories-dictionary";
+            name = "biblio-ai";
+            desktopName = "Biblio Ai";
+            comment = "Leitor e editor de livros técnicos Biblio Ai";
+            exec = "biblio-ai %U";
+            icon = "biblio-ai";
             categories = [ "Education" "Office" ];
           };
         in {
           default = pkgs.stdenvNoCC.mkDerivation {
-            pname = "livros";
-            version = "1.0.0";
+            pname = "biblio-ai";
+            version = "1.2.0";
             src = pkgs.lib.cleanSourceWith {
               src = ./.;
               filter = path: type:
@@ -34,21 +34,20 @@
             dontBuild = true;
             installPhase = ''
               runHook preInstall
-              mkdir -p $out/share/livros $out/bin
-              cp -r . $out/share/livros/
-              # Os livros ficam em ~/.config/Livros/Books (gravável); a cópia do /nix/store é só o modelo inicial.
-              # Para usar outra pasta: LIVROS_DIR=/caminho/para/Books livros
-              makeWrapper ${electron}/bin/electron $out/bin/livros \
-                --add-flags $out/share/livros \
+              mkdir -p $out/share/biblio-ai $out/share/icons/hicolor/scalable/apps $out/bin
+              cp -r . $out/share/biblio-ai/
+              cp build/icons/biblio-ai.svg $out/share/icons/hicolor/scalable/apps/biblio-ai.svg
+              makeWrapper ${electron}/bin/electron $out/bin/biblio-ai \
+                --add-flags $out/share/biblio-ai \
                 --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
               runHook postInstall
             '';
-            meta.mainProgram = "livros";
+            meta.mainProgram = "biblio-ai";
           };
         });
 
       apps = forAll (pkgs: {
-        default = { type = "app"; program = "${self.packages.${pkgs.system}.default}/bin/livros"; };
+        default = { type = "app"; program = "${self.packages.${pkgs.system}.default}/bin/biblio-ai"; };
       });
 
       devShells = forAll (pkgs: {

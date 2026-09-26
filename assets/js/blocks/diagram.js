@@ -1,4 +1,3 @@
-/* Blocos visuais: mermaid, ai-diagram (diagrama com proveniência de IA), svg e image. */
 (function () {
   "use strict";
   var B = Books.blocks;

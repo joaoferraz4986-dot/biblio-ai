@@ -1,8 +1,3 @@
-/*
- * Realce de sintaxe leve e sem dependências. Não é um parser completo: cobre o que
- * um livro técnico precisa (C/C++, assembly, shell, Python, JS/TS, JSON, SQL, Rust, Go, Java).
- * Cada regra tem uma classe CSS `tok-<classe>`; ver assets/css/blocks/code.css.
- */
 (function () {
   'use strict';
 
@@ -24,7 +19,6 @@
   var NUM = '\\b(?:0[xX][0-9a-fA-F][0-9a-fA-F\']*|0[bB][01][01\']*|\\d[\\d\']*(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)[uUlLfF]*\\b';
   var IDENT = '[A-Za-z_$][\\w$]*';
 
-  /** Definição de linguagem: lista de [classe, regex-fonte] + função de classificação de identificadores. */
   var LANGS = {};
   function cLike(kw, types, extra) {
     return {
@@ -88,7 +82,6 @@
     return LANGS[l] ? l : '';
   }
 
-  /** Devolve lista de tokens [{c: classe|'', v: texto}]. */
   function tokenize(code, langName) {
     var lang = normalize(langName);
     if (!lang) return [{ c: '', v: code }];
@@ -116,7 +109,6 @@
     return out;
   }
 
-  /** Renderiza o código em um DocumentFragment, linha a linha (permite números e destaque de linhas). */
   function renderLines(code, langName) {
     var tokens = tokenize(code, langName);
     var lines = [document.createDocumentFragment()];

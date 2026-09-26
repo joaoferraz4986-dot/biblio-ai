@@ -1,4 +1,3 @@
-/* Estado compartilhado da aplicação (uma única fonte, lida por leitor e editor). */
 (function () {
   'use strict';
   Books.state = {

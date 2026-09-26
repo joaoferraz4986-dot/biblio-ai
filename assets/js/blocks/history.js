@@ -1,4 +1,3 @@
-/* Card enxuto de história/biografia: conteúdo natural no leitor; direitos ficam em image-rights.json. */
 (function () {
   "use strict";
   var B = Books.blocks;

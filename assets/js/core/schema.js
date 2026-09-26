@@ -1,12 +1,3 @@
-/*
- * Constantes do formato de livro (v2). Sem dependência de DOM — roda em Node também.
- *
- * Estrutura de um pacote:
- *   manifest.json  → identidade do livro e lista ordenada de seções
- *   header.json    → capa, título, subtítulo, nota de leitura, legenda de cores, rodapé
- *   sections/*.json→ cada seção é uma lista de BLOCOS tipados (ver Books.blocks)
- * O catálogo (content/catalog.json) é um índice derivado dos manifestos.
- */
 (function () {
   'use strict';
 
@@ -27,7 +18,6 @@
     bundle: 'memcpp.package-bundle.v1'
   };
 
-  /** Paleta de cores semânticas. `legacy` guarda o nome antigo (--c-*) para compatibilidade. */
   var ACCENTS = [
     { id: 'blue', label: 'Azul', legacy: 'text' },
     { id: 'teal', label: 'Verde-água', legacy: 'rodata' },
@@ -42,7 +32,6 @@
     { id: 'cyan', label: 'Ciano' }
   ];
 
-  /** Tons disponíveis na marcação inline {tom|texto}. */
   var TONES = ['ok', 'warn', 'bad', 'dim'].concat(ACCENTS.map(function (a) { return a.id; }));
 
   var LIMITS = { sectionId: /^[a-z0-9][a-z0-9-]*$/, bookId: /^[a-z0-9][a-z0-9-]*$/, anchorId: /^[A-Za-z][A-Za-z0-9_-]*$/ };
@@ -53,7 +42,6 @@
     var found = ACCENTS.find(function (a) { return a.id === v || a.legacy === v; });
     return found ? found.id : '';
   }
-  /** Devolve um valor CSS (var(--accent-x) ou #hex) ou '' se inválido. */
   function accentCss(value) {
     var id = accentId(value);
     if (id) return 'var(--accent-' + id + ')';

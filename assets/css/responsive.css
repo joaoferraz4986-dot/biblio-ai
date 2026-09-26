@@ -1,4 +1,3 @@
-/* Ajustes finos por tamanho de tela que não couberam naturalmente nos outros arquivos. */
 @media (max-width: 600px) {
   .b-subsection__head, .b-subsection__body { padding-inline: var(--space-4); }
   .b-diagram { padding: var(--space-4); }

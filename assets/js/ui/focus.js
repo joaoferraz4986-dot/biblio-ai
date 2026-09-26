@@ -1,4 +1,3 @@
-/* Modo foco: leitura concentrada com preferências de fundo, dock, sumário e escala. */
 (function () {
   'use strict';
   var btn;

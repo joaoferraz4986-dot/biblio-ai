@@ -1,7 +1,3 @@
-/* Botões e controles de formulário genéricos, usados no dock, no editor e na biblioteca.
-   Altura padrão (botão e input/select de uma linha) é ~36px: mesmo line-height (1.3) nos
-   dois grupos, com padding vertical/tamanho de fonte diferentes compensando a diferença,
-   para que fiquem alinhados quando aparecem lado a lado (ex.: campo + botão na mesma linha). */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--control-height); font: 600 .78rem/1.2 var(--font-mono); padding: var(--control-pad-y) var(--control-pad-x); border-radius: var(--control-radius); border: 1px solid var(--border); background: var(--panel); color: var(--text); cursor: pointer; transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease); white-space: nowrap; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
@@ -12,8 +8,6 @@
 .btn--dashed { background: transparent; border-style: dashed; width: 100%; justify-content: center; color: var(--text-dim); }
 .btn--danger:hover { border-color: var(--tone-bad); color: var(--tone-bad); }
 .btn--sm { min-height: var(--control-height-sm); padding: var(--control-pad-y-sm) var(--control-pad-x-sm); font-size: .72rem; }
-/* padding maior que o .btn--sm (9px) para preservar a mesma altura ~36px de um botão de
-   texto normal, já que ícones não têm padding horizontal extra para compensar. */
 .btn--icon { width: var(--control-height); height: var(--control-height); min-width: var(--control-height); min-height: var(--control-height); padding: 0; }
 .btn--sm.btn--icon { width: var(--control-height-sm); height: var(--control-height-sm); min-width: var(--control-height-sm); min-height: var(--control-height-sm); }
 .btn .icon { flex: none; }

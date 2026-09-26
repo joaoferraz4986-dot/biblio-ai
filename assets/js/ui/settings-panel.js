@@ -253,7 +253,7 @@
 
   function fontCard(font, current) {
     var active = font.id === current.font;
-    Books.personalization.ensureFont(font.id); // carrega a folha de estilo para a prévia já aparecer na letra certa
+    Books.personalization.ensureFont(font.id);
     var card = h(
       "button",
       { type: "button", class: "font-card" + (active ? " is-active" : "") },
@@ -854,6 +854,13 @@
 
   function open() {
     opener = document.activeElement;
+    var fromLibrary = Books.library && Books.library.isOpen();
+    if (fromLibrary) {
+      Books.library.close();
+      els.root.dataset.origin = "library";
+    } else {
+      delete els.root.dataset.origin;
+    }
     els.root.hidden = false;
     document.body.classList.add("overlay-open", "settings-open");
     draw();
@@ -868,6 +875,10 @@
     creatingBg = false;
     selectedTheme = null;
     if (opener && opener.focus) opener.focus();
+    if (els.root.dataset.origin === "library") {
+      delete els.root.dataset.origin;
+      Books.library.open();
+    }
   }
   function isOpen() {
     return document.body.classList.contains("settings-open");

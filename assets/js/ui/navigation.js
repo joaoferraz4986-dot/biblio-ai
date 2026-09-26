@@ -1,10 +1,3 @@
-/*
- * Navegação de leitura:
- *   • Alt + → / ←           → próxima / anterior SEÇÃO (capítulo)
- *   • Alt + Shift + ↓ / ↑   → próxima / anterior SUBSEÇÃO (percorre também as subseções)
- *   • sumário lateral com item ativo, barra de progresso, botão "topo" e links internos (#id)
- * Nos extremos (antes da primeira / depois da última) nada é rolado: só um aviso discreto.
- */
 (function () {
   'use strict';
   var TOLERANCE = 8;
@@ -77,7 +70,6 @@
     step(next ? 1 : -1, false);
   }
 
-  /* ───────────── sumário: item ativo ───────────── */
   function computeActive() {
     var list = targets(true);
     var line = window.scrollY + window.innerHeight * 0.28;
@@ -123,7 +115,7 @@
     if (!a || event.defaultPrevented || event.metaKey || event.ctrlKey) return;
     var id = decodeURIComponent(a.getAttribute('href').slice(1));
     if (!id) return;
-    if (scrollToId(id)) { event.preventDefault(); try { history.replaceState(null, '', '#' + id); } catch (e) { /* file:// */ } }
+    if (scrollToId(id)) { event.preventDefault(); try { history.replaceState(null, '', '#' + id); } catch (e) { } }
   }
 
   function init() {

@@ -1,7 +1,3 @@
-/*
- * Painel de conjunto de livros (importar/exportar).
- * Cartões com tamanho padronizado e alinhamento em grade uniforme.
- */
 .editor-collection {
   margin: 0 0 var(--space-5);
   padding: var(--space-4);

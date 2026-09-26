@@ -1,5 +1,3 @@
-/* Reset mínimo + regra de ouro do projeto: nada deve vazar largura para fora do seu contêiner. */
-*, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: auto; }
 body { margin: 0; }
 h1, h2, h3, h4, p, figure, blockquote, dl, dd, ol, ul { margin: 0; }
@@ -18,10 +16,5 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   min-height: 100vh;
-  overflow-x: hidden; /* nenhum bloco individual deveria empurrar a página, mas isso é a rede de segurança */
-}
+  overflow-x: hidden; }
 body.overlay-open { overflow: hidden; }
-
-/* Barras de rolagem sem estilo visível em todo o app (o scroll continua funcionando). */
-* { scrollbar-width: none; -ms-overflow-style: none; }
-*::-webkit-scrollbar { width: 0; height: 0; display: none; }

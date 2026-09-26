@@ -1,9 +1,3 @@
-/*
- * Bloco de matemática (LaTeX, via KaTeX): uma equação em destaque, centralizada,
- * com rolagem horizontal própria se for larga demais. Para fórmulas dentro de uma
- * frase, use `$…$` em qualquer campo de texto (ver content/inline.js) — este bloco
- * é só para equações que merecem destaque.
- */
 (function () {
   "use strict";
   var B = Books.blocks;

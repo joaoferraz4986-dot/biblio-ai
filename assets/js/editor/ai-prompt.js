@@ -1,7 +1,3 @@
-/*
- * Prompt completo para criação de livros por IA. O texto descreve o contrato do ZIP que o
- * importador entende, todos os blocos registrados, regras de assets e exemplos prontos.
- */
 (function () {
   "use strict";
 

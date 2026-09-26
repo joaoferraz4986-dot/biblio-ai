@@ -1,4 +1,3 @@
-/* Avisos rápidos e não bloqueantes (região aria-live). */
 (function () {
   'use strict';
   var timer;

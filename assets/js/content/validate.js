@@ -1,7 +1,3 @@
-/*
- * Validação de pacotes de livro. Pura (sem DOM): roda no navegador e em Node (tools/validate.js).
- * Devolve { errors: [{path, message}], warnings: [{path, message}] }.
- */
 (function () {
   "use strict";
   var S = Books.schema;
@@ -410,7 +406,6 @@
     }
   }
 
-  /** Valida um pacote em memória: { manifest, header, sections: [...] } */
   function validatePackage(pkg) {
     var report = new Report();
     if (!isObj(pkg)) {

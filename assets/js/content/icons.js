@@ -1,4 +1,3 @@
-/* Ícones SVG inline (24×24, traço). Uso: Books.icons.get('info', 16) → <svg>. */
 (function () {
   'use strict';
   var C = function (cx, cy, r) { return { c: [cx, cy, r] }; };

@@ -1,5 +1,4 @@
 'use strict';
-// Ponte segura: só expõe operações de arquivo restritas à pasta do projeto.
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('booksNative', {
   isDesktop: true,

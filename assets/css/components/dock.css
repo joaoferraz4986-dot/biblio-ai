@@ -1,9 +1,3 @@
-/*
- * Dock de ações: barra fixa vertical no canto superior direito.
- * Ordem (de cima para baixo): Livros, Editar livro, Modo foco — o botão de modo foco
- * e o de Livros trocaram de posição em relação à versão anterior do projeto.
- * "voltar ao topo" fica solto, no canto inferior direito.
- */
 .dock { position: fixed; top: var(--space-4); right: var(--space-4); z-index: var(--z-dock); display: flex; flex-direction: column; gap: var(--dock-gap); align-items: stretch; }
 .dock__btn { display: flex; align-items: center; justify-content: center; width: var(--control-height); height: var(--control-height); min-width: var(--control-height); min-height: var(--control-height); padding: 0; font: 600 .72rem/1 var(--font-mono); letter-spacing: .02em; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm); cursor: pointer; transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
 .dock__btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -13,13 +7,6 @@
 .back-top { position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: var(--z-dock); display: flex; align-items: center; justify-content: center; width: var(--control-height); height: var(--control-height); min-width: var(--control-height); min-height: var(--control-height); background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0; box-shadow: var(--shadow-sm); font: 600 .72rem var(--font-mono); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .back-top.visible { opacity: 1; transform: none; pointer-events: auto; }
 
-/*
- * Modo foco esconde Livros/Editar, o "voltar ao topo" e o sumário. O botão de modo
- * foco nunca some de vez (não haveria como sair) — mas fica INVISÍVEL até o mouse
- * chegar perto (:hover) ou ele ganhar foco de teclado (Tab). O elemento continua no
- * lugar (só com opacity:0), então a área ainda responde ao mouse/toque normalmente.
- * Esc também sai do modo foco, como rede de segurança (ver assets/js/ui/focus.js).
- */
 body.focus-mode[data-focus-bg='solid'] #bgLayer { background-image: none !important; background-color: var(--bg) !important; mask-image: none; opacity: 1; }
 body.focus-mode[data-focus-bg='keep'] #bgLayer { opacity: 1; }
 body.focus-mode[data-focus-width='wide'] #mainContent { max-width: min(1080px, 100%); }
@@ -28,8 +15,6 @@ body.focus-mode[data-focus-hide-dock='true'] #libraryDockBtn, body.focus-mode[da
 body.focus-mode[data-focus-hide-toc='true'] nav.toc { display: none; }
 body.focus-mode #focusToggle { opacity: 0; transition: opacity var(--dur) var(--ease); }
 body.focus-mode #focusToggle:hover, body.focus-mode #focusToggle:focus-visible { opacity: 1; }
-/* Toque não tem "aproximar o mouse": em telas sem hover de verdade, fica sempre
-   visível (discreto) em vez de inacessível. */
 @media (hover: none), (pointer: coarse) {
   body.focus-mode #focusToggle { opacity: .55; }
 }

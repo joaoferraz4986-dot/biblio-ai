@@ -1,10 +1,3 @@
-/*
- * Normalização de pacotes: aceita o formato legado (v1, `memcpp.*`, seções com HTML) e o v2,
- * e sempre devolve um pacote v2 pronto para validar/renderizar. Pura (sem DOM).
- *
- * A conversão de HTML→blocos "de verdade" é feita por tools/migrate_v1_to_v2.py.
- * Aqui, seções v1 viram um único bloco `html` (sanitizado no render), sem perda de conteúdo.
- */
 (function () {
   'use strict';
   var S = Books.schema;
@@ -41,7 +34,6 @@
     return s;
   }
 
-  /** raw: { manifest, header, sections } em qualquer versão. */
   function normalizePackage(raw) {
     var pkg = Books.util.clone(raw);
     var manifest = pkg.manifest || {};

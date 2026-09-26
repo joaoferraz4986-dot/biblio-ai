@@ -1,6 +1,6 @@
 # Distribuição desktop
 
-O projeto agora usa `electron-builder` para gerar uma imagem executável Linux e um instalador Windows. A distribuição começa sem livros: o usuário importa ou adiciona os próprios pacotes em `content/packages/`.
+O projeto agora usa `electron-builder` para gerar uma imagem executável Linux e um instalador Windows. A distribuição começa sem Biblio Ai: o usuário importa ou adiciona os próprios pacotes em `content/packages/`.
 
 ## Teste local no Linux
 
@@ -10,7 +10,7 @@ npm run validate:all
 npm run dist:linux
 ```
 
-O resultado é `dist/Livros-1.1.0-linux-x86_64.AppImage`. O arquivo inclui o leitor, o editor, o bundle vazio e as ferramentas de projeto Arduino. Os dados editáveis continuam sendo mantidos na pasta de usuário durante a execução.
+O resultado é `dist/Biblio Ai-1.1.0-linux-x86_64.AppImage`. O arquivo inclui o leitor, o editor, o bundle vazio e as ferramentas de projeto Arduino. Os dados editáveis continuam sendo mantidos na pasta de usuário durante a execução.
 
 ## Windows
 
@@ -21,7 +21,7 @@ npm ci
 npm run dist:windows
 ```
 
-O resultado é um instalador `Livros-1.1.0-win-x64.exe`, com atalho no menu Iniciar, atalho opcional na área de trabalho e escolha do diretório de instalação.
+O resultado é um instalador `Biblio Ai-1.1.0-win-x64.exe`, com atalho no menu Iniciar, atalho opcional na área de trabalho e escolha do diretório de instalação.
 
 ## Releases
 

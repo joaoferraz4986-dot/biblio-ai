@@ -1,9 +1,3 @@
-/*
- * Blocos de texto. Regra fixa do projeto: todo bloco é `width:100%` dentro de
- * `.chapter__body` / `.b-subsection__body` / coluna — nunca `display:inline-block`,
- * `float` ou uma largura fixa em px. É essa regra que evita blocos "presos" que não
- * acompanham a largura dos demais (era o bug do callout "Distinção importante").
- */
 .b-heading { width: 100%; font-family: var(--font-display); font-weight: 700; scroll-margin-top: var(--space-6); }
 .b-heading--3 { font-size: var(--fs-h3); margin-top: var(--space-2); }
 .b-heading--4 { font-size: var(--fs-h4); color: var(--text-dim); text-transform: uppercase; letter-spacing: .04em; font-family: var(--font-mono); font-weight: 600; }
@@ -46,7 +40,6 @@
 
 .b-divider { width: 100%; border: none; border-top: 1px solid var(--border); margin: var(--space-2) 0; }
 
-/* tons e código inline de marcação (Books.inline) */
 code.inline, kbd { font-family: var(--font-mono); font-size: .88em; }
 code.inline { background: var(--panel-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: .1em .38em; }
 kbd { background: var(--panel-3); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: .05em .5em; }

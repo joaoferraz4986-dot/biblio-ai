@@ -1,9 +1,9 @@
 {
-  "name": "livros",
-  "productName": "Livros",
-  "desktopName": "com.joaoferraz4986dot.livros",
-  "version": "1.1.0",
-  "description": "Leitor e editor de livros técnicos — app desktop (Electron)",
+  "name": "biblio-ai",
+  "productName": "Biblio Ai",
+  "desktopName": "com.joaoferraz4986dot.biblio-ai",
+  "version": "1.2.0",
+  "description": "Leitor e editor de livros técnicos — Biblio Ai",
   "author": "joaoferraz4986-dot <joaoferraz4986@gmail.com>",
   "main": "desktop/main.cjs",
   "license": "UNLICENSED",
@@ -24,9 +24,9 @@
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "com.joaoferraz4986dot.livros",
-    "productName": "Livros",
-    "artifactName": "Livros-${version}-${os}-${arch}.${ext}",
+    "appId": "com.joaoferraz4986dot.biblio-ai",
+    "productName": "Biblio Ai",
+    "artifactName": "Biblio-Ai-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "directories": {
       "output": "dist"
@@ -34,11 +34,11 @@
     "files": [
       "Livros.html",
       "assets/**/*",
+      "build/icons/**/*",
       "content/**/*",
       "examples/**/*",
       "desktop/**/*",
       "package.json",
-      "!build{,/**}",
       "!docs{,/**}",
       "!tools{,/**}",
       "!flake.nix",
@@ -51,22 +51,22 @@
         "AppImage"
       ],
       "category": "Education",
-      "icon": "build/icons/livros.png",
+      "icon": "build/icons/biblio-ai.png",
       "syncDesktopName": true,
-      "synopsis": "Leitor e editor de livros técnicos"
+      "synopsis": "Leitor e editor de livros técnicos Biblio Ai"
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "build/icons/livros.ico"
+      "icon": "build/icons/biblio-ai.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Livros"
+      "shortcutName": "Biblio Ai"
     }
   }
 }

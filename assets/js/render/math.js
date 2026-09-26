@@ -1,15 +1,3 @@
-/*
- * Renderização de fórmulas matemáticas (LaTeX) via KaTeX, vendorizado em
- * assets/vendor/katex.min.js — carregado sob demanda, só quando o livro
- * realmente tem matemática, para não pesar livros que não usam.
- *
- * Duas formas de matemática:
- *   • inline: dentro de qualquer campo de texto, entre `$…$` (ver content/inline.js)
- *   • bloco: o tipo de bloco `math` (ver blocks/math.js), para equações em destaque
- * As duas renderizam de forma preguiçosa: content/inline.js e blocks/math.js só
- * deixam um placeholder com `data-math`; esta renderização real acontece aqui,
- * depois que a seção já está na tela — mesmo padrão de render/diagrams.js.
- */
 (function () {
   'use strict';
   var loading = null;
@@ -74,7 +62,6 @@
     }
   }
 
-  /** Renderiza todo placeholder `[data-math]` pendente dentro de `root`. Devolve uma Promise. */
   function renderAll(root) {
     var pending = Array.prototype.slice.call((root || document).querySelectorAll('[data-math]:not([data-rendered])'));
     if (!pending.length) return Promise.resolve();

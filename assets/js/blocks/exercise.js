@@ -1,12 +1,3 @@
-/*
- * Bloco de exercício: enunciado sempre visível; a solução completa fica recolhida e só
- * aparece depois que a pessoa confirma num popup (Books.confirm, ver ui/confirm.js) que
- * quer vê-la — o objetivo é dar uma chance real de tentar resolver antes de esbarrar na
- * resposta. A solução é `blocks` (conteúdo rico e aninhado: parágrafo, código, lista,
- * fórmula, tabela, callout…), então cada exercício pode documentar a resposta com o mesmo
- * padrão didático do resto do livro (abordagem → desenvolvimento → resultado → limites),
- * não só um parágrafo solto.
- */
 (function () {
   'use strict';
   var B = Books.blocks;

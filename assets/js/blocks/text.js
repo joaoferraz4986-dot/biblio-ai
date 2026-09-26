@@ -1,4 +1,3 @@
-/* Blocos de texto: heading, paragraph, list, quote, callout, steps, divider. */
 (function () {
   'use strict';
   var B = Books.blocks;

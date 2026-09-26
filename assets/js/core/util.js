@@ -1,8 +1,6 @@
-/* Utilitários pequenos e sem dependências. */
 (function () {
   'use strict';
 
-  /** Cria elementos: h('div', {class:'x', onClick: fn, dataset:{a:1}}, 'texto', outroNo) */
   function h(tag, attrs) {
     var el = document.createElement(tag);
     if (attrs) {
@@ -86,12 +84,10 @@
       ta.remove();
     });
   }
-  /** Converte "16:9" em "16 / 9" para a propriedade CSS aspect-ratio; usa 16:9 se ausente/inválida. */
   function aspectRatioCss(ratio) {
     var m = /^(\d+)\s*:\s*(\d+)$/.exec(String(ratio || '').trim());
     return m ? m[1] + ' / ' + m[2] : '16 / 9';
   }
-  /** Só permite esquemas seguros em links e imagens. */
   function safeUrl(url, allowData) {
     var u = String(url || '').trim();
     if (!u) return '';

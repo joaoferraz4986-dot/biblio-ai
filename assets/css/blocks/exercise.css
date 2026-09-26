@@ -20,7 +20,6 @@
 .b-exercise__solution-inner{overflow:hidden;min-height:0}
 .b-exercise__solution.is-open .b-exercise__solution-inner{padding-top:var(--space-4);margin-top:var(--space-4);border-top:1px dashed var(--border)}
 
-/* Diálogo de confirmação reutilizável (Books.confirm, assets/js/ui/confirm.js). */
 .confirm-overlay{position:fixed;inset:0;z-index:var(--z-menu);background:rgba(6,9,13,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:var(--space-5);opacity:0;transition:opacity var(--dur) var(--ease)}
 .confirm-overlay.is-visible{opacity:1}
 .confirm-dialog{width:min(360px,100%);background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:var(--space-5);transform:translateY(6px) scale(.98);transition:transform var(--dur) var(--ease)}

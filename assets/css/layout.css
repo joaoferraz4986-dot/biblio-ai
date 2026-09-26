@@ -1,9 +1,3 @@
-/*
- * Estrutura da página: capa (hero), grade sumário+conteúdo e rodapé.
- * Regra do projeto: todo bloco de texto/conteúdo usa `width:100%; max-width:100%`
- * dentro do seu contêiner — nunca uma largura fixa em px. Isso evita blocos "presos"
- * que não acompanham os demais (o bug do callout que não expandia horizontalmente).
- */
 .wrap { max-width: var(--page-max); margin-inline: auto; padding-inline: var(--space-6); }
 
 .hero { padding: var(--space-9) 0 var(--space-7); border-bottom: 1px solid var(--border-soft); background: radial-gradient(1100px 420px at 15% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%); }
@@ -22,9 +16,6 @@
 
 .layout { width: 100%; max-width: none; margin: 0; padding: var(--space-4) var(--space-4) 120px; display: grid; grid-template-columns: var(--toc-width) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
 
-/* O sumário fica preso à esquerda da VIEWPORT (não do conteúdo) — só com a margem
-   padronizada do topo, esquerda e baixo (--space-4 nos três). Como `top` e `bottom`
-   ficam definidos e `height` não, ele se estica sozinho para preencher essa faixa. */
 nav.toc { position: sticky; top: var(--space-4); width: var(--toc-width); height: calc(100vh - 2 * var(--space-4)); z-index: var(--z-toc); overflow-y: auto; padding: var(--space-5) var(--space-3) var(--space-5) var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--panel); }
 nav.toc h4 { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: var(--space-3); }
 nav.toc ol#tocList > li { margin-bottom: var(--space-1); }
@@ -48,15 +39,6 @@ nav.toc-progress span { display: block; height: 100%; width: 100%; background: v
 footer.site-footer { border-top: 1px solid var(--border-soft); margin-top: var(--space-8); }
 footer.site-footer .wrap { padding-block: var(--space-6); color: var(--text-faint); font-size: .86rem; max-width: 76ch; }
 
-/*
- * O sumário só cabe ao lado do conteúdo centralizado quando a tela é larga o
- * bastante para os dois não se encostarem: largura mínima do sumário (--toc-width)
- * + a margem dele (--space-4) + a largura do conteúdo (--page-max).
- *   258px + 16px + 1240px = 1514px
- * Abaixo disso, o sumário some e o conteúdo continua centralizado sozinho — não há
- * mais nenhuma outra dependência entre os dois (o conteúdo nunca "abre espaço" pro
- * sumário; ele só aparece por cima quando há folga na tela).
- */
 @media (max-width: 1040px) {
   .layout { display: block; padding-inline: var(--space-4); }
   nav.toc { display: none; }

@@ -1,4 +1,3 @@
-/* Bloco de código com realce de sintaxe, título, números de linha e destaque de linhas. */
 (function () {
   'use strict';
   var B = Books.blocks;

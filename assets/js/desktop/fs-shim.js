@@ -1,8 +1,3 @@
-/* Camada de I/O do app desktop.
- * No Electron, implementa a mesma interface da File System Access API (showDirectoryPicker,
- * FileSystemDirectoryHandle/FileHandle) sobre o fs real do Node. Assim repository.js e o editor
- * gravam direto no disco — inclusive apagando capa/imagens antigas — sem cair no fluxo de ZIP.
- * No navegador comum este arquivo não faz nada. */
 (function () {
   'use strict';
   var N = window.booksNative;
@@ -76,8 +71,6 @@
   DirHandle.prototype.isSameEntry = FileHandle.prototype.isSameEntry;
   DirHandle.prototype.resolve = async function (o) { if (!o || o._path.indexOf(this._path) !== 0) return null; return o._path.slice(this._path.length).split('/').filter(Boolean); };
 
-  // O "seletor de pasta" no app desktop devolve sempre a pasta do próprio projeto (sem diálogo):
-  // salvar grava no lugar certo, sem risco de escolher a pasta errada.
   window.showDirectoryPicker = async function () { return new DirHandle('', 'Books'); };
   document.documentElement.classList.add('is-desktop');
   window.Books = window.Books || {};

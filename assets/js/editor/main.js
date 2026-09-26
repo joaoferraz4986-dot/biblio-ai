@@ -498,7 +498,6 @@
       }[ext] || "application/octet-stream"
     );
   }
-  /* Lê todos os livros de UM zip (detecta cada manifest.json automaticamente). */
   function readZipPackages(file) {
     return Books.zip.read(file).then(function (entries) {
       var byName = {};
@@ -542,7 +541,6 @@
       return manifestEntries.map(readPackage);
     });
   }
-  /* Importa vários .zip de uma vez; cada arquivo pode conter vários livros/conjuntos. */
   function importZips(fileList) {
     var files = Array.prototype.slice.call(fileList || []);
     if (!files.length) return Promise.reject(new Error("Selecione ao menos um arquivo .zip."));
@@ -610,12 +608,69 @@
         "EXEMPLO-minimo.json é uma seção válida para colar no editor.",
         "Não inclua HTML executável, scripts ou caminhos com .. Iframes só podem usar HTTPS; vídeos locais devem ser MP4 em media/.",
         "O bloco history usa name, shortBio, insight e image {src, alt}; direitos ficam no image-rights.json do pacote.",
+        "Para Arduino, use SVGs locais e preserve alt, fonte e licença. Para algoritmos, inclua explicação, invariantes, complexidade, exercício, solução e visualização quando útil.",
       ].join("\n") + "\n";
+    var requirements = [
+      "# Requisitos para um livro completo",
+      "",
+      "- Entregar um ZIP autocontido, válido offline e importável.",
+      "- Planejar 6 a 12 seções com progressão de pré-requisitos, fundamentos, exemplos, aprofundamento, aplicações, revisão e referências.",
+      "- Usar blocos tipados; não usar HTML executável, scripts, caminhos absolutos ou referências locais ausentes.",
+      "- Cada conceito relevante deve ter definição, mecanismo, exemplo trabalhado, hipóteses, limites, erros comuns, aplicação e fonte.",
+      "- Código deve declarar linguagem, padrão, entradas, saídas, tratamento de erros e comandos de teste.",
+      "- Algoritmos não triviais devem conter ideia, invariantes, pseudocódigo ou código, complexidade, caso-limite, exercício e solução verificável.",
+      "- Visualizações podem usar Mermaid, SVG próprio ou Manim. Todo MP4 Manim precisa ter título, legenda, código-fonte e validação visual.",
+      "- Inclua história ou biografia factual por seção quando houver pessoa, descoberta ou origem relevante, com fonte verificável.",
+      "- Exercícios precisam de dica sem resposta e solutionBlocks com raciocínio, verificação e complexidade quando aplicável.",
+      "- Para Arduino, prefira SVGs locais de componentes, explique polaridade, limites, ligação invertida, falhas e funcionamento interno.",
+    ].join("\n") + "\n";
+    var standards = [
+      "# Padrões editoriais e de coesão",
+      "",
+      "## Padrão de subseção",
+      "1. Motivação e objetivo observável.",
+      "2. Definição e vocabulário mínimo.",
+      "3. Mecanismo passo a passo.",
+      "4. Exemplo com dados e resultado.",
+      "5. Visualização ou diagrama quando reduzir ambiguidade.",
+      "6. Limites, contraexemplo e erro comum.",
+      "7. Exercício, dica e solução detalhada.",
+      "8. Fonte e conexão com a próxima subseção.",
+      "",
+      "## Padrão de algoritmo",
+      "Declare estado, invariantes, pré-condições, pós-condições, complexidade temporal e espacial, casos-limite e estratégia de teste.",
+      "",
+      "## Padrão de Manim",
+      "Use números e rótulos separados de linhas e pontos, evite sobreposição, inclua unidades quando necessário e valide o MP4 em pelo menos uma resolução de reprodução.",
+      "",
+      "## Padrão de Mermaid",
+      "Use rótulos entre aspas quando contiverem acentos, IDs estáveis e um texto antes e depois explicando o diagrama.",
+      "",
+      "## Padrão de fontes",
+      "Diferencie fato, hipótese didática, simulação e opinião. Registre autor ou instituição, título, ano, URL e a afirmação sustentada.",
+    ].join("\n") + "\n";
+    var richExample = JSON.stringify({ schema: "books.section.v2", kind: "book-section", id: "algoritmo-completo", number: "2", title: "Algoritmo completo", blocks: [{ type: "paragraph", text: "Apresente o objetivo, as hipóteses e o mapa da seção." }, { type: "code", language: "cpp", title: "Implementação C++", code: "#include <vector>\\nint main() { return 0; }", lineNumbers: true }, { type: "mermaid", caption: "Fluxo de decisão", code: "flowchart LR\\n A[\"entrada\"] --> B[\"processamento\"] --> C[\"saída\"]" }, { type: "exercise", prompt: "Prove o invariante no caso limite.", hint: "Comece pela primeira iteração e compare com a hipótese.", solutionBlocks: [{ type: "paragraph", text: "Mostre a prova, verifique um exemplo e registre a complexidade." }] }] }, null, 2) + "\n";
+    var checklist = [
+      "# Checklist antes de importar",
+      "- [ ] JSON válido e schemas corretos",
+      "- [ ] IDs únicos e links internos existentes",
+      "- [ ] Capa, imagens, SVGs e vídeos existem no ZIP",
+      "- [ ] Alt text, legendas e fontes preenchidos",
+      "- [ ] Mermaid e LaTeX renderizáveis",
+      "- [ ] Código C++ compilável e números de linha conferidos",
+      "- [ ] Manim sem rótulos sobrepostos e MP4 reproduzível",
+      "- [ ] Exercícios têm dica, solução, verificação e caso-limite",
+      "- [ ] Arduino usa SVG local com licença e explicação de polaridade",
+    ].join("\n") + "\n";
     var blob = Books.zip.build([
       { name: "PROMPT-IA.txt", data: prompt },
       { name: "FORMATO-DO-LIVRO.md", data: "Consulte o prompt PROMPT-IA.txt e o registro de blocos do projeto para a especificação atual.\n" },
       { name: "README.txt", data: readme },
+      { name: "REQUIREMENTS.md", data: requirements },
+      { name: "PADROES.md", data: standards },
+      { name: "CHECKLIST.md", data: checklist },
       { name: "EXEMPLO-minimo.json", data: example },
+      { name: "EXEMPLO-rico.json", data: richExample },
       {
         name: "schemas/history.json",
         data:
@@ -660,7 +715,6 @@
     }
   }
 
-  /* Mensagem única após importar um ou vários .zip. */
   function announceImported(result) {
     var n = result.packages.length;
     Books.toast.show(
@@ -743,7 +797,6 @@
     return out.length ? out.join("\n") : "Nenhuma diferença em relação à versão salva neste dispositivo.";
   }
 
-  /* Versões em edição nesta sessão (livros importados e o livro aberto no editor). */
   function editedPackagesById() {
     var map = {};
     pendingPackages.forEach(function (item) { map[item.manifest.id] = item; });
@@ -762,7 +815,6 @@
     });
     return list;
   }
-  /* Versão que está no dispositivo agora (inclui o que já foi salvo neste navegador). */
   function basePackageFor(id) {
     var entry = (Books.state.catalog.packages || []).find(function (candidate) { return candidate.id === id; });
     if (!entry) return Promise.resolve(null);
@@ -865,8 +917,7 @@
     panel.appendChild(list);
     panel.appendChild(h("h4", null, "Alterações da versão importada"));
     panel.appendChild(diff);
-    /* O botão “carregar conjunto” vive no topo do editor (ver renderShell). */
-  }
+    }
   function renderCollectionPanel() {
     var count = collectionExportMode ? deviceBookList().length : pendingPackages.length;
     var panel = h("section", { class: "editor-collection" },
@@ -1217,7 +1268,6 @@
     els.title.textContent = collectionMode
       ? "Conjunto de livros — revisão"
       : (pkg.manifest.title || "Novo livro") + " — edição";
-    /* No modo conjunto, “carregar conjunto” ocupa o lugar de “salvar”. */
     if (els.loadSetBtn) els.loadSetBtn.hidden = !collectionMode;
     if (els.saveBtn) els.saveBtn.hidden = collectionMode;
     renderTabs();
@@ -1252,7 +1302,6 @@
     });
   }
 
-  /* Grava o livro (ou todo o conjunto em revisão) e devolve true quando gravou. */
   async function persist(messages) {
     var report = refreshValidation();
     if (report && !report.ok()) {
@@ -1282,7 +1331,7 @@
           mode: "readwrite",
         }));
     } catch (e) {
-      if (e && e.name === "AbortError") return false; // usuário cancelou o seletor de pasta
+      if (e && e.name === "AbortError") return false;
       console.warn("[editor] seletor de pasta indisponível; usando armazenamento offline:", e);
       return offline();
     }
@@ -1322,7 +1371,6 @@
     }
   }
 
-  /* Salvar (livro único): grava e fecha o popup. */
   async function saveToFolder() {
     var done = await persist({
       invalid: "Corrija os erros antes de salvar.",
@@ -1333,7 +1381,6 @@
     if (done) finish();
   }
 
-  /* Carregar conjunto: grava todos os livros em revisão na biblioteca e fecha. */
   async function loadCollection() {
     if (!pendingPackages.length) {
       Books.toast.show("Importe ou selecione um conjunto antes de carregar.", { tone: "error" });
@@ -1431,7 +1478,6 @@
 
   function exportCollectionZip() { return exportZip(false, true); }
 
-  /* Novo livro / editar livro: fluxo de UM livro, sem nada de conjunto. */
   function open(id) {
     activeSection = null;
     resetCollectionState();
@@ -1459,7 +1505,6 @@
       });
   }
 
-  /* Conjunto: revisão de vários livros de uma vez. */
   function openCollection() {
     activeSection = null;
     resetCollectionState();
@@ -1480,7 +1525,6 @@
       .catch(function (e) { Books.toast.show("Não foi possível abrir o conjunto: " + e.message, { tone: "error" }); });
   }
 
-  /* Importar conjunto direto da biblioteca: aceita vários .zip com vários livros. */
   function openCollectionImport(files) {
     resetCollectionState();
     importZips(files)
@@ -1509,7 +1553,6 @@
     );
     return id;
   }
-  /* Fecha o popup e volta para a biblioteca quando nenhum livro está aberto. */
   function finish() {
     Books.state.dirty = false;
     resetCollectionState();

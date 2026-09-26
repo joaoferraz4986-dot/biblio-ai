@@ -1,12 +1,3 @@
-/*
- * Diálogo de confirmação genérico e reutilizável — `await Books.confirm(mensagem, opts)`.
- * Diferente do `confirm()` nativo do navegador (usado hoje só no editor, para ações
- * destrutivas como excluir seção), este é estilizado com os tokens do projeto e pensado
- * para o LEITOR — por exemplo, confirmar antes de revelar a solução de um exercício
- * (ver assets/js/blocks/exercise.js). Cria e remove o próprio overlay a cada chamada: não
- * depende de nenhum elemento fixo no HTML, então qualquer bloco pode chamá-lo sem alterar
- * Livros.html.
- */
 (function () {
   'use strict';
   var h = function () { return Books.util.h.apply(null, arguments); };

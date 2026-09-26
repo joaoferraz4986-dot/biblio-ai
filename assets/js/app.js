@@ -1,14 +1,9 @@
-/*
- * Ponto de entrada: carrega o catálogo e abre a seleção de livros como tela inicial,
- * liga o dock de ações e delega o resto aos módulos em ui/, content/
- * e editor/. Ver docs/ARQUITETURA.md para a visão geral dos módulos.
- */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
 
   function setLocationBook(id) {
-    try { history.replaceState(null, '', '#/livro/' + id); } catch (e) { /* file:// em alguns navegadores */ }
+    try { history.replaceState(null, '', '#/livro/' + id); } catch (e) { }
   }
 
   function restoreScroll(id) {
@@ -62,10 +57,8 @@
       return Books.repo.loadCatalog();
     }).then(function (catalog) {
       Books.state.catalog = catalog;
-      // O hash é usado somente durante a sessão para navegação; ao iniciar/recarregar,
-      // a biblioteca sempre é a primeira tela e nenhum livro é carregado por baixo dela.
       if (location.hash) {
-        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* file:// */ }
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
       }
       Books.library.open();
       return Promise.resolve();

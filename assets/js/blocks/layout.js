@@ -1,4 +1,3 @@
-/* Blocos estruturais: subsection, details, columns e html (válvula de escape). */
 (function () {
   'use strict';
   var B = Books.blocks;

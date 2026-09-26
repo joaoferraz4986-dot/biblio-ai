@@ -1,13 +1,3 @@
-/*
- * Marcação inline dos campos de texto dos blocos.
- *
- *   **negrito**   *itálico*   ~~riscado~~   `código`   [texto](https://url)   [texto](#id-de-secao)
- *   [[Alt]]  → tecla        {ok|texto} {warn|texto} {bad|texto} {dim|texto}  → tons
- *   {blue|texto} {teal|..} {amber|..} {violet|..} {orange|..} {pink|..} …      → cores da paleta
- *   \*  \`  \{  \[ → caractere literal      quebra de linha (\n) → <br>
- *
- * O texto NUNCA é interpretado como HTML: tudo é montado com createElement/createTextNode.
- */
 (function () {
   'use strict';
 
@@ -61,8 +51,6 @@
         if (del.closed && del.nodes.length) { flush(); nodes.push({ t: 'del', c: del.nodes }); i = del.i; continue; }
       }
       if (c === '$' && i + 1 < s.length && !/\s/.test(s[i + 1]) && s[i + 1] !== '$') {
-        // Matemática inline: fecha no próximo '$' não precedido de espaço e não
-        // seguido de dígito (assim "$5 e $10" não vira matemática por acidente).
         var mEnd = -1, j = i + 1;
         while (j < s.length && s[j] !== '\n') {
           if (s[j] === '$' && !/\s/.test(s[j - 1]) && !/[0-9]/.test(s[j + 1] || '')) { mEnd = j; break; }
@@ -147,7 +135,6 @@
     return frag;
   }
 
-  /** Escapa texto puro para que seja lido literalmente pela marcação inline. */
   function escape(text) {
     return String(text).replace(/([\\`*{}\[\]~])/g, '\\$1');
   }

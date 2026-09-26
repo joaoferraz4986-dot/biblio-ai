@@ -1,27 +1,3 @@
-/*
- * Registro de tipos de bloco — a "fonte única da verdade" do formato.
- *
- * Cada tipo declara, num só lugar:
- *   type, label, group, icon      → identidade e menu do editor
- *   doc, example                  → documentação (docs/FORMATO-DO-LIVRO.md e prompts de IA)
- *   defaults()                    → valores iniciais ao inserir no editor
- *   fields[]                      → esquema dos campos (usado por validação, editor visual e docs)
- *   render(block, ctx)            → cria o DOM do leitor
- *   summary(block)                → texto curto para o cabeçalho do cartão no editor
- *   children(block)               → listas de blocos filhos (blocos aninhados), se houver
- *
- * Tipos de campo (`kind`):
- *   line     texto de uma linha com marcação inline     text   texto multilinha com marcação inline
- *   code     texto monoespaçado sem marcação            plain  texto simples (ids, nomes)
- *   select   `options: [[valor, rótulo], ...]`          bool   caixa de seleção
- *   accent   cor da paleta                              items  lista aninhada (uma linha por item; 2 espaços = subnível)
- *   table    { header, rows }                           blocks lista de blocos aninhados
- *   columns  lista de { blocks }                        group-list  lista de objetos com `fields`
- *   image    caminho/URL/Data URL                       lines  intervalos de linhas ("1,3-5")
- *
- * Adicionar um bloco novo = criar um arquivo em assets/js/blocks/ chamando Books.blocks.register({...})
- * e incluí-lo em Livros.html. O editor, a validação e a documentação passam a conhecê-lo automaticamente.
- */
 (function () {
   'use strict';
 
@@ -51,7 +27,6 @@
     return block;
   }
 
-  /** Percorre blocos recursivamente. fn(block, path, parentList, index) */
   function walk(blocks, fn, path) {
     (blocks || []).forEach(function (block, index) {
       var here = (path || '') + '[' + index + ']';
@@ -78,7 +53,6 @@
       h('p', null, (block && block.type ? '(' + block.type + ') ' : '') + (error && error.message ? error.message : String(error))));
   }
 
-  /** Renderiza um bloco; falhas ficam isoladas no próprio bloco. */
   function render(block, ctx) {
     var def = block && types[block.type];
     if (!def) return errorBox(block, new Error('tipo de bloco desconhecido'));
@@ -86,7 +60,7 @@
     try { el = def.render(block, ctx || {}); } catch (e) { console.error('[blocks]', block.type, e); return errorBox(block, e); }
     el.dataset.block = block.type;
     if (Books.blockContext && Books.blockContext.bind) Books.blockContext.bind(el, block);
-    try { el.dataset.blockJson = JSON.stringify(block); } catch (e) { /* bloco não serializável: continua renderizando */ }
+    try { el.dataset.blockJson = JSON.stringify(block); } catch (e) { }
     if (block.id && !el.id) el.id = block.id;
     return el;
   }

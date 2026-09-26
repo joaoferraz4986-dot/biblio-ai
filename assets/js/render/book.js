@@ -1,4 +1,3 @@
-/* Renderiza o livro no leitor: cabeçalho, sumário, seções e rodapé. */
 (function () {
   'use strict';
   var h = function () { return Books.util.h.apply(null, arguments); };
@@ -13,7 +12,6 @@
   }
   function subsectionLabel(b) { return (b.number ? b.number + ' ' : '') + Books.inline.toPlain(b.title); }
 
-  /** Entradas do sumário: capítulos e suas subseções (em qualquer nível de aninhamento). */
   function tocEntries(pkg) {
     return pkg.sections.map(function (section) {
       var subs = [];
@@ -74,7 +72,6 @@
     });
   }
 
-  /** Renderiza tudo e devolve a Promise da renderização assíncrona (diagramas e fórmulas). */
   function renderBook(pkg) {
     renderHeader(pkg);
     renderBody(pkg);

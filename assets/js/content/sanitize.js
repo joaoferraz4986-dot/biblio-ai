@@ -1,8 +1,3 @@
-/*
- * Sanitização de SVG e HTML vindos do JSON (blocos `svg` e `html`).
- * Usa listas de permissão: o que não estiver na lista é removido. Nenhum script,
- * manipulador on*, foreignObject, <style> ou URL externa sobrevive.
- */
 (function () {
   'use strict';
 

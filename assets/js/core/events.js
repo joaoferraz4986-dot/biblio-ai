@@ -1,4 +1,3 @@
-/* Barramento de eventos mínimo para desacoplar UI, leitor e editor. */
 (function () {
   'use strict';
   var handlers = {};

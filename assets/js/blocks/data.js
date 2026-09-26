@@ -1,4 +1,3 @@
-/* Blocos de dados: tabela. */
 (function () {
   'use strict';
   var B = Books.blocks;

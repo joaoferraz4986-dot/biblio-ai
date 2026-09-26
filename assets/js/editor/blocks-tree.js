@@ -1,8 +1,3 @@
-/*
- * Árvore de edição de blocos: lista cartões colapsáveis para um array `blocks`,
- * com adicionar/mover/duplicar/excluir e edição recursiva de blocos aninhados
- * (subseção, recolhível, colunas, callout com conteúdo extra).
- */
 (function () {
   'use strict';
   var h = function () { return Books.util.h.apply(null, arguments); };
@@ -113,7 +108,6 @@
     return card;
   }
 
-  /** Renderiza (e devolve) a lista editável de um array `blocks`. Muta `list` in place. */
   function renderList(list, parentCtx) {
     var ctx = Object.assign({ defaultOpen: false }, parentCtx);
     var wrap = h('div', { class: 'block-list' });

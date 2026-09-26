@@ -1,8 +1,4 @@
 "use strict";
-// Processo principal do app desktop "Livros" (Electron).
-// - Mantém uma cópia gravável do projeto e sincroniza arquivos distribuídos sem sobrescrever edições locais.
-// - Serve a pasta via protocolo app:// (fetch() de content/*.json funciona, ao contrário de file://).
-// - Expõe operações de arquivo reais (Node fs) ao renderer via IPC, limitadas à pasta de dados.
 const {
   app,
   BrowserWindow,
@@ -19,13 +15,15 @@ const crypto = require("crypto");
 const { pathToFileURL } = require("url");
 
 const BUNDLED = path.resolve(__dirname, "..");
+const APP_ICON = path.join(BUNDLED, "build", "icons", "biblio-ai.png");
 const DATA_DIR = path.resolve(
-  process.env.LIVROS_DIR || path.join(app.getPath("userData"), "Books"),
+  process.env.LIVROS_DIR || path.join(app.getPath("userData"), "Biblio Ai"),
 );
 const SKIP = new Set([
   "desktop",
   "node_modules",
   "electron-release",
+  "dist",
   "flake.nix",
   "flake.lock",
   "package.json",
@@ -216,7 +214,6 @@ function registerIpc() {
     return new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
   });
   ipcMain.handle("fs:write", async (_e, rel, bytes) => {
-    // Escrita atômica: grava em arquivo temporário e renomeia — nunca deixa arquivo pela metade.
     const p = resolveSafe(rel),
       tmp = p + ".tmp-" + process.pid + "-" + Date.now();
     await fsp.mkdir(path.dirname(p), { recursive: true });
@@ -235,9 +232,10 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1400,
     height: 900,
+    icon: APP_ICON,
     minWidth: 360,
     minHeight: 480,
-    title: "Livros",
+    title: "Biblio Ai",
     backgroundColor: "#0d1117",
     autoHideMenuBar: true,
     webPreferences: {

@@ -1,4 +1,3 @@
-/* Renderização de diagramas Mermaid (carregamento preguiçoso, sequencial e com erro isolado por diagrama). */
 (function () {
   'use strict';
   var loading = null;
@@ -59,7 +58,6 @@
     });
   }
 
-  /** Renderiza todos os canvases pendentes dentro de `root`. Devolve uma Promise. */
   function renderAll(root) {
     var pending = Array.prototype.slice.call((root || document).querySelectorAll('.b-diagram__canvas[data-engine="mermaid"]:not([data-rendered])'));
     if (!pending.length) return Promise.resolve();

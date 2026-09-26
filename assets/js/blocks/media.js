@@ -1,6 +1,3 @@
-/* Mídia incorporada: iframe https:// e vídeo MP4 local ou https://.
- * Iframes nunca aceitam HTML arbitrário; vídeos locais são copiados para media/ ao salvar.
- */
 (function () {
   'use strict';
   var B = Books.blocks;

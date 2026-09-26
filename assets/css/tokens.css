@@ -1,8 +1,3 @@
-/*
- * Tokens de design: cores, tipografia, espaçamento, raios e sombras.
- * Mude a aparência do site inteiro editando SOMENTE este arquivo sempre que possível.
- * Tema claro/escuro: troque `data-theme` em <html> (GitHub Dark é o padrão do projeto).
- */
 :root {
   color-scheme: dark;
   --bg: #0b0f14;

@@ -4,10 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="Biblioteca de livros técnicos com leitor, sumário navegável e editor visual de conteúdo." />
-<title>Biblioteca de livros técnicos</title>
+<title>Biblio Ai — biblioteca de livros técnicos</title>
 
-<!-- CSS modular: tokens primeiro, depois reset, layout, componentes e blocos.
-     Cada arquivo cobre uma responsabilidade só — ver docs/ARQUITETURA.md. -->
 <link rel="stylesheet" href="assets/css/tokens.css?v=2" />
 <link rel="stylesheet" href="assets/css/themes.css?v=2" />
 <link rel="stylesheet" href="assets/css/reset.css" />
@@ -34,10 +32,8 @@
 </head>
 <body>
 
-  <!-- Camada de plano de fundo (padrão/textura da personalização) — ver assets/css/components/background.css -->
   <div id="bgLayer" aria-hidden="true"></div>
 
-  <!-- Dock de ações: Livros, Editar, Modo foco (nesta ordem — foco e Livros trocaram de posição). -->
   <div class="dock">
     <button class="dock__btn" id="libraryDockBtn" type="button" aria-label="Livros" title="Livros" aria-haspopup="dialog" aria-controls="libraryOverlay">
       <span class="dock__icon" data-icon="library"></span><span class="dock__label">livros</span>
@@ -56,7 +52,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- Biblioteca -->
   <div class="overlay" id="libraryOverlay" hidden>
     <div class="library" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
       <div class="library__head">
@@ -82,7 +77,6 @@
     </div>
   </div>
 
-  <!-- Editor -->
   <div class="overlay" id="editorOverlay" hidden>
     <div class="editor" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
       <div class="editor__head">
@@ -100,7 +94,6 @@
   </div>
   <div class="add-menu" id="blockAddMenu" hidden></div>
 
-  <!-- Configurações: tema, plano de fundo e fonte (assets/js/ui/settings-panel.js) -->
   <div class="overlay" id="settingsOverlay" hidden>
     <div class="settings" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
       <div class="settings__head">
@@ -115,7 +108,6 @@
     </div>
   </div>
 
-  <!-- Livro -->
   <header class="hero">
     <div class="wrap">
       <p class="kicker" id="heroKicker"></p>
@@ -142,10 +134,8 @@
     <div class="wrap"></div>
   </footer>
 
-  <!-- App desktop (Electron): I/O real de arquivos; no navegador não faz nada -->
   <script src="assets/js/desktop/fs-shim.js"></script>
 
-  <!-- Núcleo (sem DOM) -->
   <script src="assets/js/core/namespace.js"></script>
   <script src="assets/js/core/util.js"></script>
   <script src="assets/js/core/events.js"></script>
@@ -153,12 +143,10 @@
   <script src="assets/js/core/schema.js"></script>
   <script src="assets/js/core/state.js"></script>
   <script src="assets/js/core/personalization.js?v=2"></script>
-  <!-- Conteúdo: marcação inline, sanitização, realce, ícones -->
   <script src="assets/js/content/inline.js"></script>
   <script src="assets/js/content/sanitize.js"></script>
   <script src="assets/js/content/highlight.js"></script>
   <script src="assets/js/content/icons.js?v=2"></script>
-  <!-- Blocos: registro + tipos -->
   <script src="assets/js/blocks/registry.js"></script>
   <script src="assets/js/blocks/text.js"></script>
   <script src="assets/js/blocks/code.js"></script>
@@ -169,17 +157,13 @@
 <script src="assets/js/blocks/math.js"></script>
 <script src="assets/js/blocks/exercise.js"></script>
 <script src="assets/js/blocks/media.js"></script>
-  <!-- Conteúdo: validação, migração, repositório (dependem dos blocos) -->
   <script src="assets/js/content/validate.js"></script>
   <script src="assets/js/content/migrate.js"></script>
   <script src="assets/js/content/repository.js?v=3"></script>
-  <!-- Bundle embutido (gerado por tools/build_bundle.py) — permite abrir por duplo clique -->
   <script src="assets/js/embedded-bundle.js?v=4"></script>
-  <!-- Renderização -->
   <script src="assets/js/render/diagrams.js"></script>
   <script src="assets/js/render/math.js"></script>
   <script src="assets/js/render/book.js"></script>
-  <!-- UI -->
   <script src="assets/js/ui/toast.js"></script>
   <script src="assets/js/ui/confirm.js"></script>
   <script src="assets/js/ui/progress.js"></script>
@@ -188,17 +172,14 @@
   <script src="assets/js/ui/library.js"></script>
   <script src="assets/js/ui/block-context.js"></script>
   <script src="assets/js/ui/settings-panel.js?v=2"></script>
-  <!-- Editor -->
   <script src="assets/js/editor/fields.js"></script>
   <script src="assets/js/editor/blocks-tree.js"></script>
   <script src="assets/js/editor/zip.js"></script>
   <script src="assets/js/editor/ai-prompt.js"></script>
   <script src="assets/js/editor/main.js?v=3"></script>
-  <!-- App -->
   <script src="assets/js/app.js?v=2"></script>
   <script>Books.blockContext.init();</script>
   <script>
-    // Ícones do dock/topo (fora do fluxo de módulos porque rodam antes do boot completo).
     document.querySelectorAll('[data-icon]').forEach(function (el) {
       el.appendChild(Books.icons.get(el.dataset.icon, 15));
     });

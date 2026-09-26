@@ -81,17 +81,19 @@
       var stoppedAt =
         !isNew && p.sectionTitle ? "Você parou em: " + p.sectionTitle : null;
       var card = h(
-        "button",
+        "article",
         {
           class: "book-card",
-          type: "button",
+          role: "button",
+          tabindex: "0",
           dataset: { book: entry.id },
           title: stoppedAt,
         },
         h(
           "div",
-          { class: "book-card__cover" }, // proporção fixa pelo CSS: todos os cartões com o mesmo tamanho
+          { class: "book-card__cover" },
           coverNode(entry),
+          h("button", { class: "book-card__edit", type: "button", title: "Editar livro", "aria-label": "Editar livro" }, Books.icons.get("edit", 16)),
           p.percent > 0
             ? h(
                 "div",
@@ -123,6 +125,16 @@
       );
       card.addEventListener("click", function () {
         Books.events.emit("library:open", entry.id);
+      });
+      card.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          Books.events.emit("library:open", entry.id);
+        }
+      });
+      card.querySelector(".book-card__edit").addEventListener("click", function (event) {
+        event.stopPropagation();
+        Books.events.emit("editor:open", entry.id);
       });
       grid.appendChild(card);
     });
@@ -175,7 +187,6 @@
     els.newSet.addEventListener("click", function () {
       Books.events.emit("library:new-set");
     });
-    /* Importar conjunto: vários .zip de uma vez, cada um com um ou vários livros. */
     els.importSet.addEventListener("click", function () {
       els.importSetInput.click();
     });
