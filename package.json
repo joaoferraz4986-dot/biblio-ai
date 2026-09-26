@@ -2,7 +2,7 @@
   "name": "livros",
   "productName": "Livros",
   "desktopName": "com.joaoferraz4986dot.livros",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Leitor e editor de livros técnicos — app desktop (Electron)",
   "author": "joaoferraz4986-dot <joaoferraz4986@gmail.com>",
   "main": "desktop/main.cjs",
@@ -13,8 +13,10 @@
     "validate": "node tools/validate.js",
     "build:bundle": "python tools/build_bundle.py",
     "package:linux": "electron-packager . Livros --platform=linux --arch=x64 --out=electron-release --overwrite --ignore=^/electron-release --ignore=^/result --ignore=^/tools/__pycache__",
-    "dist:linux": "npm run validate && npm run build:bundle && electron-builder --linux AppImage",
-    "dist:windows": "npm run validate && npm run build:bundle && electron-builder --win nsis"
+    "dist:linux": "npm run validate:all && npm run build:bundle && electron-builder --linux AppImage",
+    "dist:windows": "npm run validate:all && npm run build:bundle && electron-builder --win nsis",
+    "validate:arduino": "python tools/validate-arduino-projects.py",
+    "validate:all": "npm run validate && npm run validate:arduino"
   },
   "devDependencies": {
     "@electron/packager": "^18.3.0",
@@ -33,6 +35,7 @@
       "Livros.html",
       "assets/**/*",
       "content/**/*",
+      "examples/**/*",
       "desktop/**/*",
       "package.json",
       "!build{,/**}",
@@ -44,14 +47,18 @@
       "!electron-release{,/**}"
     ],
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "category": "Education",
       "icon": "build/icons/livros.png",
       "syncDesktopName": true,
       "synopsis": "Leitor e editor de livros técnicos"
     },
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "build/icons/livros.ico"
     },
     "nsis": {

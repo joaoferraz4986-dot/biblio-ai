@@ -38,7 +38,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Validate content
-        run: npm run validate
+        run: npm run validate:all
+      - name: Lint Wokwi Arduino project
+        if: matrix.target == 'linux'
+        shell: bash
+        working-directory: examples/arduino/01-led-button
+        run: |
+          curl -L https://wokwi.com/ci/install.sh | sh
+          "$HOME/bin/wokwi-cli" lint
       - name: Rebuild embedded bundle
         run: python tools/build_bundle.py
       - name: Build AppImage

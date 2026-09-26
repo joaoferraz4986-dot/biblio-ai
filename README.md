@@ -75,3 +75,7 @@ Testado em Chromium recente. Não depende de rede: fontes do Google e o
 realce Mermaid têm fallback local (`assets/vendor/mermaid.min.js`) e fontes
 do sistema. Funciona tanto abrindo o arquivo diretamente (`file://`) quanto
 servido por qualquer servidor HTTP estático.
+
+## Projetos Arduino
+
+O repositório não distribui livros por padrão: `content/catalog.json` começa vazio. Materiais de estudo e projetos reproduzíveis ficam em `examples/arduino/`. O projeto Wokwi documentado está em `examples/arduino/01-led-button/`; use `npm run validate:arduino` para verificar o diagrama, as peças, as conexões e os complementos visuais. Consulte `docs/ARDUINO-TOOLS.md` para a divisão entre Wokwi, SVG, ngspice e Manim.

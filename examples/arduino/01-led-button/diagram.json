@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "author": "biblio-ai",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 20, "left": 20, "attrs": {} },
+    { "type": "wokwi-breadboard-mini", "id": "bb", "top": -10, "left": 300, "attrs": {} },
+    { "type": "wokwi-pushbutton", "id": "button", "top": 72, "left": 365, "attrs": { "color": "blue", "xray": "1" } },
+    { "type": "wokwi-led", "id": "led", "top": 162, "left": 455, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 162, "left": 365, "attrs": { "value": "220" } }
+  ],
+  "connections": [
+    [ "uno:5V", "bb:tp.1", "red", [] ],
+    [ "uno:GND.1", "bb:tn.1", "black", [] ],
+    [ "bb:tp.2", "button:1.r", "red", [] ],
+    [ "button:1.l", "bb:1t.a", "green", [] ],
+    [ "bb:1t.e", "bb:1b.f", "green", [] ],
+    [ "bb:1b.j", "uno:2", "green", [] ],
+    [ "uno:13", "r1:1", "orange", [] ],
+    [ "r1:2", "bb:10t.a", "orange", [] ],
+    [ "bb:10t.e", "bb:10b.f", "orange", [] ],
+    [ "bb:10b.j", "led:A", "orange", [] ],
+    [ "led:C", "bb:tn.3", "black", [] ],
+    [ "bb:tn.1", "bb:tn.3", "black", [] ]
+  ]
+}
