@@ -1,0 +1,6 @@
+{
+  "schema": "books.progress.v2",
+  "kind": "book-progress",
+  "version": 2,
+  "progress": {}
+}

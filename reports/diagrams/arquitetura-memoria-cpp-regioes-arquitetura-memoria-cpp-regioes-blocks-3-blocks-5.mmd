@@ -1,0 +1,3 @@
+flowchart LR
+    T(".text: instrução usa o literal") -->|"endereçamento relativo a %rip"| R("Seção .rodata")
+    R --> S("bytes do literal, ex: string terminada em zero")

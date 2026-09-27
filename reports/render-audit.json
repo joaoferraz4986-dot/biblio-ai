@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-09-25T10:43:16.549Z",
+  "stats": {
+    "books": 6,
+    "sections": 71,
+    "mathBlocks": 81,
+    "inlineMath": 47,
+    "mermaid": 27,
+    "svg": 7,
+    "images": 2,
+    "exercises": 295,
+    "subsections": 231,
+    "compatibilityFixtures": 2
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,3 @@
+flowchart LR
+    F("Arquivo ELF em disco: valor já gravado nos bytes") --> L("Carregador do SO (execve)")
+    L --> M("Seção .data em memória, já com o valor")

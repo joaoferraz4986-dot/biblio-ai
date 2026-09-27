@@ -1,0 +1,4 @@
+flowchart LR
+    PC("Program Counter (%rip)") -->|"busca instrução"| TXT("Seção .text")
+    TXT -->|"decodifica e executa"| CPU("Unidade de execução da CPU")
+    CPU -->|"avança"| PC

@@ -1,0 +1,7 @@
+flowchart LR
+    S("código.cpp") --> P("Pré-processador")
+    P --> C("Compilador C++")
+    C --> A("Montador (assembler)")
+    A --> O("Arquivo-objeto .o")
+    O --> L("Linker")
+    L --> E("Executável ELF")

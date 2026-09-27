@@ -1,0 +1,6 @@
+{
+  "schema": "books.catalog.v2",
+  "kind": "book-catalog",
+  "version": 2,
+  "packages": []
+}

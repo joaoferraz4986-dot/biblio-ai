@@ -1,0 +1,9 @@
+flowchart TD
+  ISR["ISR: captura mínima"] --> Q["fila bounded"]
+  Q --> CTRL["tarefa de controle"]
+  CTRL --> HAL["HAL: sensor e atuador"]
+  CTRL --> LOG["telemetria local"]
+  LOG --> NET["rede opcional"]
+  SAFE["watchdog + estado seguro"] --> CTRL
+  BOOT["bootloader + imagem assinada"] --> APP["aplicação"]
+  APP --> CTRL

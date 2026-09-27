@@ -1,0 +1,72 @@
+{
+  "name": "biblio-ai",
+  "productName": "Biblio Ai",
+  "desktopName": "com.joaoferraz4986dot.biblio-ai",
+  "version": "1.2.0",
+  "description": "Leitor e editor de livros técnicos — Biblio Ai",
+  "author": "joaoferraz4986-dot <joaoferraz4986@gmail.com>",
+  "main": "desktop/main.cjs",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "validate": "node tools/validate.js",
+    "build:bundle": "python tools/build_bundle.py",
+    "package:linux": "electron-packager . Livros --platform=linux --arch=x64 --out=electron-release --overwrite --ignore=^/electron-release --ignore=^/result --ignore=^/tools/__pycache__",
+    "dist:linux": "npm run validate:all && npm run build:bundle && electron-builder --linux AppImage",
+    "dist:windows": "npm run validate:all && npm run build:bundle && electron-builder --win nsis",
+    "validate:arduino": "python tools/validate-arduino-projects.py",
+    "validate:all": "npm run validate && npm run validate:arduino"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.joaoferraz4986dot.biblio-ai",
+    "productName": "Biblio Ai",
+    "artifactName": "Biblio-Ai-${version}-${os}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "Livros.html",
+      "assets/**/*",
+      "build/icons/**/*",
+      "content/**/*",
+      "examples/**/*",
+      "desktop/**/*",
+      "package.json",
+      "!docs{,/**}",
+      "!tools{,/**}",
+      "!flake.nix",
+      "!flake.lock",
+      "!result{,/**}",
+      "!electron-release{,/**}"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Education",
+      "icon": "build/icons/biblio-ai.png",
+      "syncDesktopName": true,
+      "synopsis": "Leitor e editor de livros técnicos Biblio Ai"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icons/biblio-ai.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Biblio Ai"
+    }
+  }
+}

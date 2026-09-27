@@ -1,0 +1,59 @@
+@media (max-width: 600px) {
+  .b-subsection__head, .b-subsection__body { padding-inline: var(--space-4); }
+  .b-diagram { padding: var(--space-4); }
+  .editor__body { padding: var(--space-4); }
+  .editor__head { padding: var(--space-4); }
+  .sections-layout { gap: var(--space-4); }
+}
+@media print {
+  .dock, .back-top, nav.toc, .toast, #libraryOverlay, #editorOverlay, #settingsOverlay { display: none !important; }
+  body { background: #fff; color: #000; }
+  .layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 1040px) {
+  .layout { max-width: none; }
+}
+
+/* Rolagem continua funcional, mas as barras não ocupam nem exibem espaço visual. */
+*, *::before, *::after {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+
+/* Itens extensos ficam limitados ao card; a rolagem ocorre no próprio bloco. */
+.layout, nav.toc, #mainContent, .chapter, .chapter__body,
+.b-subsection, .b-subsection__body, .b-columns__col,
+.b-diagram, .b-code, .b-image, .b-media, .b-math, .b-history,
+.b-callout, .b-exercise, .b-steps, .b-list, .b-quote, .b-html,
+.b-history__body, .b-callout__body {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.b-history { grid-template-columns: minmax(104px, 18%) minmax(0, 1fr); }
+.chapter__body > *, .b-subsection__body > *, .b-details__body > *,
+.b-columns__col > *, .b-callout__body > * { min-width: 0; max-width: 100%; }
+nav.toc { overflow-x: hidden; }
+.b-diagram__canvas, .b-code__pre, .b-math__scroll {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+.b-diagram__canvas { justify-content: flex-start; }
+.b-diagram--mermaid .b-diagram__canvas > svg {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  min-width: 100%;
+}
+.b-diagram__canvas--svg svg, .svg-frame svg,
+.b-image img, .b-media video, .b-media iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.b-code__pre { box-sizing: border-box; }
+.b-code__pre code { min-width: max-content; }

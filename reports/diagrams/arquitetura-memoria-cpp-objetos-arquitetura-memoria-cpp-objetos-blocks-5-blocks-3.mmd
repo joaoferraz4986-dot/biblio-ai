@@ -1,0 +1,3 @@
+flowchart LR
+    PN("placement new(ptr) T(args)") --> SK("NÃO chama operator new")
+    SK --> CT2("chama só o construtor, direto sobre ptr")

@@ -1,0 +1,5 @@
+flowchart LR
+    N("operator new(n)") -->|"chama"| M("malloc (brk ou mmap)")
+    M --> B("bloco cru no Heap")
+    B --> CT("construtor roda sobre o bloco")
+    CT --> OBJ("objeto pronto")

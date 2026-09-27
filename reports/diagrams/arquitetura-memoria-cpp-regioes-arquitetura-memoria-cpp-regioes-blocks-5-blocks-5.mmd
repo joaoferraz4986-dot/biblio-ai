@@ -1,0 +1,3 @@
+flowchart LR
+    F2("Arquivo ELF: apenas o TAMANHO é registrado, nenhum byte de dado") --> L2("Carregador do SO")
+    L2 -->|"preenche com zero (páginas anônimas)"| M2("Seção .bss em memória")

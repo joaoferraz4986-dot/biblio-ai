@@ -1,0 +1,3 @@
+flowchart LR
+    O("objeto polimórfico") -->|"vptr"| V("vtable da classe, em .rodata")
+    V -->|"slot da função"| C("código da função, em .text")

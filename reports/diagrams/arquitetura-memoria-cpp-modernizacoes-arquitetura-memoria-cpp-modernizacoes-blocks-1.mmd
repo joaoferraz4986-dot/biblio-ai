@@ -1,0 +1,5 @@
+flowchart TD
+    BIN("Binário compilado hoje") --> ASLR("ASLR + PIE: bases de carregamento aleatórias")
+    BIN --> CAN("Stack canary: detecta overflow antes do ret")
+    BIN --> REL("RELRO: GOT marcado somente-leitura após o linking")
+    BIN --> CET("Intel CET / ARM PAC: shadow stack + branch tracking em hardware")

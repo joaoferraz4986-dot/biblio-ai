@@ -1,0 +1,5 @@
+flowchart TD
+    A("Objeto em C++") --> B{"Storage Duration"}
+    B --> C("Estática: existe do início ao fim do programa (globais, static)")
+    B --> D("Automática: nasce ao entrar no escopo, morre ao sair (variáveis locais)")
+    B --> E("Dinâmica: vive entre new/malloc e delete/free (controlada pelo programador)")

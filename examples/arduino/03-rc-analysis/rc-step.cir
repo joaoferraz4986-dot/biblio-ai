@@ -1,0 +1,10 @@
+* Circuito RC didático: resposta a um degrau de 0 V para 5 V
+VSTEP in 0 PULSE(0 5 0 1u 1u 5 10)
+R1 in out 10k
+C1 out 0 100u
+.tran 1m 5
+.control
+run
+write rc-step.raw v(in) v(out)
+.endc
+.end
