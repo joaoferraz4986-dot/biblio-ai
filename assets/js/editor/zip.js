@@ -111,7 +111,10 @@
       var warnings = [];
       if (bytes.length > ADVISORY_TOTAL_BYTES) warnings.push('ZIP comprimido acima de ' + Math.round(ADVISORY_TOTAL_BYTES / 1024 / 1024) + ' MiB; a importação pode consumir bastante memória.');
       entries.forEach(function (entry) { if (entry.uncompressedSize > ADVISORY_ENTRY_BYTES) warnings.push(entry.name + ' acima de ' + Math.round(ADVISORY_ENTRY_BYTES / 1024 / 1024) + ' MiB.'); });
-      var result = Promise.all(entries.filter(function (entry) { return !/\/$/.test(entry.name); }).map(function (entry) {
+      var files = entries.filter(function (entry) { return !/\/$/.test(entry.name); });
+      function decodeAt(index, items) {
+        if (index >= files.length) return Promise.resolve(items);
+        var entry = files[index];
         var local = entry.localOffset;
         if (local + 30 > bytes.length) throw new Error('Entrada ZIP fora dos limites: ' + entry.name);
         if (read32(bytes, local) !== 0x04034b50) throw new Error('Entrada ZIP inválida: ' + entry.name);
@@ -124,13 +127,15 @@
         return decoded.then(function (data) {
           if (data.length !== entry.uncompressedSize) throw new Error('Tamanho inesperado na entrada ZIP: ' + entry.name);
           if (crc32(data) !== entry.crc) throw new Error('CRC inválido na entrada ZIP: ' + entry.name);
-          return {
+          items.push({
             name: entry.name,
             data: data,
             text: function () { return text(data); }
-          };
+          });
+          return decodeAt(index + 1, items);
         });
-      }));
+      }
+      var result = decodeAt(0, []);
       return result.then(function (items) { items.warnings = warnings; return items; });
     });
   }
