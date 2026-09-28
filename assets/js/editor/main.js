@@ -1549,18 +1549,19 @@
 
   function openCollectionImport(files) {
     resetCollectionState();
+    if (Books.loading) Books.loading.show("Importando livros…", "Validando o ZIP e preparando os livros para a biblioteca.");
     importZips(files)
       .then(function (result) {
-        activeTab = "import";
-        els.root.hidden = false;
-        document.body.classList.add("overlay-open", "editor-open");
-        renderShell();
-        announceImported(result);
+        return loadCollection().then(function () {
+          if (result.warnings && result.warnings.length) {
+            Books.toast.show(result.warnings.join(" "), { tone: "warning", duration: 7000 });
+          }
+        });
       })
       .catch(function (e) {
         Books.toast.show("Não foi possível importar o conjunto: " + e.message, { tone: "error" });
-        if (!Books.state.pkg) Books.library.open();
-      });
+      })
+      .finally(function () { if (Books.loading) Books.loading.hide(); });
   }
   function promptNewId() {
     var n = 1,
@@ -1620,7 +1621,6 @@
       openCollection();
     });
     Books.events.on("library:import-set", function (files) {
-      Books.library.close();
       openCollectionImport(files);
     });
     Books.events.on("editor:open", function (id) {
