@@ -81,6 +81,16 @@
         ),
       );
     });
+    if (!report.errors.length && report.warnings.length) {
+      box.appendChild(
+        h(
+          "div",
+          { class: "validation__item is-warn" },
+          Books.icons.get("info", 14),
+          h("strong", null, "Avisos informativos — não bloqueiam a importação"),
+        ),
+      );
+    }
     report.warnings.forEach(function (w) {
       box.appendChild(
         h(
