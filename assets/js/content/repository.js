@@ -413,7 +413,14 @@
     "image/webp": "webp",
     "image/svg+xml": "svg",
     "image/avif": "avif",
+    "image/bmp": "bmp",
+    "image/x-icon": "ico",
+    "image/vnd.microsoft.icon": "ico",
     "video/mp4": "mp4",
+    "video/x-m4v": "m4v",
+    "video/webm": "webm",
+    "video/ogg": "ogv",
+    "video/quicktime": "mov",
   };
   var IMAGES_DIR = "images"; // pasta separada para imagens de bloco; a capa fica solta na raiz do livro (cover.*)
   var MEDIA_DIR = "media"; // vídeos são mantidos separados das imagens e nunca viram capas
@@ -424,7 +431,7 @@
     return /\.svg($|\?)/i.test(path || "");
   }
   function isVideoPath(path) {
-    return /\.(?:mp4|m4v|webm|ogg)($|\?)/i.test(path || "");
+    return /\.(?:mp4|m4v|webm|ogv|ogg|mov)($|\?)/i.test(path || "");
   }
   function isExternal(url) {
     return /^https?:\/\//i.test(url || "");

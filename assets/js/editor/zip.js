@@ -11,7 +11,8 @@
     }
     return table;
   })();
-  var MAX_ENTRIES = 512, MAX_ENTRY_BYTES = 16 * 1024 * 1024, MAX_TOTAL_BYTES = 64 * 1024 * 1024;
+  var MAX_ENTRIES = 4096, MAX_ENTRY_BYTES = 512 * 1024 * 1024, MAX_TOTAL_BYTES = 4 * 1024 * 1024 * 1024;
+  var ADVISORY_ENTRY_BYTES = 64 * 1024 * 1024, ADVISORY_TOTAL_BYTES = 512 * 1024 * 1024;
   function crc32(bytes) {
     var crc = 0xFFFFFFFF;
     for (var i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
@@ -74,7 +75,7 @@
   function read(blob) {
     return blob.arrayBuffer().then(function (buffer) {
       var bytes = new Uint8Array(buffer);
-      if (bytes.length > MAX_TOTAL_BYTES * 2) throw new Error('ZIP muito grande para ser processado com segurança.');
+      if (bytes.length > MAX_TOTAL_BYTES) throw new Error('ZIP excede o limite técnico de processamento de ' + Math.round(MAX_TOTAL_BYTES / 1024 / 1024) + ' MiB.');
       var eocd = -1;
       for (var i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
         if (read32(bytes, i) === 0x06054b50) { eocd = i; break; }
@@ -107,7 +108,10 @@
         entries.push({ name: name, flags: flags, method: method, compressedSize: compressedSize, uncompressedSize: uncompressedSize, crc: read32(bytes, centralPos + 16), localOffset: localOffset });
         centralPos += 46 + nameSize + extraSize + commentSize;
       }
-      return Promise.all(entries.filter(function (entry) { return !/\/$/.test(entry.name); }).map(function (entry) {
+      var warnings = [];
+      if (bytes.length > ADVISORY_TOTAL_BYTES) warnings.push('ZIP comprimido acima de ' + Math.round(ADVISORY_TOTAL_BYTES / 1024 / 1024) + ' MiB; a importação pode consumir bastante memória.');
+      entries.forEach(function (entry) { if (entry.uncompressedSize > ADVISORY_ENTRY_BYTES) warnings.push(entry.name + ' acima de ' + Math.round(ADVISORY_ENTRY_BYTES / 1024 / 1024) + ' MiB.'); });
+      var result = Promise.all(entries.filter(function (entry) { return !/\/$/.test(entry.name); }).map(function (entry) {
         var local = entry.localOffset;
         if (local + 30 > bytes.length) throw new Error('Entrada ZIP fora dos limites: ' + entry.name);
         if (read32(bytes, local) !== 0x04034b50) throw new Error('Entrada ZIP inválida: ' + entry.name);
@@ -127,8 +131,9 @@
           };
         });
       }));
+      return result.then(function (items) { items.warnings = warnings; return items; });
     });
   }
 
-  Books.zip = { build: build, read: read };
+  Books.zip = { build: build, read: read, limits: { maxEntries: MAX_ENTRIES, maxEntryBytes: MAX_ENTRY_BYTES, maxTotalBytes: MAX_TOTAL_BYTES, advisoryEntryBytes: ADVISORY_ENTRY_BYTES, advisoryTotalBytes: ADVISORY_TOTAL_BYTES } };
 })();

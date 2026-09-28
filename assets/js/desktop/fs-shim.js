@@ -20,7 +20,7 @@
   }
   function mime(name) {
     var ext = (name.split('.').pop() || '').toLowerCase();
-    return ({ json: 'application/json', js: 'text/javascript', css: 'text/css', html: 'text/html', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf', otf: 'font/otf' })[ext] || 'application/octet-stream';
+    return ({ json: 'application/json', js: 'text/javascript', css: 'text/css', html: 'text/html', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', avif: 'image/avif', bmp: 'image/bmp', ico: 'image/x-icon', woff: 'font/woff', woff2: 'font/woff2', m4v: 'video/x-m4v', webm: 'video/webm', ogv: 'video/ogg', ogg: 'video/ogg', mov: 'video/quicktime', ttf: 'font/ttf', otf: 'font/otf' })[ext] || 'application/octet-stream';
   }
 
   function Writable(path) { this._path = path; this._chunks = []; }

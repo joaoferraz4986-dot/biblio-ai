@@ -79,3 +79,13 @@ servido por qualquer servidor HTTP estático.
 ## Projetos Arduino
 
 O repositório não distribui livros por padrão: `content/catalog.json` começa vazio. Materiais de estudo e projetos reproduzíveis ficam em `examples/arduino/`. O projeto Wokwi documentado está em `examples/arduino/01-led-button/`; use `npm run validate:arduino` para verificar o diagrama, as peças, as conexões e os complementos visuais. Consulte `docs/ARDUINO-TOOLS.md` para a divisão entre Wokwi, SVG, ngspice e Manim.
+
+## Empacotamento de conjuntos de livros
+
+Os livros corrigidos são mantidos fora do repositório de aplicação e distribuídos como conjunto de importação. Para gerar um ZIP canônico a partir de uma árvore `content/` completa:
+
+```bash
+python3 tools/package-book-set.py /caminho/para/content livros-conjunto.zip
+```
+
+O ZIP contém `content/catalog.json`, `content/progress.json`, `content/settings.json` (quando presentes) e `content/packages/<id>/` com manifestos, seções e assets. O empacotador não bloqueia vídeos ou imagens grandes; apenas emite avisos acima de 64 MiB por vídeo ou 512 MiB no conjunto. O leitor do aplicativo aceita PNG, JPEG, GIF, WebP, AVIF, BMP e SVG para planos de fundo, além de MP4/M4V, WebM, Ogg e MOV para vídeo, conforme o suporte do navegador.

@@ -493,13 +493,21 @@
         gif: "image/gif",
         webp: "image/webp",
         avif: "image/avif",
+        bmp: "image/bmp",
+        ico: "image/x-icon",
         mp4: "video/mp4",
+        m4v: "video/x-m4v",
+        webm: "video/webm",
+        ogv: "video/ogg",
+        ogg: "video/ogg",
+        mov: "video/quicktime",
         svg: "image/svg+xml",
       }[ext] || "application/octet-stream"
     );
   }
   function readZipPackages(file) {
     return Books.zip.read(file).then(function (entries) {
+      var zipWarnings = entries.warnings || [];
       var byName = {};
       entries.forEach(function (entry) { byName[entry.name.replace(/^\.\//, "")] = entry; });
       var manifestEntries = entries.filter(function (entry) { return /(^|\/)manifest\.json$/i.test(entry.name); });
@@ -538,17 +546,20 @@
         if (!report.ok()) throw new Error("livro " + (manifest.id || "sem-id") + " inválido: " + report.format().split("\n").slice(0, 3).join("; "));
         return normalized;
       }
-      return manifestEntries.map(readPackage);
+      var packages = manifestEntries.map(readPackage);
+      packages._zipWarnings = zipWarnings;
+      return packages;
     });
   }
   function importZips(fileList) {
     var files = Array.prototype.slice.call(fileList || []);
     if (!files.length) return Promise.reject(new Error("Selecione ao menos um arquivo .zip."));
+    var warnings = [];
     return files
       .reduce(function (chain, file) {
         return chain.then(function (acc) {
           return readZipPackages(file)
-            .then(function (list) { return acc.concat(list); })
+            .then(function (list) { warnings = warnings.concat(list._zipWarnings || []); return acc.concat(list); })
             .catch(function (e) { throw new Error(file.name + ": " + e.message); });
         });
       }, Promise.resolve([]))
@@ -569,7 +580,7 @@
         pkg = selected;
         activeSection = pkg.sections[0] || null;
         Books.state.dirty = true;
-        return { pkg: pkg, packages: ordered, files: files.length };
+        return { pkg: pkg, packages: ordered, files: files.length, warnings: warnings };
       });
   }
   function copyPromptZip(book) {
@@ -720,6 +731,7 @@
     Books.toast.show(
       n + (n === 1 ? " livro detectado" : " livros detectados") +
         (result.files > 1 ? " em " + result.files + " arquivos" : "") +
+        (result.warnings && result.warnings.length ? " Aviso: " + result.warnings.join(" ") : "") +
         ". Revise e use “carregar conjunto” no topo para gravar no dispositivo.",
       { tone: "ok", duration: 5000 },
     );

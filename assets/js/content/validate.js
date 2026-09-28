@@ -291,6 +291,23 @@
     }
     if (block.type === "video" && !/^(?:data:video\/|https:\/\/|media\/|videos\/)/i.test(String(block.src || "")))
       report.error(path + ".src", "vídeo deve ser data:video, URL https:// ou caminho local media/ / videos/");
+    if (block.type === "video" && /^(?:media\/|videos\/)/i.test(String(block.src || "")) && !/\.(?:mp4|m4v|webm|ogv|ogg|mov)(?:[?#].*)?$/i.test(block.src))
+      report.warn(path + ".src", "formato de vídeo não reconhecido; prefira MP4/H.264, WebM/VP9 ou Ogg/Theora para compatibilidade offline");
+    if (block.type === "exercise") {
+      var exerciseFormat = block.format || "discursiva";
+      if (["discursiva", "alternativa", "programacao-competitiva"].indexOf(exerciseFormat) === -1)
+        report.error(path + ".format", "formato de exercício desconhecido");
+      if (exerciseFormat === "alternativa") {
+        if (!Array.isArray(block.choices) || block.choices.length < 2) report.error(path + ".choices", "múltipla escolha exige pelo menos duas alternativas");
+        else if (!block.choices.some(function (choice) { return choice && choice.correct === true; })) report.error(path + ".choices", "múltipla escolha exige uma alternativa correta");
+      }
+      if (exerciseFormat === "programacao-competitiva") {
+        if (!String(block.constraints || "").trim()) report.warn(path + ".constraints", "problema competitivo sem restrições explícitas");
+        if (!String(block.inputFormat || "").trim()) report.warn(path + ".inputFormat", "problema competitivo sem formato de entrada");
+        if (!String(block.outputFormat || "").trim()) report.warn(path + ".outputFormat", "problema competitivo sem formato de saída");
+        if (!Array.isArray(block.examples) || !block.examples.length) report.warn(path + ".examples", "problema competitivo sem exemplo de entrada/saída");
+      }
+    }
     if (block.type === "math" && invalidLatex(block.tex))
       report.error(
         path + ".tex",

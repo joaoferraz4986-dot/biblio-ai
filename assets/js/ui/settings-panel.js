@@ -390,13 +390,13 @@
     });
     var file = h("input", {
       type: "file",
-      accept: "image/png,image/svg+xml,.png,.svg",
+      accept: "image/*,.svg",
       class: "settings__file",
     });
     var hint = h(
       "p",
       { class: "creator-form__hint" },
-      "Selecione uma imagem PNG ou SVG. O PNG é copiado para os arquivos do projeto ao salvar; o SVG continua embutido e acompanha o tema com uma camada de adaptação.",
+      "Selecione uma imagem PNG, JPEG, GIF, WebP, AVIF, BMP ou SVG. Formatos raster são copiados para content/backgrounds; SVG é sanitizado e permanece embutido.",
     );
     var status = h("p", { class: "hint" });
     var selected = { src: "", mime: "" };
@@ -404,12 +404,12 @@
       var f = file.files[0];
       if (!f) return;
       var nameLower = f.name.toLowerCase();
-      if (!/\.png$|\.svg$/.test(nameLower)) {
-        status.textContent = "Formato inválido. Use apenas PNG ou SVG.";
+      if (!(f.type && /^image\//i.test(f.type)) && !/\.(?:png|jpe?g|gif|webp|avif|bmp|svg)$/.test(nameLower)) {
+        status.textContent = "Formato inválido. Use uma imagem raster comum ou SVG.";
         status.className = "hint is-error";
         return;
       }
-      if (/\.svg$/.test(nameLower)) {
+      if (f.type === "image/svg+xml" || /\.svg$/.test(nameLower)) {
         Books.util
           .readFileAsText(f)
           .then(function (source) {
@@ -429,8 +429,8 @@
       } else {
         Books.util.readFileAsDataUrl(f).then(function (src) {
           selected.src = src;
-          selected.mime = "image/png";
-          status.textContent = "PNG pronto para aplicar.";
+          selected.mime = f.type || ({ jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", avif: "image/avif", bmp: "image/bmp", png: "image/png" }[nameLower.split(".").pop()] || "image/png");
+          status.textContent = selected.mime.replace("image/", "").toUpperCase() + " pronto para aplicar.";
           status.className = "hint is-ok";
         });
       }

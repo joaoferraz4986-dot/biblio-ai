@@ -117,15 +117,15 @@
       video.addEventListener('error', function () { Books.util.clear(preview); preview.appendChild(h('span', null, 'vídeo indisponível')); }, { once: true });
       preview.appendChild(video);
     }
-    var urlInput = textInput(value, function (v) { value = v; onChange(v); renderPreview(); }, { placeholder: 'media/nome.mp4, URL https:// ou envie um MP4' });
-    var file = h('input', { type: 'file', accept: 'video/mp4,video/*', class: 'image-picker__file' });
+    var urlInput = textInput(value, function (v) { value = v; onChange(v); renderPreview(); }, { placeholder: 'media/nome.mp4/.webm/.ogv, URL https:// ou envie um vídeo compatível' });
+    var file = h('input', { type: 'file', accept: 'video/mp4,video/webm,video/ogg,video/quicktime,video/*', class: 'image-picker__file' });
     file.addEventListener('change', function () {
       var f = file.files[0];
       if (!f) return;
-      if (f.type && f.type !== 'video/mp4') { Books.toast.show('Selecione um vídeo MP4.', { tone: 'error' }); return; }
+      if (f.type && !/^video\/(?:mp4|webm|ogg|quicktime|x-m4v)$/i.test(f.type)) { Books.toast.show('Formato de vídeo não reconhecido pelo navegador.', { tone: 'error' }); return; }
       Books.util.readFileAsDataUrl(f).then(function (dataUrl) { value = dataUrl; urlInput.value = dataUrl; onChange(dataUrl); renderPreview(); });
     });
-    var pick = h('button', { type: 'button', class: 'btn btn--ghost' }, Books.icons.get('upload', 14), h('span', null, 'enviar MP4'));
+    var pick = h('button', { type: 'button', class: 'btn btn--ghost' }, Books.icons.get('upload', 14), h('span', null, 'enviar vídeo'));
     pick.addEventListener('click', function () { file.click(); });
     renderPreview();
     wrap.appendChild(preview);

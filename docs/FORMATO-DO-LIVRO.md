@@ -384,7 +384,7 @@ Vídeo com controles nativos. Para um pacote offline, use `media/<arquivo>.mp4` 
 
 Campos:
 
-- `src` (obrigatório) — video; `media/*.mp4`, `videos/*.mp4`, `data:video/*` ou URL `https://`
+- `src` (obrigatório) — video; `media/*`/`videos/*` com `.mp4`, `.m4v`, `.webm`, `.ogv`, `.ogg` ou `.mov`, `data:video/*` ou URL `https://`
 - `title` (obrigatório) — line
 - `controls` — bool
 - `loop` — bool
@@ -421,6 +421,39 @@ Exemplo:
   "tex": "E = mc^2",
   "reading": "Lê-se: energia é igual à massa vezes a velocidade da luz ao quadrado.",
   "caption": "energia de repouso"
+}
+```
+
+#### `exercise` — Exercício estruturado
+
+Além do exercício discursivo, o formato aceita `format: "alternativa"` para múltipla escolha e `format: "programacao-competitiva"` para problemas com enunciado longo e contrato de entrada/saída. Todos mantêm `hint` e `solutionBlocks`; a solução deve documentar raciocínio, verificação, caso-limite e complexidade quando aplicável.
+
+Campos adicionais:
+
+- `format` — `discursiva`, `alternativa` ou `programacao-competitiva`
+- `context` — texto contextual opcional
+- `choices` — lista de `{ "label": "...", "correct": true|false }` para alternativas
+- `constraints` — restrições explícitas do problema
+- `inputFormat`, `outputFormat` — contrato de entrada e saída
+- `examples` — lista de `{ "input": "...", "output": "...", "explanation": "..." }`
+- `complexity` — complexidade esperada ou limite de recursos
+
+Exemplo de problema competitivo:
+
+```json
+{
+  "type": "exercise",
+  "number": "4.3",
+  "format": "programacao-competitiva",
+  "difficulty": "medio",
+  "prompt": "Dado um vetor, encontre o maior intervalo contíguo com soma menor ou igual a K.",
+  "constraints": "1 <= n <= 200000; todos os valores são não negativos.",
+  "inputFormat": "n K e, na linha seguinte, n inteiros.",
+  "outputFormat": "Imprima o comprimento máximo.",
+  "examples": [{ "input": "5 7\n2 1 3 2 4", "output": "3", "explanation": "O intervalo 2,1,3 tem soma 6." }],
+  "hint": "Mantenha uma janela e avance a borda esquerda enquanto a soma exceder K.",
+  "complexity": "O(n) tempo e O(1) memória além da entrada.",
+  "solutionBlocks": [{ "type": "paragraph", "text": "Defina o invariante da janela e prove que cada ponteiro avança no máximo n vezes." }]
 }
 ```
 
