@@ -95,7 +95,20 @@
     return { nodes: nodes, i: i, closed: stop === null };
   }
 
-  function parse(src) { return parseRun(String(src == null ? '' : src), 0, null).nodes; }
+  function normalizeTextSource(src) {
+    var raw = String(src == null ? '' : src), out = '', inCode = false;
+    for (var i = 0; i < raw.length; i += 1) {
+      if (raw[i] === '`') inCode = !inCode;
+      if (!inCode && raw[i] === '\\' && raw[i + 1] === 'n' &&
+          !/^\\n(?:e|eq|orm|abla|u|otin|mid)(?![A-Za-z])/.test(raw.slice(i))) {
+        out += '\n'; i += 1; continue;
+      }
+      out += raw[i];
+    }
+    return out;
+  }
+
+  function parse(src) { return parseRun(normalizeTextSource(src), 0, null).nodes; }
 
   function toPlain(src) {
     function walk(nodes) {
