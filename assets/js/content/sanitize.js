@@ -14,7 +14,7 @@
 
   function sanitizeSvg(markup, prefix) {
     var tpl = document.createElement('template');
-    tpl.innerHTML = String(markup || '');
+    tpl.innerHTML = Books.util.decodeStructuralNewlines(markup);
     var svg = tpl.content.querySelector('svg');
     if (!svg) return null;
     prefix = prefix || Books.util.uid('svg');
@@ -77,6 +77,7 @@
   var HEADING_MAP = { h1: 'h3', h2: 'h3', h5: 'h4', h6: 'h4' };
 
   function sanitizeHtml(markup) {
+    markup = Books.util.decodeHtmlEntities(markup);
     var tpl = document.createElement('template');
     tpl.innerHTML = String(markup || '');
     var out = document.createDocumentFragment();

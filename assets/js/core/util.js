@@ -88,6 +88,16 @@
     var m = /^(\d+)\s*:\s*(\d+)$/.exec(String(ratio || '').trim());
     return m ? m[1] + ' / ' + m[2] : '16 / 9';
   }
+  function decodeStructuralNewlines(value) {
+    return String(value == null ? '' : value).replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+  }
+  function decodeHtmlEntities(value) {
+    var source = String(value == null ? '' : value);
+    if (!/&(?:lt|gt|amp|quot|#39|#x27);/i.test(source)) return source;
+    var area = document.createElement('textarea');
+    area.innerHTML = source;
+    return area.value;
+  }
   function safeUrl(url, allowData) {
     var u = String(url || '').trim();
     if (!u) return '';
@@ -99,5 +109,6 @@
 
   Books.util = { h: h, append: append, clear: clear, clone: clone, debounce: debounce, uid: uid,
     slugify: slugify, download: download, readFileAsDataUrl: readFileAsDataUrl,
-    readFileAsText: readFileAsText, copyText: copyText, safeUrl: safeUrl, aspectRatioCss: aspectRatioCss };
+    readFileAsText: readFileAsText, copyText: copyText, safeUrl: safeUrl, aspectRatioCss: aspectRatioCss,
+    decodeStructuralNewlines: decodeStructuralNewlines, decodeHtmlEntities: decodeHtmlEntities };
 })();

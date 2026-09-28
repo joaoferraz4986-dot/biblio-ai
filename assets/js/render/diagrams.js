@@ -38,7 +38,7 @@
   }
 
   function normalizeSource(source) {
-    return String(source || '').replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+    return Books.util.decodeStructuralNewlines(source);
   }
 
   function renderCanvas(canvas) {

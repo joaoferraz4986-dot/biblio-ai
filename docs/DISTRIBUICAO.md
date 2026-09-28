@@ -10,7 +10,7 @@ npm run validate:all
 npm run dist:linux
 ```
 
-O resultado é `dist/Biblio Ai-1.2.1-linux-x86_64.AppImage`. O arquivo inclui o leitor, o editor, o bundle vazio e as ferramentas de projeto Arduino. Os dados editáveis continuam sendo mantidos na pasta de usuário durante a execução.
+O resultado é `dist/Biblio Ai-1.2.2-linux-x86_64.AppImage`. O arquivo inclui o leitor, o editor, o bundle vazio e as ferramentas de projeto Arduino. Os dados editáveis continuam sendo mantidos na pasta de usuário durante a execução.
 
 ## Windows
 
@@ -21,15 +21,15 @@ npm ci
 npm run dist:windows
 ```
 
-O resultado é um instalador `Biblio Ai-1.2.1-win-x64.exe`, com atalho no menu Iniciar, atalho opcional na área de trabalho e escolha do diretório de instalação.
+O resultado é um instalador `Biblio Ai-1.2.2-win-x64.exe`, com atalho no menu Iniciar, atalho opcional na área de trabalho e escolha do diretório de instalação.
 
 ## Releases
 
 Uma tag semântica inicia automaticamente os builds para Linux e Windows:
 
 ```bash
-git tag v1.2.1
-git push origin v1.2.1
+git tag v1.2.2
+git push origin v1.2.2
 ```
 
 O workflow `.github/workflows/release.yml` valida o catálogo, reconstrói o bundle, gera os dois artefatos e publica uma GitHub Release com notas automáticas. O workflow manual também pode ser acionado para produzir artefatos de teste, sem publicar uma release.
