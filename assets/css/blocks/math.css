@@ -69,7 +69,7 @@
   color: var(--text-dim);
   font-size: 0.9rem;
   line-height: 1.55;
-  text-align: left;
+  text-align: center;
 }
 .b-math__reading strong {
   color: var(--text);

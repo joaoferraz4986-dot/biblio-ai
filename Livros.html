@@ -52,6 +52,14 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <div class="app-loading" id="appLoading" hidden role="status" aria-live="polite" aria-label="Carregando">
+    <div class="app-loading__card">
+      <span class="app-loading__spinner" aria-hidden="true"></span>
+      <strong id="appLoadingLabel">Carregando…</strong>
+      <span id="appLoadingDetail">Aguarde um momento.</span>
+    </div>
+  </div>
+
   <div class="overlay" id="libraryOverlay" hidden>
     <div class="library" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
       <div class="library__head">

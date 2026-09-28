@@ -1,6 +1,22 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
+  var loading = {
+    show: function (label, detail) {
+      var root = $('appLoading');
+      if (!root) return;
+      $('appLoadingLabel').textContent = label || 'Carregando…';
+      $('appLoadingDetail').textContent = detail || 'Aguarde um momento.';
+      root.hidden = false;
+      document.body.classList.add('app-is-loading');
+    },
+    hide: function () {
+      var root = $('appLoading');
+      if (root) root.hidden = true;
+      document.body.classList.remove('app-is-loading');
+    }
+  };
+  Books.loading = loading;
 
   function setLocationBook(id) {
     try { history.replaceState(null, '', '#/livro/' + id); } catch (e) { }
@@ -19,6 +35,7 @@
   function openBook(id) {
     var entry = Books.state.catalog.packages.find(function (p) { return p.id === id; }) || Books.state.catalog.packages[0];
     if (!entry) { Books.toast.show('Nenhum livro no catálogo ainda. Use "novo livro" para começar.'); return Promise.resolve(); }
+    loading.show('Abrindo livro…', 'Preparando capítulos, imagens e fórmulas.');
     return Books.repo.loadPackage(entry).then(function (pkg) {
       Books.state.pkg = pkg;
       Books.store.write(Books.store.keys.lastBook, pkg.manifest.id);
@@ -28,7 +45,7 @@
     }).catch(function (e) {
       console.error(e);
       Books.toast.show('Não foi possível abrir este livro: ' + e.message, { tone: 'error' });
-    });
+    }).finally(function () { loading.hide(); });
   }
 
   function wireDock() {
@@ -47,6 +64,7 @@
   }
 
   function boot() {
+    loading.show('Carregando biblioteca…', 'Lendo catálogo e progresso salvo.');
     Books.personalization.init(); // tema/fundo/fonte, o quanto antes, para evitar flash do padrão de fábrica
     Books.focus.init(); Books.library.init(); Books.editor.init(); Books.settingsPanel.init(); Books.nav.init();
     Books.focus.set(Books.focus.preferred(), false);
@@ -61,11 +79,13 @@
         try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
       }
       Books.library.open();
+      loading.hide();
       return Promise.resolve();
     }).catch(function (e) {
       console.error(e);
       $('mainContent').innerHTML = '';
       $('mainContent').appendChild(Books.util.h('div', { class: 'b-error' }, Books.util.h('strong', null, 'Não foi possível carregar a biblioteca'), Books.util.h('p', null, e.message)));
+      loading.hide();
     });
   }
 
