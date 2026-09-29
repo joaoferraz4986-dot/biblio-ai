@@ -19,6 +19,11 @@
 .b-image__empty { padding: var(--space-8); text-align: center; color: var(--text-faint); font-size: .84rem; }
 .b-image figcaption { padding: var(--space-3) var(--space-4); color: var(--text-faint); font-size: .82rem; border-top: 1px solid var(--border-soft); }
 
+/* Cards visuais em colunas mantêm imagem e legenda na mesma altura. */
+.b-columns .b-image { display: flex; flex-direction: column; height: 100%; }
+.b-columns .b-image img { height: clamp(150px, 17vw, 220px); object-fit: contain; background: var(--bg-elevated); }
+.b-columns .b-image figcaption { min-height: 4.8em; display: flex; align-items: flex-start; box-sizing: border-box; }
+
 .b-media { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--panel); }
 .b-media iframe, .b-media video { display: block; width: 100%; border: 0; background: #000; }
 .b-media iframe { min-height: 180px; }
