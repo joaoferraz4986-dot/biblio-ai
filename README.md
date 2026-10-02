@@ -10,6 +10,10 @@ HTTP; funciona nos dois casos.
   livros), com os últimos livros abertos primeiro. Nenhum livro é carregado antes
   da seleção; o botão **livros** (canto superior direito) reabre essa tela a
   qualquer momento.
+- **Organizar**: passe o mouse na capa para **fixar** o livro no topo, guardá-lo em
+  **Ler depois** ou marcá-lo como **concluído** (ao chegar ao fim ele é concluído
+  sozinho). As abas da biblioteca filtram por *Continuar lendo*, *Favoritos*,
+  *Ler depois* e *Completos*. Essas marcações são salvas junto com o progresso.
 - **Personalizar**: na biblioteca, o botão **configurações** abre o tema de
   cores, o plano de fundo (grade, pontos, estrelas, textura granulada ou PNG/SVG)
   e a fonte de leitura. Cada opção tem prévia, é aplicada na hora e pode viajar
