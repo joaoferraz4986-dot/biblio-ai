@@ -541,7 +541,7 @@
     var isNew = Books.progress.isNew(id);
     var status = isNew
       ? "ainda não aberto"
-      : p.finished
+      : p.completed
         ? "concluído"
         : (p.percent || 0) +
           "% lido" +
