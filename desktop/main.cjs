@@ -162,6 +162,12 @@ async function syncManagedPackages() {
   const sourceRoot = path.join(BUNDLED, "content", "packages");
   const targetRoot = path.join(DATA_DIR, "content", "packages");
   const versionPath = path.join(DATA_DIR, ".books-source-files.json");
+  // electron-builder does not preserve empty directories in every target.
+  // A bundle with no managed packages must still open over an existing data dir.
+  if (!fs.existsSync(sourceRoot)) {
+    await fsp.mkdir(targetRoot, { recursive: true });
+    return;
+  }
   let previous = {};
   try {
     previous = JSON.parse(await fsp.readFile(versionPath, "utf8"));
