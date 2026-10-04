@@ -22,7 +22,10 @@
     summary: function (b) { return b.title || b.src || 'Iframe'; },
     render: function (b) {
       var src = safeHttps(b.src);
-      var frame = h('iframe', { src: src, title: b.title || 'Conteúdo incorporado', loading: 'lazy', referrerpolicy: 'no-referrer', sandbox: 'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts', allowfullscreen: b.allowFullscreen ? true : null, style: { height: Math.max(180, Math.min(1200, Number(b.height) || 480)) + 'px' } });
+      // Conteúdos como YouTube recusam execução quando a origem do iframe é opaca.
+      // `allow-same-origin` não dá acesso ao documento do leitor: o iframe continua
+      // sandboxed e a origem remota permanece isolada da aplicação.
+      var frame = h('iframe', { src: src, title: b.title || 'Conteúdo incorporado', loading: 'lazy', referrerpolicy: 'no-referrer', sandbox: 'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin', allowfullscreen: b.allowFullscreen ? true : null, style: { height: Math.max(180, Math.min(1200, Number(b.height) || 480)) + 'px' } });
       var fig = h('figure', { class: 'b-media b-media--iframe' }, frame, caption(b));
       if (!src) fig.insertBefore(h('div', { class: 'b-media__error' }, 'iframe inválido: use uma URL https://.'), frame);
       return fig;
