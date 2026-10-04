@@ -22,12 +22,9 @@
     summary: function (b) { return b.title || b.src || 'Iframe'; },
     render: function (b) {
       var src = safeHttps(b.src);
-      var isYouTube = /^https:\/\/(?:www\.)?(?:youtube\.com|youtube-nocookie\.com)\/embed\//i.test(src);
-      // O YouTube pode rejeitar o player sem Referer (erro 153). Não use
-      // no-referrer; o player também precisa dos recursos abaixo para iniciar.
-      // Para outros sites, mantemos o sandbox com origem isolada.
-      var frameAttrs = { src: src, title: b.title || 'Conteúdo incorporado', loading: 'lazy', referrerpolicy: 'strict-origin-when-cross-origin', allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share', allowfullscreen: b.allowFullscreen ? true : null, style: { height: Math.max(180, Math.min(1200, Number(b.height) || 480)) + 'px' } };
-      if (!isYouTube) frameAttrs.sandbox = 'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin';
+      // Artigos Read podem precisar de JavaScript para alternar entre frames e
+      // animações. O Referer não é removido e a origem remota continua isolada.
+      var frameAttrs = { src: src, title: b.title || 'Conteúdo incorporado', loading: 'lazy', referrerpolicy: 'strict-origin-when-cross-origin', allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share', sandbox: 'allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin', allowfullscreen: b.allowFullscreen ? true : null, style: { height: Math.max(180, Math.min(1200, Number(b.height) || 480)) + 'px' } };
       var frame = h('iframe', frameAttrs);
       var fig = h('figure', { class: 'b-media b-media--iframe' }, frame, caption(b));
       if (!src) fig.insertBefore(h('div', { class: 'b-media__error' }, 'iframe inválido: use uma URL https://.'), frame);
