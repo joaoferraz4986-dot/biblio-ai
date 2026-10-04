@@ -7,12 +7,56 @@ const {
   shell,
   net,
   Menu,
+  dialog,
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const fsp = fs.promises;
 const crypto = require("crypto");
 const { pathToFileURL } = require("url");
+
+let mainWindow = null;
+let isQuitting = false;
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+
+function errorText(error) {
+  return error && error.stack ? error.stack : String(error && error.message ? error.message : error);
+}
+
+function reportStartupError(error) {
+  const message = errorText(error);
+  try {
+    const logPath = path.join(app.getPath("userData"), "startup-error.log");
+    fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${message}\n`);
+  } catch (_) {
+    // Preserve the original startup error if diagnostic logging is unavailable.
+  }
+  if (app.isReady()) {
+    dialog.showErrorBox(
+      "Biblio Ai não iniciou",
+      `${message}\n\nO detalhe foi salvo em startup-error.log.`,
+    );
+  }
+  app.exit(1);
+}
+
+process.on("uncaughtException", reportStartupError);
+process.on("unhandledRejection", reportStartupError);
+
+if (!hasSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+      if (app.isReady()) createWindow();
+      return;
+    }
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    if (!mainWindow.isVisible()) mainWindow.show();
+    mainWindow.focus();
+  });
+}
 
 const BUNDLED = path.resolve(__dirname, "..");
 const APP_ICON = path.join(BUNDLED, "build", "icons", "biblio-ai.png");
@@ -229,6 +273,12 @@ function registerIpc() {
 }
 
 function createWindow() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+    return mainWindow;
+  }
   const win = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -246,6 +296,10 @@ function createWindow() {
       spellcheck: false,
     },
   });
+  mainWindow = win;
+  win.on("closed", () => {
+    if (mainWindow === win) mainWindow = null;
+  });
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:/i.test(url)) shell.openExternal(url);
     return { action: "deny" };
@@ -257,53 +311,65 @@ function createWindow() {
     }
   });
   win.loadURL("app://books/Livros.html");
+  return win;
 }
 
-app.whenReady().then(async () => {
-  await ensureDataDir();
-  protocol.handle("app", (req) => {
-    const u = new URL(req.url);
-    let file;
-    try {
-      file = resolveSafe(decodeURIComponent(u.pathname));
-    } catch (e) {
-      return new Response("forbidden", { status: 403 });
-    }
-    return net.fetch(pathToFileURL(file).toString());
-  });
-  registerIpc();
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      {
-        label: "Arquivo",
-        submenu: [
-          {
-            label: "Abrir pasta dos livros",
-            click: () => shell.openPath(DATA_DIR),
-          },
-          { type: "separator" },
-          { role: "quit", label: "Sair" },
-        ],
-      },
-      {
-        label: "Exibir",
-        submenu: [
-          { role: "reload", label: "Recarregar" },
-          { role: "toggleDevTools", label: "Ferramentas de desenvolvedor" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn" },
-          { role: "zoomOut" },
-          { role: "togglefullscreen", label: "Tela cheia" },
-        ],
-      },
-    ]),
-  );
-  createWindow();
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+if (hasSingleInstanceLock) {
+  app.whenReady().then(async () => {
+    await ensureDataDir();
+    protocol.handle("app", (req) => {
+      const u = new URL(req.url);
+      let file;
+      try {
+        file = resolveSafe(decodeURIComponent(u.pathname));
+      } catch (e) {
+        return new Response("forbidden", { status: 403 });
+      }
+      return net.fetch(pathToFileURL(file).toString());
+    });
+    registerIpc();
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate([
+        {
+          label: "Arquivo",
+          submenu: [
+            {
+              label: "Abrir pasta dos livros",
+              click: () => shell.openPath(DATA_DIR),
+            },
+            { type: "separator" },
+            { role: "quit", label: "Sair" },
+          ],
+        },
+        {
+          label: "Exibir",
+          submenu: [
+            { role: "reload", label: "Recarregar" },
+            { role: "toggleDevTools", label: "Ferramentas de desenvolvedor" },
+            { type: "separator" },
+            { role: "resetZoom" },
+            { role: "zoomIn" },
+            { role: "zoomOut" },
+            { role: "togglefullscreen", label: "Tela cheia" },
+          ],
+        },
+      ]),
+    );
+    createWindow();
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+      else if (mainWindow) {
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    });
+  }).catch(reportStartupError);
+}
+app.on("before-quit", () => {
+  isQuitting = true;
 });
 app.on("window-all-closed", () => {
+  mainWindow = null;
   if (process.platform !== "darwin") app.quit();
+  else if (isQuitting) app.exit(0);
 });
