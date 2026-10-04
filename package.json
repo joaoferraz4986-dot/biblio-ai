@@ -2,7 +2,7 @@
   "name": "biblio-ai",
   "productName": "Biblio Ai",
   "desktopName": "com.joaoferraz4986dot.biblio-ai",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Leitor e editor de livros técnicos — Biblio Ai",
   "author": "joaoferraz4986-dot <joaoferraz4986@gmail.com>",
   "main": "desktop/main.cjs",
