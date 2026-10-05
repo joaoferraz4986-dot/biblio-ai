@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="assets/css/components/library.css?v=6" />
 <link rel="stylesheet" href="assets/css/components/block-context.css" />
 <link rel="stylesheet" href="assets/css/components/settings.css?v=2" />
+<link rel="stylesheet" href="assets/css/components/dashboard.css" />
 <link rel="stylesheet" href="assets/css/components/background.css?v=2" />
 <link rel="stylesheet" href="assets/css/editor/editor.css?v=2" />
 <link rel="stylesheet" href="assets/css/editor/collection.css" />
@@ -72,6 +73,7 @@
           <button class="btn btn--ghost btn--sm" id="libraryNewSet" type="button"><span data-icon="layers"></span><span>novo conjunto</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryImportSet" type="button" title="Selecione um ou vários .zip; cada um pode conter vários livros"><span data-icon="upload"></span><span>importar conjunto</span></button>
           <input type="file" id="libraryImportSetInput" accept="application/zip,.zip" multiple hidden />
+          <button class="btn btn--ghost btn--sm" id="libraryOpenDashboard" type="button" aria-haspopup="dialog" aria-controls="dashboardOverlay"><span data-icon="chart"></span><span>painel</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryOpenSettings" type="button" aria-haspopup="dialog" aria-controls="settingsOverlay"><span data-icon="settings"></span><span>configurações</span></button>
           <button class="btn btn--ghost btn--sm" id="libraryClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
         </div>
@@ -102,6 +104,22 @@
     </div>
   </div>
   <div class="add-menu" id="blockAddMenu" hidden></div>
+
+  <div class="overlay" id="dashboardOverlay" hidden>
+    <div class="dashboard" role="dialog" aria-modal="true" aria-labelledby="dashboardTitle">
+      <div class="dashboard__head">
+        <div>
+          <p class="dashboard__kicker">painel</p>
+          <h2 id="dashboardTitle">Sua leitura</h2>
+        </div>
+        <div class="dashboard__actions">
+          <div class="library__tabs" id="dashboardRange" role="group" aria-label="Período"></div>
+          <button class="btn btn--ghost btn--sm" id="dashboardClose" type="button"><span data-icon="close"></span><span>fechar</span></button>
+        </div>
+      </div>
+      <div id="dashboardBody"></div>
+    </div>
+  </div>
 
   <div class="overlay" id="settingsOverlay" hidden>
     <div class="settings" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -175,12 +193,13 @@
   <script src="assets/js/render/book.js"></script>
   <script src="assets/js/ui/toast.js"></script>
   <script src="assets/js/ui/confirm.js"></script>
-  <script src="assets/js/ui/progress.js?v=2"></script>
+  <script src="assets/js/ui/progress.js?v=3"></script>
   <script src="assets/js/ui/focus.js?v=2"></script>
   <script src="assets/js/ui/navigation.js?v=2"></script>
-  <script src="assets/js/ui/library.js?v=3"></script>
+  <script src="assets/js/ui/library.js?v=4"></script>
   <script src="assets/js/ui/block-context.js"></script>
   <script src="assets/js/ui/settings-panel.js?v=3"></script>
+  <script src="assets/js/ui/dashboard.js"></script>
   <script src="assets/js/editor/fields.js"></script>
   <script src="assets/js/editor/blocks-tree.js"></script>
   <script src="assets/js/editor/zip.js"></script>

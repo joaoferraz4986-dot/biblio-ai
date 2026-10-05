@@ -66,7 +66,7 @@
   function boot() {
     loading.show('Carregando biblioteca…', 'Lendo catálogo e progresso salvo.');
     Books.personalization.init(); // tema/fundo/fonte, o quanto antes, para evitar flash do padrão de fábrica
-    Books.focus.init(); Books.library.init(); Books.editor.init(); Books.settingsPanel.init(); Books.nav.init();
+    Books.focus.init(); Books.library.init(); Books.editor.init(); Books.settingsPanel.init(); Books.dashboard.init(); Books.nav.init();
     Books.focus.set(Books.focus.preferred(), false);
     wireDock();
     Books.repo.loadProgressFile().then(function (fileProgress) {
