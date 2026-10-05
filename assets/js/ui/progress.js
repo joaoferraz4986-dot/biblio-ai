@@ -8,6 +8,14 @@
   // (localStorage + content/progress.json + bundle + ZIP). Cada uma guarda quando foi ligada.
   var FLAGS = { pinned: 'pinnedAt', later: 'laterAt', completed: 'completedAt' };
   var DONE_AT = 99; // a rolagem raramente chega a 100% exatos
+  // Tempo de leitura (alimenta o painel): só conta com o livro na tela, a janela em foco e
+  // alguma atividade recente — deixar o app aberto e sair não soma.
+  var TICK = 5;            // segundos somados a cada medição
+  var IDLE_MS = 60000;     // sem rolar/teclar/mexer o mouse por 1 min = não está lendo
+  var SECTION_READ = 30;   // segundos numa seção para ela contar como lida
+  var KEEP_DAYS = 400;     // histórico diário guardado por livro
+  var lastActivity = 0;
+  var dwell = {};          // segundos por seção nesta sessão (não é salvo)
 
   function init(fileProgress) {
     var base = (fileProgress && fileProgress.progress) || {};
@@ -54,6 +62,47 @@
   }
   function setRestoring(v) { restoring = v; }
 
+  function dayKey(date) {
+    var d = date || new Date();
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function currentChapter() {
+    var id = Books.nav ? Books.nav.currentId() : '';
+    var el = id && document.getElementById(id);
+    var chapter = el && el.closest ? el.closest('.chapter') : null;
+    return chapter ? chapter.id : '';
+  }
+  function isReading() {
+    return !!Books.state.pkg && !document.hidden && document.hasFocus() &&
+      !document.body.classList.contains('overlay-open') && Date.now() - lastActivity <= IDLE_MS;
+  }
+  // Soma TICK segundos ao dia de hoje em state[id].time ({ 'AAAA-MM-DD': segundos }) e marca
+  // em state[id].sections ({ idDaSecao: dia }) a seção em que o leitor já ficou tempo suficiente.
+  function tick() {
+    if (!isReading()) return;
+    var pkg = Books.state.pkg, id = pkg.manifest.id, today = dayKey();
+    var entry = Object.assign({}, DEFAULTS, state[id]);
+    var time = Object.assign({}, entry.time);
+    time[today] = (time[today] || 0) + TICK;
+    var days = Object.keys(time).sort();
+    while (days.length > KEEP_DAYS) delete time[days.shift()];
+    entry.time = time;
+    entry.sectionTotal = pkg.sections.length;
+    var chapter = currentChapter();
+    if (chapter) {
+      var key = id + '/' + chapter;
+      dwell[key] = (dwell[key] || 0) + TICK;
+      if (dwell[key] >= SECTION_READ && !(entry.sections || {})[chapter]) {
+        entry.sections = Object.assign({}, entry.sections);
+        entry.sections[chapter] = today;
+      }
+    }
+    state[id] = entry;
+    persist();
+  }
+  function markActivity() { lastActivity = Date.now(); }
+
   function toggle(id, flag) {
     if (!id || !FLAGS[flag]) return false;
     var on = !get(id)[flag];
@@ -67,9 +116,11 @@
   }
 
   // Reiniciar zera a leitura (o livro volta a ser "novo"), mas fixado e "ler depois" são
-  // escolhas sobre o livro, não sobre a leitura — continuam valendo.
+  // escolhas sobre o livro, não sobre a leitura — continuam valendo. O tempo já lido também
+  // fica: é histórico (como as horas jogadas), não posição de leitura.
   function keptAfterReset(id) {
     var p = state[id] || {}, kept = null;
+    if (p.time && Object.keys(p.time).length) kept = { time: p.time };
     ['pinned', 'later'].forEach(function (flag) {
       if (!p[flag]) return;
       kept = kept || {};
@@ -105,7 +156,11 @@
   function isNew(id) { return !state[id] || !state[id].firstOpenedAt; }
 
   window.addEventListener('scroll', Books.util.debounce(record, 120), { passive: true });
+  ['scroll', 'wheel', 'keydown', 'pointerdown', 'pointermove', 'touchstart'].forEach(function (type) {
+    window.addEventListener(type, markActivity, { passive: true });
+  });
+  setInterval(tick, TICK * 1000);
   document.addEventListener('visibilitychange', function () { if (document.hidden) { record(); persist.flush(); Books.store.write(K.progress, state); } });
 
-  Books.progress = { init: init, get: get, all: all, record: record, setRestoring: setRestoring, reset: reset, resetAll: resetAll, touch: touch, isNew: isNew, toggle: toggle };
+  Books.progress = { init: init, get: get, all: all, record: record, setRestoring: setRestoring, reset: reset, resetAll: resetAll, touch: touch, isNew: isNew, toggle: toggle, dayKey: dayKey };
 })();
