@@ -14,6 +14,9 @@ HTTP; funciona nos dois casos.
   **Ler depois** ou marcá-lo como **concluído** (ao chegar ao fim ele é concluído
   sozinho). As abas da biblioteca filtram por *Continuar lendo*, *Favoritos*,
   *Ler depois* e *Completos*. Essas marcações são salvas junto com o progresso.
+- **Acompanhar**: o botão **painel** da biblioteca mostra o tempo de leitura por dia
+  (7 ou 30 dias), as seções lidas, os livros mais lidos e os que estão em andamento.
+  O tempo só conta com o livro aberto, a janela em foco e atividade no último minuto.
 - **Personalizar**: na biblioteca, o botão **configurações** abre o tema de
   cores, o plano de fundo (grade, pontos, estrelas, textura granulada ou PNG/SVG)
   e a fonte de leitura. Cada opção tem prévia, é aplicada na hora e pode viajar

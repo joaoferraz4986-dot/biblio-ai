@@ -59,7 +59,9 @@ render/       desenha o LIVRO (leitor)
 ui/           interações do leitor
   toast.js, progress.js (grava percentual/posição e "opened", o timestamp da última abertura,
   usado para ordenar a biblioteca; guarda também as marcações do livro — pinned/later/completed,
-  cada uma com seu *At — na mesma entrada, então elas viajam com o progresso), focus.js,
+  cada uma com seu *At — e o tempo de leitura por dia em "time" mais as seções lidas em
+  "sections", tudo na mesma entrada, então viaja com o progresso), dashboard.js (painel de
+  leitura: tempo por dia, livros mais lidos e em andamento, só a partir desses dados), focus.js,
   navigation.js (Alt+setas, sumário), library.js (grade da biblioteca com as abas Todos /
   Continuar lendo / Favoritos / Ler depois / Completos e os botões de marcação na capa),
   settings-panel.js (modal de

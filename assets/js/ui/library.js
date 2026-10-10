@@ -314,6 +314,7 @@
     els.importSet = document.getElementById("libraryImportSet");
     els.importSetInput = document.getElementById("libraryImportSetInput");
     els.settings = document.getElementById("libraryOpenSettings");
+    els.dashboard = document.getElementById("libraryOpenDashboard");
     els.close.addEventListener("click", close);
     els.root.addEventListener("click", function (e) {
       if (e.target === els.root) close();
@@ -342,6 +343,9 @@
     });
     els.settings.addEventListener("click", function () {
       Books.events.emit("settings:open");
+    });
+    els.dashboard.addEventListener("click", function () {
+      Books.events.emit("dashboard:open");
     });
     Books.events.on("catalog:changed", function () {
       if (isOpen()) render();
